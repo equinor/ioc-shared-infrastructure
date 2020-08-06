@@ -173,8 +173,7 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
                 "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('network-security-group-name'))]"
               },
               "privateEndpointNetworkPolicies": "Enabled",
-              "privateLinkServiceNetworkPolicies": "Enabled",
-              "delegations": []
+              "privateLinkServiceNetworkPolicies": "Enabled"
             }
           }
         ]
@@ -360,8 +359,7 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
                 "negationConditon": true,
                 "matchValues": [
                   "NO"
-                ],
-                "transforms": []
+                ]
               }
             ]
           }
