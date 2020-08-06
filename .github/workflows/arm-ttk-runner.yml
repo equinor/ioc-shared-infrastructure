@@ -1,0 +1,20 @@
+# Basic workflow for running ARM template test toolkit on PR
+
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  armtest:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Run a one-line script
+      working-directory: scripts
+      run: .\VerifyTemplates.ps1
