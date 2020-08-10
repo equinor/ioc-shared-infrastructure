@@ -37,6 +37,9 @@ secrets.
 This template can be used to grant access to keyvault secrets. For example the app of a
 solution will require read access to obtain secrets from the vault.
 
+### resourceAzureSql.json
+
+Standard configuration for a single Azure SQL instance with one or more databases.
 
 ## Usage
 
