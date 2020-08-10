@@ -1,0 +1,5 @@
+scripts/arm-ttk
+scripts/ci-scripts
+scripts/azuredeploy.json
+scripts/Deploy-AzTemplate.ps1
+scripts/armttk.zip
