@@ -3,11 +3,22 @@ Expand-Archive -Path "armttk.zip" -DestinationPath .
 Import-Module .\arm-ttk\arm-ttk.psd1
 
 $totalErrorCount = 0;
-$files = Get-ChildItem "../resources"
+$files = Get-ChildItem "../resources" | ?{ $_.PSIsContainer }
 
 foreach ($file in $files) {
-    Write-Host "Testing $file"
-    Copy-Item -Path $file.FullName -Destination "azuredeploy.json"
+    $directory = $file.FullName
+    
+    if ((Test-Path "$directory\azuredeploy.jsonc")) {
+        $fileName = "$directory\azuredeploy.jsonc"
+    } elseif ((Test-Path "$directory\azuredeploy.json")) {
+        $fileName = "$directory\azuredeploy.json"
+    } else {
+        Write-Host "Could not find azuredeploy.jsonc or azuredeploy.json in $directory"
+        exit $totalErrorCount
+    }
+
+    Write-Host "Testing $fileName"
+    Copy-Item -Path "$directory\azuredeploy.jsonc" -Destination "azuredeploy.json"
     $r = Test-AzTemplate
     
     # Dump test results
