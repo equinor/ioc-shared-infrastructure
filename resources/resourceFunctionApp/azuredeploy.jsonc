@@ -21,6 +21,7 @@
       }
     },
     "location": {
+      "defaultValue": "[resourceGroup().location]",
       "type": "string"
     },
     "tags": {
