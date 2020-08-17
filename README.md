@@ -1,41 +1,20 @@
-# ioc-shared-infrastructure
+# IOC Shared Infrastructure
 
-This repository contains ARM templates for common components used in IOC
-solutions.
+IOC Shared Infrastructure is a repository for sharing commonly used Azure infrastructure components within the Equinor IOC. 
 
-## Resource templates
+The intention is to provide a "menu" of ready-to-use ARM-templates, which can be directly included in apps and solutions. 
 
-The `resources` directory contains the template files described in the following
-subsections.
+## What is Equinor IOC
 
-### resourceApp.json
+The Equinor integrated operations centre (IOC) will help increase safety, add value and reduce emissions from our installations on the Norwegian continental shelf (NCS). The agile development teams develops and runs services aimed at supporting these operations.
 
-Combines the actual web app, its configuration and a connected ApplicationInsights
-instance.
+More info at [equinor.com](https://www.equinor.com/en/news/27nov2017-integrated-operations-centre.html).
 
-### resourceAppServicePlan
+## See available resources
 
-Just an app service plan; useful to be able to put several apps into the same plan.
 
-### resourceContainerRegistry.json
+Go to the [resources](resources) folder to see available resources
 
-Typically, an app will be deployed as a container, thus the solution will come with
-its own container registry.
-
-### resourceFunctionApp.json
-
-Combines a function app, the storage account required for it, and a connected
-ApplicationInsights instance.
-
-### resourceKeyVault.json
-
-A single keyvault; typically deployed along with an application to contain its own
-secrets.
-
-### resourceKeyVaultAccess.json
-
-This template can be used to grant access to keyvault secrets. For example the app of a
-solution will require read access to obtain secrets from the vault.
 
 ### resourceAzureSql.json
 
@@ -54,7 +33,7 @@ links to a resource template:
     "properties": {
       "mode": "Incremental",
       "templateLink": {
-        "uri": "[concat(parameters('resourceTemplateUriBase'), 'resourceContainerRegistry.json')]",
+        "uri": "[concat(parameters('resourceTemplateUriBase'), 'resourceContainerRegistry/azuredeploy.jsonc')]",
         "contentVersion": "1.0.0.0"
       },
       "parameters": {
@@ -78,3 +57,7 @@ links to a resource template:
   }
 }
 ```
+
+
+## Licence
+See [LICENCE](LICENCE)
