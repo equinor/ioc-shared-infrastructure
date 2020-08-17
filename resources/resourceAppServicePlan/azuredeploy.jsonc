@@ -16,6 +16,7 @@
       "defaultValue": "P1V2"
     },
     "location": {
+      "defaultValue": "[resourceGroup().location]",
       "type": "string"
     },
     "tags": {
