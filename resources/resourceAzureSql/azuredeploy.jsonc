@@ -26,13 +26,13 @@
                 "description": "The name of the storage account used by the Azure SQL."
             }
         },
-        "sqlActiveDirectoryAdmin": {
+        "sqlActiveDirectoryAdminName": {
             "type": "string",
             "metadata": {
                 "description": "The active directory admin of the SQL Server."
             }
         },
-        "sqlActiveDirectoryAdminSid": {
+        "sqlActiveDirectoryAdminObjectId": {
             "type": "string",
             "metadata": {
                 "description": "The object id of the active directory admin. This can be found in Azure Active Directory."
@@ -150,8 +150,8 @@
                     ],
                     "properties": {
                         "administratorType": "ActiveDirectory",
-                        "login": "[parameters('sqlActiveDirectoryAdmin')]",
-                        "sid": "[parameters('sqlActiveDirectoryAdminSid')]",
+                        "login": "[parameters('sqlActiveDirectoryAdminName')]",
+                        "sid": "[parameters('sqlActiveDirectoryAdminObjectId')]",
                         "tenantId": "[parameters('sqlActiveDirectoryAdminTenant')]"
                     }
                 },
