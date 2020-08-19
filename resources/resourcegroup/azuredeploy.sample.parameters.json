@@ -3,16 +3,16 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "applicationPrefix": {
-            "value": "S039-ioc" 
+            "value": "replace with subscription-solution" 
         },
         "applicationName": {
-            "value": "fiscalqa" 
+            "value": "applname" 
         },
         "applicationEnvironment": {
             "value": "dev" 
         },
         "principalId": {
-            "value": "cf3dc9a2-8da4-40c5-89c2-15ea70c2b903"
+            "value": "Add guid"
         }
     }
 }
