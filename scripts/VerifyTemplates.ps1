@@ -7,7 +7,7 @@ $files = Get-ChildItem "../resources" | ?{ $_.PSIsContainer }
 
 foreach ($file in $files) {
     $directory = $file.FullName
-    
+
     if ((Test-Path "$directory\azuredeploy.jsonc")) {
         $fileName = "$directory\azuredeploy.jsonc"
     } elseif ((Test-Path "$directory\azuredeploy.json")) {
@@ -19,8 +19,13 @@ foreach ($file in $files) {
 
     Write-Host "Testing $fileName"
     Copy-Item -Path "$directory\azuredeploy.jsonc" -Destination "azuredeploy.json"
-    $r = Test-AzTemplate
-    
+
+    if (("*resourceAzureSql*", "*resourceAzureSqlDatabase*" | %{$directory -like $_} ) -contains $true) {
+        $r = Test-AzTemplate  -Skip "apiVersions_Should_Be_Recent"
+    } else {
+        $r = Test-AzTemplate
+    }
+
     # Dump test results
     $r
 

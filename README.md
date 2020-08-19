@@ -1,8 +1,8 @@
 # IOC Shared Infrastructure
 
-IOC Shared Infrastructure is a repository for sharing commonly used Azure infrastructure components within the Equinor IOC. 
+IOC Shared Infrastructure is a repository for sharing commonly used Azure infrastructure components within the Equinor IOC.
 
-The intention is to provide a "menu" of ready-to-use ARM-templates, which can be directly included in apps and solutions. 
+The intention is to provide a "menu" of ready-to-use ARM-templates, which can be directly included in apps and solutions.
 
 ## What is Equinor IOC
 
@@ -12,16 +12,14 @@ More info at [equinor.com](https://www.equinor.com/en/news/27nov2017-integrated-
 
 ## See available resources
 
-
 Go to the [resources](resources) folder to see available resources
-
-
 
 ## Usage
 
 The following snippet shows the `resources` section of a parent template, which
 links to a resource template:
-```
+
+``` json
 "resources": [
   {
     "name": "linkedTemplateContainerRegistry",
@@ -55,6 +53,6 @@ links to a resource template:
 }
 ```
 
-
 ## Licence
+
 See [LICENCE](LICENCE)

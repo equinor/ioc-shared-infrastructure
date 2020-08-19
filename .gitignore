@@ -2,3 +2,4 @@ scripts/armttk.zip
 scripts/arm-ttk
 scripts/ci-scripts
 scripts/Deploy-AzTemplate.ps1
+scripts/azuredeploy.json
