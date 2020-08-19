@@ -21,6 +21,12 @@
     "containerRegistryName": {
       "type": "string"
     },
+    "containerImageTag": {
+      "type": "string"
+    },
+    "appGatewayVnetResourceId": {
+      "type": "string"
+    },
     "_appInsightsTag": {
       "type": "object",
       "defaultValue": {
@@ -80,7 +86,7 @@
         ],
         "serverFarmId": "[parameters('appserviceResourceId')]",
         "siteConfig": {
-          "linuxFxVersion": "[concat('DOCKER|', parameters('containerRegistryName'), '.azurecr.io/', parameters('webAppName'))]",
+          "linuxFxVersion": "[concat('DOCKER|', parameters('containerImageTag'))]",
           "appSettings": [
             {
               "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
@@ -132,7 +138,15 @@
             },
             "http20Enabled": false,
             "minTlsVersion": "1.2",
-            "ftpsState": "Disabled"
+            "ftpsState": "Disabled",
+            "ipSecurityRestrictions": [
+              {
+                "vnetSubnetResourceId": "[parameters('appGatewayVnetResourceId')]",
+                "action": "Allow",
+                "priority": "100",
+                "name": "Allow IOC GW"
+              }
+            ]
           }
         }
       ]
