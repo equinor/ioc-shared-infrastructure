@@ -16,6 +16,9 @@
       "defaultValue": "[resourceGroup().location]",
       "type": "string"
     },
+    "accessPolicies": {
+      "type": "array"
+    },
     "tags": {
       "type": "object"
     },
@@ -44,15 +47,7 @@
         "enableSoftDelete": true,
         "softDeleteRetentionInDays": 30,
         "tenantId": "[parameters('tenantId')]",
-        "accessPolicies": [
-          {
-            "objectId": "85bef7f2-5eda-4f6c-8e75-f0694b56aa48", // IOC IT Reader
-            "tenantId": "[parameters('tenantId')]",
-            "permissions": {
-              "secrets": [ "list", "get" ]
-            }
-          }
-        ],
+        "accessPolicies": "[parameters('accessPolicies')]",
         "sku": {
           "name": "[variables('skuName')]",
           "family": "A"
