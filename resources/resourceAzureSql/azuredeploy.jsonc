@@ -9,7 +9,7 @@
             }
         },
         "sqlServerAdministratorLogin" : {
-            "type" : "string",
+            "type" : "securestring",
             "metadata" : {
                 "description" : "The administrator login of the logical SQL server."
             }
