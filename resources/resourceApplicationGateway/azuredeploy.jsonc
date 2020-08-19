@@ -320,6 +320,21 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
             }
           },
           {
+            "name": "probes",
+            "count": "[length(parameters('applications'))]",
+            "input": {
+              "name": "[concat(parameters('applications')[copyIndex('probes')].name, '-probe')]",
+              "properties": {
+                "protocol": "Https",
+                "host": "[parameters('applications')[copyIndex('probes')].fqdn]",
+                "path": "/ping",
+                "interval": 30,
+                "timeout": 30,
+                "unhealthyThreshold": 6
+              }
+            }
+          },
+          {
             "name": "backendHttpSettingsCollection",
             "count": "[length(parameters('applications'))]",
             "input": {
@@ -330,7 +345,10 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
                 "protocol": "Https",
                 "cookieBasedAffinity": "Disabled",
                 "pickHostNameFromBackendAddress": true,
-                "requestTimeout": 20
+                "requestTimeout": 20,
+                "probe": {
+                  "id": "[resourceId('Microsoft.Network/applicationGateways/probes', variables('application-gateway-name'), concat(parameters('applications')[copyIndex('backendHttpSettingsCollection')].name, '-probe'))]"
+                }
               }
             }
           }
