@@ -21,12 +21,6 @@
     "containerRegistryName": {
       "type": "string"
     },
-    "aadClientIxd": {
-      "type": "string"
-    },
-    "aadTenantIxd": {
-      "type": "string"
-    },
     "_appInsightsTag": {
       "type": "object",
       "defaultValue": {
@@ -67,7 +61,6 @@
         // dependency is set in the main template.
       ],
       "tags": "[parameters('tags')]",
-      //"kind": "app,linux",
       "identity": {
         "type": "SystemAssigned"
       },
@@ -140,24 +133,6 @@
             "http20Enabled": false,
             "minTlsVersion": "1.2",
             "ftpsState": "Disabled"
-          }
-        },
-        {
-          "type": "config",
-          "name": "authsettings",
-          "apiVersion": "2018-11-01",
-          "dependsOn": [
-            "[resourceId('Microsoft.Web/sites/', parameters('webAppName'))]"
-          ],
-          "tags": "[parameters('tags')]",
-          "properties": {
-            "enabled": true,
-            "unauthenticatedClientAction": "RedirectToLoginPage",
-            "tokenStoreEnabled": true,
-            "defaultProvider": "AzureActiveDirectory",
-            "clientId": "[parameters('aadClientIxd')]",
-            "issuer": "[concat('https://sts.windows.net/', parameters('aadTenantIxd'), '/')]",
-            "isAadAutoProvisioned": false
           }
         }
       ]
