@@ -32,6 +32,12 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
         "description": "VNet address prefix and subnet address."
       }
     },
+    "sslCertificateKeyVaultId": {
+      "type": "string",
+      "metadata": {
+        "description": "ID to the KeyVault certificate secret used for SSL."
+      }
+    },
     "applications": {
       "type": "array",
       "metadata": {
@@ -76,9 +82,18 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
 
     "vnet-name": "[concat(parameters('applicationName'), '-vnet-', parameters('applicationEnvironment'))]",
     "vnet-subnet-name": "[concat(parameters('applicationName'),'-snet-', parameters('applicationEnvironment'))]",
-    "network-security-group-name": "[concat(parameters('applicationName'), '-nsg-', parameters('applicationEnvironment'))]"
+    "network-security-group-name": "[concat(parameters('applicationName'), '-nsg-', parameters('applicationEnvironment'))]",
+
+    "identityName": "[concat(parameters('applicationName'), '-agw-', parameters('applicationEnvironment'), '-identity')]",
+    "identityID": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('identityName'))]"
   },
   "resources": [
+    {
+      "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+      "name": "[variables('identityName')]",
+      "apiVersion": "2018-11-30",
+      "location": "[parameters('location')]"
+    },
     {
       "type": "Microsoft.Network/networkSecurityGroups",
       "apiVersion": "2019-11-01",
@@ -190,6 +205,13 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
         "[resourceId('Microsoft.Network/publicIPAddresses', concat(variables('public-ipv4-address-name')))]",
         "[resourceId('Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies', variables('application-gateway-firewall-policy-name'))]"
       ],
+      "identity": {
+        "type": "UserAssigned",
+        "userAssignedIdentities": {
+          "[variables('identityID')]": {
+          }
+        }
+      },
       "properties": {
         "sku": {
           "name": "[variables('application-gateway-sku')]",
@@ -227,25 +249,57 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
             "properties": {
               "port": 80
             }
+          },
+          {
+            "name": "port_443",
+            "properties": {
+              "port": 443
+            }
           }
         ],
         "requestRoutingRules": [
           {
-            "name": "default-routing-rule",
+            "name": "ioc-applications-routing-rule",
             "properties": {
               "ruleType": "PathBasedRouting",
               "httpListener": {
-                "id": "[resourceId('Microsoft.Network/applicationGateways/httpListeners', variables('application-gateway-name'), 'default-http-listener')]"
+                "id": "[resourceId('Microsoft.Network/applicationGateways/httpListeners', variables('application-gateway-name'), 'https-listener')]"
               },
               "urlPathMap": {
                 "id": "[resourceId('Microsoft.Network/applicationGateways/urlPathMaps', variables('application-gateway-name'), 'default-urlpathmaps')]"
               }
             }
+          },
+          {
+            "name": "http-to-https-routing-rule",
+            "properties": {
+              "ruleType": "Basic",
+              "redirectConfiguration": {
+                "id": "[resourceId('Microsoft.Network/applicationGateways/redirectConfigurations', variables('application-gateway-name'), 'http-to-https-redirect-config')]"
+              },
+              "httpListener": {
+                "id": "[resourceId('Microsoft.Network/applicationGateways/httpListeners', variables('application-gateway-name'), 'http-listener')]"
+              }
+            }
+          }
+        ],
+        "redirectConfigurations": [
+          {
+            "name": "http-to-https-redirect-config",
+            "properties": {
+              "redirectType": "Permanent",
+              "targetListener": {
+                "id": "[resourceId('Microsoft.Network/applicationGateways/httpListeners', variables('application-gateway-name'), 'https-listener')]"
+              },
+              "includePath": true,
+              "includeQueryString": true
+            }
+
           }
         ],
         "httpListeners": [
           {
-            "name": "default-http-listener",
+            "name": "http-listener",
             "properties": {
               "firewallPolicy": {
                 "id": "[resourceId('Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies', variables('application-gateway-firewall-policy-name'))]"
@@ -258,6 +312,34 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
               },
               "protocol": "Http",
               "requireServerNameIndication": false
+            }
+          },
+          {
+            "name": "https-listener",
+            "properties": {
+              "firewallPolicy": {
+                "id": "[resourceId('Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies', variables('application-gateway-firewall-policy-name'))]"
+              },
+              "frontendIPConfiguration": {
+                "id": "[resourceId('Microsoft.Network/applicationGateways/frontendIPConfigurations', variables('application-gateway-name'), 'application-gateway-public-ipv4')]"
+              },
+              "frontendPort": {
+                "id": "[resourceId('Microsoft.Network/applicationGateways/frontendPorts', variables('application-gateway-name'), 'port_443')]"
+              },
+              "SslCertificate": {
+                // "Id": "[concat(variables('application-gateway-name'), '/sslCertificates/appGatewaySslCert')]"
+                "id": "[resourceId('Microsoft.Network/applicationGateways/sslCertificates', variables('application-gateway-name'), 'default-appgw-ssl-cert')]"
+              },
+              "protocol": "Https",
+              "requireServerNameIndication": false
+            }
+          }
+        ],
+        "sslCertificates": [
+          {
+            "name": "default-appgw-ssl-cert",
+            "properties": {
+              "keyVaultSecretId": "[parameters('sslCertificateKeyVaultId')]"
             }
           }
         ],
