@@ -5,9 +5,6 @@
     "webAppName": {
       "type": "string"
     },
-    "siteName": {
-      "type": "string"
-    },
     "location": {
       "defaultValue": "[resourceGroup().location]",
       "type": "string"
@@ -72,18 +69,6 @@
       },
       "properties": {
         "enabled": true,
-        "hostNameSslStates": [
-          {
-            "name": "[concat(parameters('siteName'), '.azurewebsites.net')]",
-            "sslState": "Disabled",
-            "hostType": "Standard"
-          },
-          {
-            "name": "[concat(parameters('siteName'), '.scm.azurewebsites.net')]",
-            "sslState": "Disabled",
-            "hostType": "Repository"
-          }
-        ],
         "serverFarmId": "[parameters('appserviceResourceId')]",
         "siteConfig": {
           "linuxFxVersion": "[concat('DOCKER|', parameters('containerImageTag'))]",
