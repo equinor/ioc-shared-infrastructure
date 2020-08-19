@@ -66,6 +66,9 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
       "metadata": {
         "description": "Location for all resources."
       }
+    },
+    "tags": {
+      "type": "object"
     }
   },
   "variables": {
@@ -86,6 +89,7 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
       "type": "Microsoft.Network/networkSecurityGroups",
       "apiVersion": "2019-11-01",
       "name": "[variables('network-security-group-name')]",
+      "tags": "[parameters('tags')]",
       "location": "[parameters('location')]",
       "properties": {
         "securityRules": [
@@ -134,6 +138,7 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
     {
       "type": "Microsoft.Network/publicIPAddresses",
       "apiVersion": "2019-11-01",
+      "tags": "[parameters('tags')]",
       "name": "[variables('public-ipv4-address-name')]",
       "location": "[parameters('location')]",
       "sku": {
@@ -151,6 +156,7 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
     {
       "type": "Microsoft.Network/virtualNetworks",
       "apiVersion": "2019-11-01",
+      "tags": "[parameters('tags')]",
       "name": "[variables('vnet-name')]",
       "location": "[parameters('location')]",
       "dependsOn": [
@@ -182,6 +188,7 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
     {
       "type": "Microsoft.Network/applicationGateways",
       "apiVersion": "2019-11-01",
+      "tags": "[parameters('tags')]",
       "name": "[variables('application-gateway-name')]",
       "location": "[parameters('location')]",
       "dependsOn": [
@@ -339,6 +346,7 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
     {
       "type": "Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies",
       "apiVersion": "2019-11-01",
+      "tags": "[parameters('tags')]",
       "name": "[variables('application-gateway-firewall-policy-name')]",
       "location": "[parameters('location')]",
       "properties": {
