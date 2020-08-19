@@ -1,0 +1,19 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "applicationPrefix": {
+            "value": "S039-ioc" 
+        },
+        "applicationName": {
+            "value": "fiscalqa" 
+        },
+        "applicationEnvironment": {
+            "value": "dev" 
+        },
+        "principalId": {
+            "value": "cf3dc9a2-8da4-40c5-89c2-15ea70c2b903"
+        }
+    }
+}
+
