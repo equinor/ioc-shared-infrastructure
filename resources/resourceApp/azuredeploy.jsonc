@@ -112,7 +112,7 @@
         "enabled": true,
         "serverFarmId": "[parameters('appserviceResourceId')]",
         "siteConfig": {
-          "linuxFxVersion": "[concat('DOCKER|', parameters('containerImageTag'))]",
+          "linuxFxVersion": "[concat('DOCKER|', parameters('containerRegistryName'), '.azurecr.io/', parameters('webAppName'), ':', parameters('containerImageTag'))]",
           "appSettings": "[union(variables('globalAppSettings'), parameters('environmentVariables'), equinor.createSettingsObject('APPINSIGHTS_INSTRUMENTATIONKEY', reference(resourceId('microsoft.insights/components/', variables('appInsightsName'))).InstrumentationKey), equinor.createSettingsObject('DOCKER_REGISTRY_SERVER_URL', reference(resourceId('Microsoft.ContainerRegistry/registries/', parameters('containerRegistryName')), '2019-05-01').loginServer), equinor.createSettingsObject('DOCKER_REGISTRY_SERVER_USERNAME', listCredentials(resourceId('Microsoft.ContainerRegistry/registries/', parameters('containerRegistryName')), '2019-05-01').username), equinor.createSettingsObject('DOCKER_REGISTRY_SERVER_PASSWORD', listCredentials(resourceId('Microsoft.ContainerRegistry/registries/', parameters('containerRegistryName')), '2019-05-01').passwords[0].value))]"
         },
         "httpsOnly": true
