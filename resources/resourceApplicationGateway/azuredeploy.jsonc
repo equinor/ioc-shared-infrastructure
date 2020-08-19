@@ -19,12 +19,6 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
         "description": "Name of the application/solution. Will be used for generating resource names."
       }
     },
-    "applicationPrefix": {
-      "type": "string",
-      "metadata": {
-        "description": "Resource name prefix"
-      }
-    },
     "applicationEnvironment": {
       "type": "string",
       "allowedValues": [ "dev", "test", "prod", "ee" ],
@@ -72,17 +66,17 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
     }
   },
   "variables": {
-    "application-gateway-name": "[concat(parameters('applicationPrefix'), '-', parameters('applicationName'), '-agw-', parameters('applicationEnvironment'))]",
-    "application-gateway-firewall-policy-name": "[concat(parameters('applicationPrefix'), '-', parameters('applicationName'), '-policy-', parameters('applicationEnvironment'))]",
+    "application-gateway-name": "[concat(parameters('applicationName'), '-agw-', parameters('applicationEnvironment'))]",
+    "application-gateway-firewall-policy-name": "[concat(parameters('applicationName'), '-policy-', parameters('applicationEnvironment'))]",
     "application-gateway-sku": "WAF_v2",
 
-    "public-ipv4-address-name": "[concat(parameters('applicationPrefix'), '-', parameters('applicationName'), '-pip-', parameters('applicationEnvironment'))]",
+    "public-ipv4-address-name": "[concat(parameters('applicationName'), '-pip-', parameters('applicationEnvironment'))]",
     "public-ipv4-dns-label": "[toLower(variables('application-gateway-name'))]",
     "public-ip-sku": "Standard",
 
-    "vnet-name": "[concat(parameters('applicationPrefix'), '-', parameters('applicationName'), '-vnet-', parameters('applicationEnvironment'))]",
-    "vnet-subnet-name": "[concat(parameters('applicationPrefix'), '-', parameters('applicationName'),'-snet-', parameters('applicationEnvironment'))]",
-    "network-security-group-name": "[concat(parameters('applicationPrefix'), '-', parameters('applicationName'), '-nsg-', parameters('applicationEnvironment'))]"
+    "vnet-name": "[concat(parameters('applicationName'), '-vnet-', parameters('applicationEnvironment'))]",
+    "vnet-subnet-name": "[concat(parameters('applicationName'),'-snet-', parameters('applicationEnvironment'))]",
+    "network-security-group-name": "[concat(parameters('applicationName'), '-nsg-', parameters('applicationEnvironment'))]"
   },
   "resources": [
     {
