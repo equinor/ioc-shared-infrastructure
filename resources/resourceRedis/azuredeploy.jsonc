@@ -1,0 +1,170 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "webAppName": {
+      "type": "string"
+    },
+    "location": {
+      "defaultValue": "[resourceGroup().location]",
+      "type": "string"
+    },
+    "tags": {
+      "type": "object"
+    },
+    "appserviceResourceId": {
+      "type": "string"
+    },
+    "containerRegistryName": {
+      "type": "string"
+    },
+    "containerImageTag": {
+      "type": "string"
+    },
+    "environmentVariables": {
+      "type": "array"
+    },
+    "appGatewayIp": {
+      "type": "string"
+    },
+    "_appInsightsTag": {
+      "type": "object",
+      "defaultValue": {
+        "[concat('hidden-link:', resourceGroup().id, '/providers/Microsoft.Web/sites/', parameters('webAppName'))]": "Resource",
+        "displayName": "AppInsightsComponent"
+      }
+    }
+  },
+  "functions": [
+    {
+      "namespace": "equinor",
+      "members": {
+        "createSettingsObject": {
+          "parameters": [
+            {
+              "name": "key",
+              "type": "string"
+            },{
+              "name": "value",
+              "type": "string"
+            }
+          ],
+          "output": {
+            "type": "array",
+            "value": [
+              {
+                "name": "[parameters('key')]",
+                "value": "[parameters('value')]"
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "variables": {
+    "appInsightsName": "[replace(parameters('webAppName'), '-app-', '-appi-')]",
+    "globalAppSettings": [
+
+      {
+        "name": "WEBSITES_ENABLE_APP_SERVICE_STORAGE",
+        "value": "false"
+      },
+      {
+        "name": "DOCKER_ENABLE_CI",
+        "value": "true"
+      }
+    ]
+  },
+  "resources": [
+    {
+      "type": "microsoft.insights/components",
+      "apiVersion": "2018-05-01-preview",
+      "name": "[variables('appInsightsName')]",
+      "location": "[parameters('location')]",
+      "tags": "[union(parameters('tags'), parameters('_appInsightsTag'))]",
+      "kind": "web",
+      "properties": {
+        "ApplicationId": "[parameters('webAppName')]",
+        "Application_Type": "web",
+        "Request_Source": "rest",
+        "RetentionInDays": 90,
+        "publicNetworkAccessForIngestion": "Enabled",
+        "publicNetworkAccessForQuery": "Enabled"
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites",
+      "apiVersion": "2018-11-01",
+      "name": "[parameters('webAppName')]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[resourceId('microsoft.insights/components/', variables('appInsightsName'))]"
+        // Should depend on the app service plan through a ref to
+        // appserviceResourceId, but that did not work. Instead, the
+        // dependency is set in the main template.
+      ],
+      "tags": "[parameters('tags')]",
+      "identity": {
+        "type": "SystemAssigned"
+      },
+      "properties": {
+        "enabled": true,
+        "serverFarmId": "[parameters('appserviceResourceId')]",
+        "siteConfig": {
+          "linuxFxVersion": "[concat('DOCKER|', parameters('containerRegistryName'), '.azurecr.io/', toLower(parameters('webAppName')), ':', parameters('containerImageTag'))]",
+          "appSettings": "[union(variables('globalAppSettings'), parameters('environmentVariables'), equinor.createSettingsObject('APPINSIGHTS_INSTRUMENTATIONKEY', reference(resourceId('microsoft.insights/components/', variables('appInsightsName'))).InstrumentationKey), equinor.createSettingsObject('DOCKER_REGISTRY_SERVER_URL', reference(resourceId('Microsoft.ContainerRegistry/registries/', parameters('containerRegistryName')), '2019-05-01').loginServer), equinor.createSettingsObject('DOCKER_REGISTRY_SERVER_USERNAME', listCredentials(resourceId('Microsoft.ContainerRegistry/registries/', parameters('containerRegistryName')), '2019-05-01').username), equinor.createSettingsObject('DOCKER_REGISTRY_SERVER_PASSWORD', listCredentials(resourceId('Microsoft.ContainerRegistry/registries/', parameters('containerRegistryName')), '2019-05-01').passwords[0].value))]"
+        },
+        "httpsOnly": true
+      },
+      "resources": [
+        {
+          "type": "config",
+          "apiVersion": "2018-11-01",
+          "name": "web",
+          "location": "[parameters('location')]",
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/sites/', parameters('webAppName'))]",
+            "[resourceId('microsoft.insights/components', variables('appInsightsName'))]"
+          ],
+          "tags": "[parameters('tags')]",
+          "properties": {
+            "numberOfWorkers": 1,
+            "alwaysOn": true,
+            "cors": {
+              "allowedOrigins": [
+                "http://localhost:3000"
+              ],
+              "supportCredentials": false
+            },
+            "http20Enabled": false,
+            "minTlsVersion": "1.2",
+            "ftpsState": "Disabled",
+            "ipSecurityRestrictions": [
+              {
+                "ipAddress": "[parameters('appGatewayIp')]",
+                "action": "Allow",
+                "priority": "100",
+                "name": "Allow IOC Application Gateway"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "outputs": {
+    "objectId": {
+      "type": "string",
+      "value": "[resourceId('Microsoft.Web/sites', parameters('webAppName'))]"
+    },
+    "identityObjectId": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.Web/sites', parameters('webAppName')),'2019-08-01', 'full').identity.principalId]"
+    },
+    "appInsightsName": {
+      "type": "string",
+      "value": "[variables('appInsightsName')]"
+    }
+  }
+}
