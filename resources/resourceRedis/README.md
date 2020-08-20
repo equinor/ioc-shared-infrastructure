@@ -1,6 +1,5 @@
-# App
+# Redis
 
-Combines the actual web app, its configuration and a connected ApplicationInsights
-instance.
+Azure Redis Cache. Running with disabled non-ssl ports
 
 ![Resource view](overview.png)
