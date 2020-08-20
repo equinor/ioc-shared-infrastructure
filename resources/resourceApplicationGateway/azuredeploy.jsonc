@@ -487,5 +487,11 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
         }
       }
     }
-  ]
+  ],
+  "outputs": {
+    "publicIPAddress": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses', variables('public-ipv4-address-name'))).IpAddress]"
+    }
+  }
 }
