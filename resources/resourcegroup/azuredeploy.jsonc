@@ -30,7 +30,7 @@
     },
     "location": {
       "type": "string",
-      "defaultValue": "North Europe",
+      "defaultValue":  {},
       "metadata": {
         "description": "Location for all resources within this template."
       }
