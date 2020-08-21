@@ -30,7 +30,6 @@
     },
     "location": {
       "type": "string",
-      "defaultValue":  {},
       "metadata": {
         "description": "Location for all resources within this template."
       }
@@ -49,11 +48,11 @@
       }
     },
     "roleAssignmentName": {
-    "type": "string",
-    "defaultValue": "[guid(parameters('principalId'), parameters('roleDefinitionId'),  concat(parameters('applicationPrefix'), '-' ,parameters('applicationName'), '-rg-', toLower(parameters('applicationEnvironment'))))]",
-    "metadata": {
-      "description": "Unique name for the roleAssignment in the format of a guid"
-    }
+      "type": "string",
+      "defaultValue": "[guid(parameters('principalId'), parameters('roleDefinitionId'),  concat(parameters('applicationPrefix'), '-' ,parameters('applicationName'), '-rg-', toLower(parameters('applicationEnvironment'))))]",
+      "metadata": {
+        "description": "Unique name for the roleAssignment in the format of a guid"
+      }
     }
   },
   "variables": {
