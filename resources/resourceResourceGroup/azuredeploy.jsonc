@@ -1,0 +1,115 @@
+ {
+  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "applicationPrefix": {
+      "type": "string",
+      "metadata": {
+        "description": "For more details https://iocdocs.azurewebsites.net/introduction/arm/#common-parameters"
+      }
+    },
+    "applicationName": {
+      "type": "string",
+      "metadata": {
+        "description": "For more details https://iocdocs.azurewebsites.net/introduction/arm/#common-parameters"
+      }
+    },
+    "applicationEnvironment": {
+      "type": "string",
+      "allowedValues": [ "dev", "test", "prod", "ee" ],
+      "metadata": {
+        "description": "For more details https://iocdocs.azurewebsites.net/introduction/arm/#common-parameters"
+      }
+    },
+    "additionalTags": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Additional tags that must be applied to each resource. All resources will be tagget by default with environment and application name"
+      }
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "Location for all resources within this template."
+      }
+    },
+    "principalId": {
+      "type": "string",
+      "metadata": {
+        "description": "principalId if the user that will be given contributor access to the resourceGroup"
+      }
+    },
+    "roleDefinitionId": {
+      "type": "string",
+      "defaultValue": "b24988ac-6180-42a0-ab88-20f7382dd24c",
+      "metadata": {
+        "description": "roleDefinition to apply to the resourceGroup - default is contributor"
+      }
+    },
+    "roleAssignmentName": {
+      "type": "string",
+      "defaultValue": "[guid(parameters('principalId'), parameters('roleDefinitionId'),  concat(parameters('applicationPrefix'), '-' ,parameters('applicationName'), '-rg-', toLower(parameters('applicationEnvironment'))))]",
+      "metadata": {
+        "description": "Unique name for the roleAssignment in the format of a guid"
+      }
+    }
+  },
+  "variables": {
+    "ResourceGroupName": "[concat(parameters('applicationPrefix'), '-' ,parameters('applicationName'), '-rg-', toLower(parameters('applicationEnvironment')))]",
+    "defaultResourceTags": {
+      "Environment": "[parameters('applicationEnvironment')]",
+      "Service Name": "[parameters('applicationName')]"
+    },
+    "resourceTags": "[union(variables('defaultResourceTags'), parameters('additionalTags'))]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Resources/resourceGroups",
+      "apiVersion": "2019-10-01",
+      "name": "[variables('ResourceGroupName')]",
+      "location": "[parameters('Location')]",
+      "tags": "[variables('resourceTags')]",
+      "properties": {}
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2019-10-01",
+      "name": "applyLock",
+      "resourceGroup": "[variables('ResourceGroupName')]",
+      "dependsOn": [
+        "[variables('ResourceGroupName')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [
+            {
+              "type": "Microsoft.Authorization/locks",
+              "apiVersion": "2017-04-01",
+              "name": "DontDelete",
+              "properties": {
+                "level": "CanNotDelete",
+                "notes": "Prevent deletion of the resourceGroup"
+              }
+            },
+            {
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2020-03-01-preview",
+              "name": "[guid(parameters('roleAssignmentName'))]",
+              "properties": {
+                "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', parameters('roleDefinitionId'))]",
+                "principalId": "[parameters('principalId')]",
+                "scope": "[subscriptionResourceId('Microsoft.Resources/resourceGroups', variables('resourceGroupName'))]"
+              }
+            }
+          ]
+        }
+      }
+    }
+
+
+  ]
+}
