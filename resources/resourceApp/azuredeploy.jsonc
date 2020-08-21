@@ -5,9 +5,6 @@
     "webAppName": {
       "type": "string"
     },
-    "siteName": {
-      "type": "string"
-    },
     "location": {
       "defaultValue": "[resourceGroup().location]",
       "type": "string"
@@ -21,10 +18,13 @@
     "containerRegistryName": {
       "type": "string"
     },
-    "aadClientIxd": {
+    "containerImageTag": {
       "type": "string"
     },
-    "aadTenantIxd": {
+    "environmentVariables": {
+      "type": "array"
+    },
+    "appGatewayIp": {
       "type": "string"
     },
     "_appInsightsTag": {
@@ -35,8 +35,46 @@
       }
     }
   },
+  "functions": [
+    {
+      "namespace": "equinor",
+      "members": {
+        "createSettingsObject": {
+          "parameters": [
+            {
+              "name": "key",
+              "type": "string"
+            },{
+              "name": "value",
+              "type": "string"
+            }
+          ],
+          "output": {
+            "type": "array",
+            "value": [
+              {
+                "name": "[parameters('key')]",
+                "value": "[parameters('value')]"
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
   "variables": {
-    "appInsightsName": "[replace(parameters('webAppName'), '-app-', '-appi-')]"
+    "appInsightsName": "[replace(parameters('webAppName'), '-app-', '-appi-')]",
+    "globalAppSettings": [
+
+      {
+        "name": "WEBSITES_ENABLE_APP_SERVICE_STORAGE",
+        "value": "false"
+      },
+      {
+        "name": "DOCKER_ENABLE_CI",
+        "value": "true"
+      }
+    ]
   },
   "resources": [
     {
@@ -67,53 +105,15 @@
         // dependency is set in the main template.
       ],
       "tags": "[parameters('tags')]",
-      //"kind": "app,linux",
       "identity": {
         "type": "SystemAssigned"
       },
       "properties": {
         "enabled": true,
-        "hostNameSslStates": [
-          {
-            "name": "[concat(parameters('siteName'), '.azurewebsites.net')]",
-            "sslState": "Disabled",
-            "hostType": "Standard"
-          },
-          {
-            "name": "[concat(parameters('siteName'), '.scm.azurewebsites.net')]",
-            "sslState": "Disabled",
-            "hostType": "Repository"
-          }
-        ],
         "serverFarmId": "[parameters('appserviceResourceId')]",
         "siteConfig": {
-          "linuxFxVersion": "[concat('DOCKER|', parameters('containerRegistryName'), '.azurecr.io/', parameters('webAppName'))]",
-          "appSettings": [
-            {
-              "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-              "value": "[reference(resourceId('microsoft.insights/components/', variables('appInsightsName'))).InstrumentationKey]"
-            },
-            {
-              "name": "WEBSITES_ENABLE_APP_SERVICE_STORAGE",
-              "value": "false"
-            },
-            {
-              "name": "DOCKER_ENABLE_CI",
-              "value": "true"
-            },
-            {
-              "name": "DOCKER_REGISTRY_SERVER_URL",
-              "value": "[reference(resourceId('Microsoft.ContainerRegistry/registries/', parameters('containerRegistryName')), '2019-05-01').loginServer]"
-            },
-            {
-              "name": "DOCKER_REGISTRY_SERVER_USERNAME",
-              "value": "[listCredentials(resourceId('Microsoft.ContainerRegistry/registries/', parameters('containerRegistryName')), '2019-05-01').username]"
-            },
-            {
-              "name": "DOCKER_REGISTRY_SERVER_PASSWORD",
-              "value": "[listCredentials(resourceId('Microsoft.ContainerRegistry/registries/', parameters('containerRegistryName')), '2019-05-01').passwords[0].value]"
-            }
-          ]
+          "linuxFxVersion": "[concat('DOCKER|', parameters('containerRegistryName'), '.azurecr.io/', toLower(parameters('webAppName')), ':', parameters('containerImageTag'))]",
+          "appSettings": "[union(variables('globalAppSettings'), parameters('environmentVariables'), equinor.createSettingsObject('APPINSIGHTS_INSTRUMENTATIONKEY', reference(resourceId('microsoft.insights/components/', variables('appInsightsName'))).InstrumentationKey), equinor.createSettingsObject('DOCKER_REGISTRY_SERVER_URL', reference(resourceId('Microsoft.ContainerRegistry/registries/', parameters('containerRegistryName')), '2019-05-01').loginServer), equinor.createSettingsObject('DOCKER_REGISTRY_SERVER_USERNAME', listCredentials(resourceId('Microsoft.ContainerRegistry/registries/', parameters('containerRegistryName')), '2019-05-01').username), equinor.createSettingsObject('DOCKER_REGISTRY_SERVER_PASSWORD', listCredentials(resourceId('Microsoft.ContainerRegistry/registries/', parameters('containerRegistryName')), '2019-05-01').passwords[0].value))]"
         },
         "httpsOnly": true
       },
@@ -139,25 +139,15 @@
             },
             "http20Enabled": false,
             "minTlsVersion": "1.2",
-            "ftpsState": "Disabled"
-          }
-        },
-        {
-          "type": "config",
-          "name": "authsettings",
-          "apiVersion": "2018-11-01",
-          "dependsOn": [
-            "[resourceId('Microsoft.Web/sites/', parameters('webAppName'))]"
-          ],
-          "tags": "[parameters('tags')]",
-          "properties": {
-            "enabled": true,
-            "unauthenticatedClientAction": "RedirectToLoginPage",
-            "tokenStoreEnabled": true,
-            "defaultProvider": "AzureActiveDirectory",
-            "clientId": "[parameters('aadClientIxd')]",
-            "issuer": "[concat('https://sts.windows.net/', parameters('aadTenantIxd'), '/')]",
-            "isAadAutoProvisioned": false
+            "ftpsState": "Disabled",
+            "ipSecurityRestrictions": [
+              {
+                "ipAddress": "[parameters('appGatewayIp')]",
+                "action": "Allow",
+                "priority": "100",
+                "name": "Allow IOC Application Gateway"
+              }
+            ]
           }
         }
       ]

@@ -1,6 +1,8 @@
-Invoke-WebRequest -Uri https://aka.ms/arm-ttk-latest -OutFile "armttk.zip"
-Expand-Archive -Path "armttk.zip" -DestinationPath .
-Import-Module .\arm-ttk\arm-ttk.psd1
+if (!(Test-Path .\arm-ttk\arm-ttk.psd1)) {
+    Invoke-WebRequest -Uri https://aka.ms/arm-ttk-latest -OutFile "armttk.zip"
+    Expand-Archive -Path "armttk.zip" -DestinationPath .
+    Import-Module .\arm-ttk\arm-ttk.psd1
+}
 
 $totalErrorCount = 0;
 $files = Get-ChildItem "../resources" | ?{ $_.PSIsContainer }

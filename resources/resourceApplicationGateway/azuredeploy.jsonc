@@ -19,12 +19,6 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
         "description": "Name of the application/solution. Will be used for generating resource names."
       }
     },
-    "applicationPrefix": {
-      "type": "string",
-      "metadata": {
-        "description": "Resource name prefix"
-      }
-    },
     "applicationEnvironment": {
       "type": "string",
       "allowedValues": [ "dev", "test", "prod", "ee" ],
@@ -36,6 +30,12 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
       "type": "string",
       "metadata": {
         "description": "VNet address prefix and subnet address."
+      }
+    },
+    "sslCertificateKeyVaultId": {
+      "type": "string",
+      "metadata": {
+        "description": "ID to the KeyVault certificate secret used for SSL."
       }
     },
     "applications": {
@@ -66,26 +66,39 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
       "metadata": {
         "description": "Location for all resources."
       }
+    },
+    "tags": {
+      "type": "object"
     }
   },
   "variables": {
-    "application-gateway-name": "[concat(parameters('applicationPrefix'), '-', parameters('applicationName'), '-agw-', parameters('applicationEnvironment'))]",
-    "application-gateway-firewall-policy-name": "[concat(parameters('applicationPrefix'), '-', parameters('applicationName'), '-policy-', parameters('applicationEnvironment'))]",
+    "application-gateway-name": "[concat(parameters('applicationName'), '-agw-', parameters('applicationEnvironment'))]",
+    "application-gateway-firewall-policy-name": "[concat(parameters('applicationName'), '-policy-', parameters('applicationEnvironment'))]",
     "application-gateway-sku": "WAF_v2",
 
-    "public-ipv4-address-name": "[concat(parameters('applicationPrefix'), '-', parameters('applicationName'), '-pip-', parameters('applicationEnvironment'))]",
+    "public-ipv4-address-name": "[concat(parameters('applicationName'), '-pip-', parameters('applicationEnvironment'))]",
     "public-ipv4-dns-label": "[toLower(variables('application-gateway-name'))]",
     "public-ip-sku": "Standard",
 
-    "vnet-name": "[concat(parameters('applicationPrefix'), '-', parameters('applicationName'), '-vnet-', parameters('applicationEnvironment'))]",
-    "vnet-subnet-name": "[concat(parameters('applicationPrefix'), '-', parameters('applicationName'),'-snet-', parameters('applicationEnvironment'))]",
-    "network-security-group-name": "[concat(parameters('applicationPrefix'), '-', parameters('applicationName'), '-nsg-', parameters('applicationEnvironment'))]"
+    "vnet-name": "[concat(parameters('applicationName'), '-vnet-', parameters('applicationEnvironment'))]",
+    "vnet-subnet-name": "[concat(parameters('applicationName'),'-snet-', parameters('applicationEnvironment'))]",
+    "network-security-group-name": "[concat(parameters('applicationName'), '-nsg-', parameters('applicationEnvironment'))]",
+
+    "identityName": "[concat(parameters('applicationName'), '-agw-', parameters('applicationEnvironment'), '-identity')]",
+    "identityID": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('identityName'))]"
   },
   "resources": [
+    {
+      "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+      "name": "[variables('identityName')]",
+      "apiVersion": "2018-11-30",
+      "location": "[parameters('location')]"
+    },
     {
       "type": "Microsoft.Network/networkSecurityGroups",
       "apiVersion": "2019-11-01",
       "name": "[variables('network-security-group-name')]",
+      "tags": "[parameters('tags')]",
       "location": "[parameters('location')]",
       "properties": {
         "securityRules": [
@@ -134,6 +147,7 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
     {
       "type": "Microsoft.Network/publicIPAddresses",
       "apiVersion": "2019-11-01",
+      "tags": "[parameters('tags')]",
       "name": "[variables('public-ipv4-address-name')]",
       "location": "[parameters('location')]",
       "sku": {
@@ -151,6 +165,7 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
     {
       "type": "Microsoft.Network/virtualNetworks",
       "apiVersion": "2019-11-01",
+      "tags": "[parameters('tags')]",
       "name": "[variables('vnet-name')]",
       "location": "[parameters('location')]",
       "dependsOn": [
@@ -182,6 +197,7 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
     {
       "type": "Microsoft.Network/applicationGateways",
       "apiVersion": "2019-11-01",
+      "tags": "[parameters('tags')]",
       "name": "[variables('application-gateway-name')]",
       "location": "[parameters('location')]",
       "dependsOn": [
@@ -189,6 +205,13 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
         "[resourceId('Microsoft.Network/publicIPAddresses', concat(variables('public-ipv4-address-name')))]",
         "[resourceId('Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies', variables('application-gateway-firewall-policy-name'))]"
       ],
+      "identity": {
+        "type": "UserAssigned",
+        "userAssignedIdentities": {
+          "[variables('identityID')]": {
+          }
+        }
+      },
       "properties": {
         "sku": {
           "name": "[variables('application-gateway-sku')]",
@@ -226,25 +249,57 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
             "properties": {
               "port": 80
             }
+          },
+          {
+            "name": "port_443",
+            "properties": {
+              "port": 443
+            }
           }
         ],
         "requestRoutingRules": [
           {
-            "name": "default-routing-rule",
+            "name": "ioc-applications-routing-rule",
             "properties": {
               "ruleType": "PathBasedRouting",
               "httpListener": {
-                "id": "[resourceId('Microsoft.Network/applicationGateways/httpListeners', variables('application-gateway-name'), 'default-http-listener')]"
+                "id": "[resourceId('Microsoft.Network/applicationGateways/httpListeners', variables('application-gateway-name'), 'https-listener')]"
               },
               "urlPathMap": {
                 "id": "[resourceId('Microsoft.Network/applicationGateways/urlPathMaps', variables('application-gateway-name'), 'default-urlpathmaps')]"
               }
             }
+          },
+          {
+            "name": "http-to-https-routing-rule",
+            "properties": {
+              "ruleType": "Basic",
+              "redirectConfiguration": {
+                "id": "[resourceId('Microsoft.Network/applicationGateways/redirectConfigurations', variables('application-gateway-name'), 'http-to-https-redirect-config')]"
+              },
+              "httpListener": {
+                "id": "[resourceId('Microsoft.Network/applicationGateways/httpListeners', variables('application-gateway-name'), 'http-listener')]"
+              }
+            }
+          }
+        ],
+        "redirectConfigurations": [
+          {
+            "name": "http-to-https-redirect-config",
+            "properties": {
+              "redirectType": "Permanent",
+              "targetListener": {
+                "id": "[resourceId('Microsoft.Network/applicationGateways/httpListeners', variables('application-gateway-name'), 'https-listener')]"
+              },
+              "includePath": true,
+              "includeQueryString": true
+            }
+
           }
         ],
         "httpListeners": [
           {
-            "name": "default-http-listener",
+            "name": "http-listener",
             "properties": {
               "firewallPolicy": {
                 "id": "[resourceId('Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies', variables('application-gateway-firewall-policy-name'))]"
@@ -257,6 +312,34 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
               },
               "protocol": "Http",
               "requireServerNameIndication": false
+            }
+          },
+          {
+            "name": "https-listener",
+            "properties": {
+              "firewallPolicy": {
+                "id": "[resourceId('Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies', variables('application-gateway-firewall-policy-name'))]"
+              },
+              "frontendIPConfiguration": {
+                "id": "[resourceId('Microsoft.Network/applicationGateways/frontendIPConfigurations', variables('application-gateway-name'), 'application-gateway-public-ipv4')]"
+              },
+              "frontendPort": {
+                "id": "[resourceId('Microsoft.Network/applicationGateways/frontendPorts', variables('application-gateway-name'), 'port_443')]"
+              },
+              "SslCertificate": {
+                // "Id": "[concat(variables('application-gateway-name'), '/sslCertificates/appGatewaySslCert')]"
+                "id": "[resourceId('Microsoft.Network/applicationGateways/sslCertificates', variables('application-gateway-name'), 'default-appgw-ssl-cert')]"
+              },
+              "protocol": "Https",
+              "requireServerNameIndication": false
+            }
+          }
+        ],
+        "sslCertificates": [
+          {
+            "name": "default-appgw-ssl-cert",
+            "properties": {
+              "keyVaultSecretId": "[parameters('sslCertificateKeyVaultId')]"
             }
           }
         ],
@@ -319,6 +402,21 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
             }
           },
           {
+            "name": "probes",
+            "count": "[length(parameters('applications'))]",
+            "input": {
+              "name": "[concat(parameters('applications')[copyIndex('probes')].name, '-probe')]",
+              "properties": {
+                "protocol": "Https",
+                "host": "[parameters('applications')[copyIndex('probes')].fqdn]",
+                "path": "/ping",
+                "interval": 30,
+                "timeout": 30,
+                "unhealthyThreshold": 6
+              }
+            }
+          },
+          {
             "name": "backendHttpSettingsCollection",
             "count": "[length(parameters('applications'))]",
             "input": {
@@ -329,7 +427,10 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
                 "protocol": "Https",
                 "cookieBasedAffinity": "Disabled",
                 "pickHostNameFromBackendAddress": true,
-                "requestTimeout": 20
+                "requestTimeout": 20,
+                "probe": {
+                  "id": "[resourceId('Microsoft.Network/applicationGateways/probes', variables('application-gateway-name'), concat(parameters('applications')[copyIndex('backendHttpSettingsCollection')].name, '-probe'))]"
+                }
               }
             }
           }
@@ -339,6 +440,7 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
     {
       "type": "Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies",
       "apiVersion": "2019-11-01",
+      "tags": "[parameters('tags')]",
       "name": "[variables('application-gateway-firewall-policy-name')]",
       "location": "[parameters('location')]",
       "properties": {
@@ -385,5 +487,11 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
         }
       }
     }
-  ]
+  ],
+  "outputs": {
+    "publicIPAddress": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses', variables('public-ipv4-address-name'))).IpAddress]"
+    }
+  }
 }
