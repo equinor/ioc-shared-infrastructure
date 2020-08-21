@@ -13,6 +13,15 @@
       "type": "object",
       "defaultValue": {}
     },
+    "redisConfiguration": {
+      "type": "object",
+      "defaultValue": {
+        "maxclients": "1000",
+        "maxmemory-reserved": "50",
+        "maxfragmentationmemory-reserved": "50",
+        "maxmemory-delta": "50"
+      }
+    },
     "sku": {
       "type": "object",
       "defaultValue": {
@@ -33,12 +42,7 @@
         "sku": "[parameters('sku')]",
         "enableNonSslPort": false,
         "minimumTlsVersion": "1.2",
-        "redisConfiguration": {
-          "maxclients": "1000",
-          "maxmemory-reserved": "50",
-          "maxfragmentationmemory-reserved": "50",
-          "maxmemory-delta": "50"
-        }
+        "redisConfiguration": "[parameters('redisConfiguration')]"
       }
     }
   ]

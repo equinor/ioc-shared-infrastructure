@@ -6,12 +6,13 @@ Azure Redis Cache. Running with disabled non-ssl ports
 
 ## Template parameters
 
-| Parameter name | Type   | Required | Value                                                                                     |
-|----------------|--------|----------|-------------------------------------------------------------------------------------------|
-| redisName      | string | Yes      | The name of the redis cache server.                                                       |
-| sku            | object | No       | SKU for the redis cache                                                                   |
-| location       | string | No       | Location for all resources within this template. Defaults to the resource group location. |
-| tags           | object | No       | The tags to append on each resource created.                                              |
+| Parameter name     | Type   | Required | Value                                                                                     |
+|--------------------|--------|----------|-------------------------------------------------------------------------------------------|
+| redisName          | string | Yes      | The name of the redis cache server.                                                       |
+| sku                | object | No       | SKU for the redis cache                                                                   |
+| redisConfiguration | object | No       | Redis configuration object. See https://docs.microsoft.com/en-us/azure/templates/microsoft.cache/2019-07-01/redis#rediscreateproperties-object |
+| location           | string | No       | Location for all resources within this template. Defaults to the resource group location. |
+| tags               | object | No       | The tags to append on each resource created.                                              |
 
 
 ## Example usage
@@ -40,6 +41,14 @@ az deployment group create --mode Incremental --name myRedisCacheDeployment --re
                 "name": "Standard",
                 "family": "C",
                 "capacity": 1
+            }
+        },
+        "redisConfiguration": {
+            "value": {
+                "maxclients": "1000",
+                "maxmemory-reserved": "50",
+                "maxfragmentationmemory-reserved": "50",
+                "maxmemory-delta": "50"
             }
         }
     }
