@@ -1,0 +1,49 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "redisName": {
+      "type": "string"
+    },
+    "location": {
+      "defaultValue": "[resourceGroup().location]",
+      "type": "string"
+    },
+    "tags": {
+      "type": "object",
+      "defaultValue": {}
+    },
+    "redisConfiguration": {
+      "type": "object",
+      "defaultValue": {
+        "maxclients": "1000",
+        "maxmemory-reserved": "50",
+        "maxfragmentationmemory-reserved": "50",
+        "maxmemory-delta": "50"
+      }
+    },
+    "sku": {
+      "type": "object",
+      "defaultValue": {
+        "name": "Standard",
+        "family": "C",
+        "capacity": 1
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Cache/Redis",
+      "apiVersion": "2019-07-01",
+      "name": "[parameters('redisName')]",
+      "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]",
+      "properties": {
+        "sku": "[parameters('sku')]",
+        "enableNonSslPort": false,
+        "minimumTlsVersion": "1.2",
+        "redisConfiguration": "[parameters('redisConfiguration')]"
+      }
+    }
+  ]
+}
