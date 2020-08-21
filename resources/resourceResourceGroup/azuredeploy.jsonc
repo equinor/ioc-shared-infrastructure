@@ -56,7 +56,6 @@
     }
   },
   "variables": {
-    "ResourceGroupContributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe')]",
     "ResourceGroupName": "[concat(parameters('applicationPrefix'), '-' ,parameters('applicationName'), '-rg-', toLower(parameters('applicationEnvironment')))]",
     "defaultResourceTags": {
       "Environment": "[parameters('applicationEnvironment')]",
