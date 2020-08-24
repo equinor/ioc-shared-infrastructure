@@ -1,0 +1,36 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "keyVaultName": {
+      "type": "string",
+      "metadata": {
+        "description": "Specifies the name of the key vault."
+      }
+    },
+    "keyVaultSecrets": {
+      "type": "secureObject",
+      "metadata": {
+        "description": "The secrets to create in the key vault."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.KeyVault/vaults/secrets",
+      "name": "[concat(parameters('keyVaultName'),'/' ,parameters('keyVaultSecrets').secrets[copyIndex()].name)]",
+      "apiVersion": "2019-09-01",
+      "properties": {
+        "value": "[parameters('keyVaultSecrets').secrets[copyIndex()].value]",
+        "contentType": "[parameters('keyVaultSecrets').secrets[copyIndex()].contentType]",
+        "attributes": {
+          "enabled": "true"
+        }
+      },
+      "copy": {
+        "name": "keyVaultSecrets",
+        "count": "[length(parameters('keyVaultSecrets').secrets)]"
+      }
+    }
+  ]
+}
