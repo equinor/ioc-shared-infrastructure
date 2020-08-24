@@ -3,3 +3,6 @@ scripts/arm-ttk
 scripts/ci-scripts
 scripts/Deploy-AzTemplate.ps1
 scripts/azuredeploy.json
+
+# Ignore all parameter files in commit
+azuredeploy.parameters*.json*
