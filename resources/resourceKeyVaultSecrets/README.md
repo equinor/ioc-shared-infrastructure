@@ -14,7 +14,7 @@ This template can be used to create one or more secrets on a given Key Vault res
 ## Example usage
 
 ``` ps
-az deployment group create --mode Incremental --name myKeyVaultSecretsDeployment --resource-group myResourceGroup --template-file ./azuredeploy.json --template-uri "https://raw.githubusercontent.com/equinor/ioc-shared-infrastructure/master/resources/resourceKeyVaultSecrets/azuredeploy.jsonc"
+az deployment group create --mode Incremental --name myKeyVaultSecretsDeployment --resource-group myResourceGroup --template-uri "https://raw.githubusercontent.com/equinor/ioc-shared-infrastructure/master/resources/resourceKeyVaultSecrets/azuredeploy.jsonc"
 ```
 
 ## Example parameter file
