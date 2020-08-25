@@ -16,9 +16,6 @@
       "defaultValue": "[resourceGroup().location]",
       "type": "string"
     },
-    "accessPolicies": {
-      "type": "array"
-    },
     "tags": {
       "type": "object"
     },
@@ -47,7 +44,6 @@
         "enableSoftDelete": true,
         "softDeleteRetentionInDays": 30,
         "tenantId": "[parameters('tenantId')]",
-        "accessPolicies": "[parameters('accessPolicies')]",
         "sku": {
           "name": "[variables('skuName')]",
           "family": "A"
