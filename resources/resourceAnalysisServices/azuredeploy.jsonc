@@ -35,6 +35,12 @@
         "description": "The inbound firewall rules to define on the server.Containing all the IP exceptions to add in the firewall.."
       }
     },
+    "tags": {
+      "type": "object",
+      "metadata": {
+        "description": "The tags to append on each resource created."
+      }
+    },
     "backupBlobContainerUri": {
       "type": "string",
       "defaultValue": "",
@@ -48,6 +54,7 @@
       "apiVersion": "2017-08-01",
       "type": "Microsoft.AnalysisServices/servers",
       "name": "[parameters('serverName')]",
+      "tags": "[parameters('tags')]",
       "location": "[parameters('location')]",
       "sku": {
         "name": "[parameters('skuName')]",
