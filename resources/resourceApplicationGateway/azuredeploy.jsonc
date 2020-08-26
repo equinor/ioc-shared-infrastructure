@@ -483,6 +483,13 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
               "ruleSetType": "Microsoft_BotManagerRuleSet",
               "ruleSetVersion": "0.1"
             }
+          ],
+          "exclusions": [
+              {
+                  "matchVariable": "RequestArgNames",
+                  "selectorMatchOperator": "Equals",
+                  "selector": "code"
+              }
           ]
         }
       }
