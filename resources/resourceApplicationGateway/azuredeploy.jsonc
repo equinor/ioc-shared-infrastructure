@@ -485,11 +485,11 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
             }
           ],
           "exclusions": [
-              {
-                  "matchVariable": "RequestArgNames",
-                  "selectorMatchOperator": "Equals",
-                  "selector": "code"
-              }
+            {
+              "matchVariable": "RequestArgNames",
+              "selectorMatchOperator": "Equals",
+              "selector": "code"
+            }
           ]
         }
       }
