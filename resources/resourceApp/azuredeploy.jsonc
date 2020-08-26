@@ -137,6 +137,7 @@
               ],
               "supportCredentials": false
             },
+            "clientAffinityEnabled": false,
             "http20Enabled": false,
             "minTlsVersion": "1.2",
             "ftpsState": "Disabled",
