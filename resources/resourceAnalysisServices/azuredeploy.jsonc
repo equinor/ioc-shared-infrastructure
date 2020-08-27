@@ -42,7 +42,7 @@
       }
     },
     "asAdministrator": {
-      "type": "stringS",
+      "type": "string",
       "metadata": {
         "description": "A collection of AS server administrators ."
       }
