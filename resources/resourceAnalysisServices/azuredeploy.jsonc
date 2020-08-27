@@ -30,7 +30,7 @@
       }
     },
     "firewallSettings": {
-      "type": "array",     
+      "type": "array",
       "metadata": {
         "description": "The inbound firewall rules to define on the server.Containing all the IP exceptions to add in the firewall.."
       }
@@ -39,6 +39,12 @@
       "type": "object",
       "metadata": {
         "description": "The tags to append on each resource created."
+      }
+    },
+    "asAdministrator": {
+      "type": "string",
+      "metadata": {
+        "description": "A collection of AS server administrators ."
       }
     },
     "backupBlobContainerUri": {
@@ -61,6 +67,9 @@
         "capacity": "[parameters('capacity')]"
       },
       "properties": {
+        "asAdministrators": {
+          "members": "[parameters('asAdministrator')]"
+        },
         "ipV4FirewallSettings": "[parameters('firewallSettings')]",
         "backupBlobContainerUri": "[parameters('backupBlobContainerUri')]"
       }
