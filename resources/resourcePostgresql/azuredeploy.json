@@ -43,7 +43,7 @@
                 "sslEnforcement": "Enabled",
                 "minimalTlsVersion": "TLS1_2",
                 "infrastructureEncryption": "Disabled",
-                "publicNetworkAccess": "Disables"
+                "publicNetworkAccess": "Disabled"
             }
         }
     ]
