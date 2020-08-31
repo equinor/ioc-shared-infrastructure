@@ -12,7 +12,13 @@
             "type": "string"
         },
         "sku": {
-            "type": "object"
+            "type": "object",
+            "defaultValue": {
+                "name": "GP_Gen5_2",
+                "tier": "GeneralPurpose",
+                "family": "Gen5",
+                "capacity": 2
+            }
         },
         "administratorLogin": {
             "type": "string"
