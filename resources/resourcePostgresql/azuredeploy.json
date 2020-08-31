@@ -2,7 +2,7 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "postgres_server_name": {
+        "postgresServerName": {
             "type": "string"
         },
         "tags": {
@@ -26,7 +26,7 @@
         {
             "type": "Microsoft.DBforPostgreSQL/servers",
             "apiVersion": "2017-12-01",
-            "name": "[parameters('postgres_server_name')]",
+            "name": "[parameters('postgresServerName')]",
             "location": "northeurope",
             "tags": "[parameters('tags')]",
             "sku": "[parameters('sku')]",
