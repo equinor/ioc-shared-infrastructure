@@ -14,7 +14,7 @@
         "postgresVersion": {
             "type": "string",
             "defaultValue": "11"
-        }
+        },
         "sku": {
             "type": "object",
             "defaultValue": {
