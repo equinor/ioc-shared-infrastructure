@@ -11,4 +11,23 @@ Provisions a managed postgresql database. Parameters:
 | adminstratorLogin         | string       | yes      | The username of the postgresql administrator        |
 | adminstratorLoginPassword | securestring | yes      | The administrator password                          |
 
+
+## Creating databases
+
+When using the template, you can provision databases like this:
+```json
+{
+    "type": "Microsoft.DBforPostgreSQL/servers/databases",
+    "apiVersion": "2017-12-01",
+    "name": "[concat(variables('postgresServerName'), '/<database_name>')]",
+    "dependsOn": [
+        "[variables('postgresServerName')]"
+    ],
+    "properties": {
+        "charset": "UTF8",
+        "collation": "English_United States.1252"
+    }
+},
+```
+
 [sku]: https://docs.microsoft.com/en-us/azure/templates/microsoft.dbforpostgresql/2017-12-01/servers#sku-object "SKU"
