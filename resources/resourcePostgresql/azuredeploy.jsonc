@@ -60,6 +60,8 @@
         }
     ],
     "outputs": {
-        "postgresServerName": "[variables('postgresServerName')]"
+        "postgresServer": {
+            "value": "[variables('postgresServerName')]"
+        }
     }
 }
