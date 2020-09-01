@@ -11,6 +11,10 @@
         "environment": {
             "type": "string"
         },
+        "postgresVersion": {
+            "type": "string",
+            "defaultValue": "11"
+        }
         "sku": {
             "type": "object",
             "defaultValue": {
@@ -43,7 +47,7 @@
                     "geoRedundantBackup": "Disabled",
                     "storageAutogrow": "Disabled"
                 },
-                "version": "11",
+                "version": "[parameters('postgresVersion')]",
                 "administratorLogin": "[parameters('administratorLogin')]",
                 "administratorLoginPassword": "[parameters('administratorLoginPassword')]",
                 "sslEnforcement": "Enabled",
