@@ -19,7 +19,7 @@
         {
             "type": "Microsoft.DBforPostgreSQL/servers/databases",
             "apiVersion": "2017-12-01",
-            "name": "[concat(variables('postgresServerName'), '/', parameters('databaseName')]",
+            "name": "[concat(variables('postgresServerName'), '/', parameters('databaseName'))]",
             "properties": {
                 "charset": "UTF8",
                 "collation": "English_United States.1252"
