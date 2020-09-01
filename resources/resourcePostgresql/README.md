@@ -6,7 +6,7 @@ Provisions a managed postgresql database. Parameters:
 |---------------------------|--------------|----------|----------------------------------------------|
 | postgresServerName        | string       | yes      | The name of the postgres database            |
 | tags                      | object       | yes      | The tags associated with the resources       |
-| sku                       | object       | no       | Postgresql ![SKU](SKU)                       |
+| sku                       | object       | no       | Postgresql [SKU][sku]                        |
 | adminstratorLogin         | string       | yes      | The username of the postgresql administrator |
 | adminstratorLoginPassword | securestring | yes      | The administrator password                   |
 
