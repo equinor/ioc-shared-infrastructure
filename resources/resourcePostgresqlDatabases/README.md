@@ -12,7 +12,7 @@ This is an example parameter file
 ```json
 {
     "server": {
-        "value": "[reference(variables('postgresDeploymentName')).outputs.postgresServer.value]"
+        "value": "<Postgres server name>"
     },
     "databases": {
         "value": [
