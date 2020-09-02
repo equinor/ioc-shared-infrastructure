@@ -26,13 +26,6 @@
     },
     "appGatewayIp": {
       "type": "string"
-    },
-    "_appInsightsTag": {
-      "type": "object",
-      "defaultValue": {
-        "[concat('hidden-link:', resourceGroup().id, '/providers/Microsoft.Web/sites/', parameters('webAppName'))]": "Resource",
-        "displayName": "AppInsightsComponent"
-      }
     }
   },
   "functions": [
@@ -78,22 +71,6 @@
   },
   "resources": [
     {
-      "type": "microsoft.insights/components",
-      "apiVersion": "2018-05-01-preview",
-      "name": "[variables('appInsightsName')]",
-      "location": "[parameters('location')]",
-      "tags": "[union(parameters('tags'), parameters('_appInsightsTag'))]",
-      "kind": "web",
-      "properties": {
-        "ApplicationId": "[parameters('webAppName')]",
-        "Application_Type": "web",
-        "Request_Source": "rest",
-        "RetentionInDays": 90,
-        "publicNetworkAccessForIngestion": "Enabled",
-        "publicNetworkAccessForQuery": "Enabled"
-      }
-    },
-    {
       "type": "Microsoft.Web/sites",
       "apiVersion": "2018-11-01",
       "name": "[parameters('webAppName')]",
@@ -125,7 +102,8 @@
           "name": "web",
           "location": "[parameters('location')]",
           "dependsOn": [
-            "[resourceId('Microsoft.Web/sites/', parameters('webAppName'))]",
+            // Todo depends on itself?
+            //"[resourceId('Microsoft.Web/sites/', parameters('webAppName'))]",
             "[resourceId('microsoft.insights/components', variables('appInsightsName'))]"
           ],
           "tags": "[parameters('tags')]",
@@ -162,10 +140,6 @@
     "identityObjectId": {
       "type": "string",
       "value": "[reference(resourceId('Microsoft.Web/sites', parameters('webAppName')),'2019-08-01', 'full').identity.principalId]"
-    },
-    "appInsightsName": {
-      "type": "string",
-      "value": "[variables('appInsightsName')]"
     }
   }
 }
