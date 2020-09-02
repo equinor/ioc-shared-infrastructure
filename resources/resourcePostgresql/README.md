@@ -51,6 +51,6 @@ This is an example parameter file
 
 ## Creating databases
 
-When using the template, use template described [here][../resourcePostgresqlDatabases/README.md]:
+When creating a database server with this template, use its [sibling template][../resourcePostgresqlDatabases/README.md] to create databases:
 
 [sku]: https://docs.microsoft.com/en-us/azure/templates/microsoft.dbforpostgresql/2017-12-01/servers#sku-object "SKU"
