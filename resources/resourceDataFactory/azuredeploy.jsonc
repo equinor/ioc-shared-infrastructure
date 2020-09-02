@@ -6,11 +6,11 @@
         "dataFactoryName": {
             "type": "string"
         },
-        "repoConfiguration" : {
-            "type" : "secureobject",
-            "defaultValue" : {},
-            "metadata" : {
-                "description" : "Must be configured if data factory is to be versioned."
+        "repoConfiguration": {
+            "type": "secureobject",
+            "defaultValue": {},
+            "metadata": {
+                "description": "Must be configured if data factory is to be versioned."
             }
         },
         "location": {
@@ -22,8 +22,8 @@
         },
         "tags": {
             "type": "object",
-            "metadata" : {
-                "description" : "The tags to append on each resource created."
+            "metadata": {
+                "description": "The tags to append on each resource created."
             }
         }
     },
@@ -33,19 +33,19 @@
             "name": "[parameters('dataFactoryName')]",
             "location": "[parameters('location')]",
             "type": "Microsoft.DataFactory/factories",
-            "tags" : "[parameters('tags')]",
+            "tags": "[parameters('tags')]",
             "identity": {
                 "type": "SystemAssigned"
             },
             "properties": {
-                "repoConfiguration" : "[parameters('repoConfiguration')]"
+                "repoConfiguration": "[if(empty(parameters('repoConfiguration')), json('null'), parameters('repoConfiguration'))]"
             }
         }
     ],
-    "outputs" : {
-        "dataFactoryPrincipalId" : {
-            "type" : "string",
-            "value" : "[reference(resourceId('Microsoft.DataFactory/factories', parameters('dataFactoryName')), '2018-06-01', 'full').identity.principalId]"
+    "outputs": {
+        "dataFactoryPrincipalId": {
+            "type": "string",
+            "value": "[reference(resourceId('Microsoft.DataFactory/factories', parameters('dataFactoryName')), '2018-06-01', 'full').identity.principalId]"
         }
     }
 }
