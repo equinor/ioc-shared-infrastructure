@@ -45,5 +45,11 @@
         "redisConfiguration": "[parameters('redisConfiguration')]"
       }
     }
-  ]
+  ],
+  "outputs": {
+    "connectionString": {
+      "type": "string",
+       "value": "concat('rediss://:', listKeys(resourceId('Microsoft.Cache/Redis', parameters('redisName')), 2019-07-01').primaryKey, '@', reference(resourceId('Microsoft.Cache/Redis', parameters('redisName')), 2019-07-01').hostName, ':', reference(resourceId('Microsoft.Cache/Redis', parameters('redisName')), 2019-07-01').sslPort)",
+    }
+  }
 }
