@@ -36,7 +36,14 @@
         },
         "administratorLoginPassword": {
             "type": "securestring"
-        }
+        },
+        "firewallIpRules": {
+            "type": "array",
+            "metadata": {
+                "description": "Object containing all the IP exceptions to add in the firewall."
+            },
+            "defaultValue" : []
+        },
     },
     "resources": [
         {
@@ -59,9 +66,33 @@
                 "sslEnforcement": "Enabled",
                 "minimalTlsVersion": "TLS1_2",
                 "infrastructureEncryption": "Disabled",
-                "publicNetworkAccess": "Disabled"
+                "publicNetworkAccess": "Enabled"
             }
-        }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/firewallRules",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('postgresServerName'), '/AllowAllWindowsAzureIps')]",
+            "dependsOn": [
+                "[parameters('postgresServerName')]"
+            ],
+            "properties": {
+                "startIpAddress": "0.0.0.0",
+                "endIpAddress": "0.0.0.0"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/firewallRules",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('postgresServerName'), '/Equinor-Bergen')]",
+            "dependsOn": [
+                "[parameters('postgresServerName')]"
+            ],
+            "properties": {
+                "startIpAddress": "143.97.2.35",
+                "endIpAddress": "143.97.2.35"
+            }
+        },
     ],
     "outputs": {
         "postgresServer": {
