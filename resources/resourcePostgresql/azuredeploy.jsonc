@@ -36,14 +36,7 @@
         },
         "administratorLoginPassword": {
             "type": "securestring"
-        },
-        "firewallIpRules": {
-            "type": "array",
-            "metadata": {
-                "description": "Object containing all the IP exceptions to add in the firewall."
-            },
-            "defaultValue" : []
-        },
+        }
     },
     "resources": [
         {
