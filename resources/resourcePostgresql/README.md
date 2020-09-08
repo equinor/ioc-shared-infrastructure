@@ -4,10 +4,9 @@ Provisions a managed postgresql database. Parameters:
 
 | Parameter                 | Type         | Required | Meaning                                             |
 |---------------------------|--------------|----------|-----------------------------------------------------|
-| appName                   | string       | yes      | The name of the postgres database                   |
+| postgresServerName        | string       | yes      | The name of the postgres database server            |
 | tags                      | object       | yes      | The tags associated with the resources              |
 | location                  | string       | no       | Location(use the default)                           |
-| environment               | string       | yes      | Environment name                                    |
 | postgresVersion           | string       | no       | The postgres version [9.5, 9.6, 10, 10.0, 10.2, 11] |
 | sku                       | object       | no       | Postgresql [SKU][sku]                               |
 | adminstratorLogin         | string       | yes      | The username of the postgresql administrator        |
@@ -20,8 +19,8 @@ This is an example parameter file
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "appName": {
-            "value": "<Application name>"
+        "postgresServerName": {
+            "value": "<Server name>"
         },
         "tags": {
             "value": {
@@ -33,9 +32,6 @@ This is an example parameter file
         },
         "administratorLoginPassword": {
             "value": "<Admin password>"
-        },
-        "environment": {
-            "value": "<Environment>"
         },
         "sku": {
             "value": {
