@@ -2,8 +2,11 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "appName": {
-            "type": "string"
+        "postgresServerName": {
+            "type": "string",
+            "metadata": {
+                "description": "Resulting name of the resource."
+            }
         },
         "tags": {
             "type": "object"
@@ -14,9 +17,6 @@
             "metadata": {
                 "description": "Location for the resources."
             }
-        },
-        "environment": {
-            "type": "string"
         },
         "postgresVersion": {
             "type": "string",
@@ -38,14 +38,11 @@
             "type": "securestring"
         }
     },
-    "variables": {
-        "postgresServerName": "[concat('s039-', parameters('appName'), '-postgres-', parameters('environment'))]"
-    },
     "resources": [
         {
             "type": "Microsoft.DBforPostgreSQL/servers",
             "apiVersion": "2017-12-01",
-            "name": "[variables('postgresServerName')]",
+            "name": "[parameters('postgresServerName')]",
             "location": "[parameters('location')]",
             "tags": "[parameters('tags')]",
             "sku": "[parameters('sku')]",
@@ -69,7 +66,7 @@
     "outputs": {
         "postgresServer": {
             "type": "string",
-            "value": "[variables('postgresServerName')]"
+            "value": "[parameters('postgresServerName')]"
         }
     }
 }
