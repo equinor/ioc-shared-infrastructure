@@ -88,7 +88,7 @@
         "ApplicationId": "[parameters('webAppName')]",
         "Application_Type": "web",
         "Request_Source": "rest",
-        "RetentionInDays": 90,
+        "ImmediatePurgeDataOn30Days": true,
         "publicNetworkAccessForIngestion": "Enabled",
         "publicNetworkAccessForQuery": "Enabled"
       }
