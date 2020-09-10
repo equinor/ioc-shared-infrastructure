@@ -42,12 +42,14 @@ New-AzResourceGroupDeployment -ResourceGroupName  $resourceGroupName `
         "environmentVariables": {
             "value": [
                 {
-                    "key": "SomeEnvVar1",
-                    "value": "SomeValue"
+                    "name": "SomeEnvVar1",
+                    "value": "SomeValue",
+                    "slotSetting": false
                 },
                 {
-                    "key": "SomeEnvVar2",
-                    "value": "SomeValue2"
+                    "name": "SomeEnvVar2",
+                    "value": "SomeValue2",
+                    "slotSetting": false
                 }
             ]
         },
