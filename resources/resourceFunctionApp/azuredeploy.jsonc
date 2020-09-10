@@ -28,7 +28,7 @@
       "type": "object"
     }, 
     "appSettings": {
-      "type": "object"
+      "type": "array"
     }
   },
   "variables": {
