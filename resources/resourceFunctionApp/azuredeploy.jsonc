@@ -60,7 +60,7 @@
   ],
   "variables": {
     "storageAccountId": "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]",
-    "appinsightsName": "[replace(parameters('functionappName'), '-app-', '-appi-')]",
+    "appinsightsName": "[replace(parameters('functionappName'), '-func-', '-appi-')]",
     "appSettings": [
       {
         "name": "FUNCTIONS_WORKER_RUNTIME",
@@ -151,22 +151,7 @@
       "properties": {
         "enabled": true,
         "siteConfig": {
-          "appSettings": 
-          //  [
-          //   {
-          //     "name": "FUNCTIONS_WORKER_RUNTIME",
-          //     "value": "python"
-          //   },
-          //   {
-          //     "name": "FUNCTIONS_EXTENSION_VERSION",
-          //     "value": "~2"
-          //   },
-          //   {
-          //     "name": "AzureWebJobsStorage",
-          //     "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', parameters('storageAccountName'), ';AccountKey=', listKeys(variables('storageAccountId'),'2019-06-01').keys[0].value)]"
-          //   }
-          // ]
-          
+          "appSettings":         
           "[union(variables('appSettings'), parameters('appSettings'), equinor.createSettingsObject('AzureWebJobsStorage',concat('DefaultEndpointsProtocol=https;AccountName=', parameters('storageAccountName'), ';AccountKey=', listKeys(variables('storageAccountId'),'2019-06-01').keys[0].value)))]"
         },
         "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]",
