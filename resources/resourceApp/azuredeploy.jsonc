@@ -60,7 +60,6 @@
     }
   ],
   "variables": {
-    "appInsightsName": "[replace(parameters('webAppName'), '-app-', '-appi-')]",
     "globalAppSettings": [
 
       {
@@ -79,12 +78,6 @@
       "apiVersion": "2018-11-01",
       "name": "[parameters('webAppName')]",
       "location": "[parameters('location')]",
-      "dependsOn": [
-        "[resourceId('microsoft.insights/components/', variables('appInsightsName'))]"
-        // Should depend on the app service plan through a ref to
-        // appserviceResourceId, but that did not work. Instead, the
-        // dependency is set in the main template.
-      ],
       "tags": "[parameters('tags')]",
       "identity": {
         "type": "SystemAssigned"
@@ -108,8 +101,7 @@
           "location": "[parameters('location')]",
           "dependsOn": [
             // Todo depends on itself?
-            "[resourceId('Microsoft.Web/sites/', parameters('webAppName'))]",
-            "[resourceId('microsoft.insights/components', variables('appInsightsName'))]"
+            "[resourceId('Microsoft.Web/sites/', parameters('webAppName'))]"
           ],
           "tags": "[parameters('tags')]",
           "properties": {
