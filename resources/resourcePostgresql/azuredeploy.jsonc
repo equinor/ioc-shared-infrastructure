@@ -86,6 +86,18 @@
                 "endIpAddress": "143.97.2.35"
             }
         },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/firewallRules",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(variables('postgresServerName'), '/Equinor-Statoil-Approved')]",
+            "dependsOn": [
+                "[parameters('postgresServerName')]"
+            ],
+            "properties": {
+                "startIpAddress": "143.97.2.129",
+                "endIpAddress": "143.97.2.129"
+            }
+        }
     ],
     "outputs": {
         "postgresServer": {
