@@ -31,6 +31,33 @@
       "type": "array"
     }
   },
+  "functions": [
+    {
+      "namespace": "equinor",
+      "members": {
+        "createSettingsObject": {
+          "parameters": [
+            {
+              "name": "key",
+              "type": "string"
+            },{
+              "name": "value",
+              "type": "string"
+            }
+          ],
+          "output": {
+            "type": "array",
+            "value": [
+              {
+                "name": "[parameters('key')]",
+                "value": "[parameters('value')]"
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
   "variables": {
     "storageAccountId": "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]",
     "appinsightsName": "[replace(parameters('functionappName'), '-app-', '-appi-')]",
@@ -139,7 +166,7 @@
           //     "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', parameters('storageAccountName'), ';AccountKey=', listKeys(variables('storageAccountId'),'2019-06-01').keys[0].value)]"
           //   }
           // ]
-          "[union(variables('appSettings'), parameters('appSettings'))]"
+          "[union(variables('appSettings'), parameters('appSettings'), [equinor.createSettingsObject('AzureWebJobsStorage', concat('DefaultEndpointsProtocol=https;AccountName=', parameters('storageAccountName'), ';AccountKey=', listKeys(variables('storageAccountId'),'2019-06-01').keys[0].value)]"
         },
         "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]",
         "clientAffinityEnabled": false,
