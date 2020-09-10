@@ -7,8 +7,17 @@ Creates a web app for use with docker compose. It includes a connected Applicati
 
 ## Example usage
 
-``` ps
-az deployment group create --mode Incremental --name myAppDockerComposeDeployment --resource-group myResourceGroup --template-uri "https://raw.githubusercontent.com/equinor/ioc-shared-infrastructure/master/resources/resourceAppDockerCompose/azuredeploy.jsonc"
+Using PowerShell, you can read and convert the docker-compose.yaml to base64 and pass this into your template
+
+```powershell
+
+$Base64 = [System.Convert]::ToBase64String([System.IO.File]::ReadAllBytes('.\docker-compose.yaml'));
+New-AzResourceGroupDeployment -ResourceGroupName  $resourceGroupName `
+  -TemplateFile  "azuredeploy.jsonc" `
+  -TemplateParameterFile "azuredeploy.parameters.test.jsonc" `
+  -dockerComposeYaml $Base64
+
+
 ```
 
 ## Example parameter file
