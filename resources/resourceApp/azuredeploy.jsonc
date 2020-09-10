@@ -1,5 +1,5 @@
 {
-  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
     "webAppName": {
@@ -79,7 +79,7 @@
   "resources": [
     {
       "type": "microsoft.insights/components",
-      "apiVersion": "2018-05-01-preview",
+      "apiVersion": "2020-02-02-preview",
       "name": "[variables('appInsightsName')]",
       "location": "[parameters('location')]",
       "tags": "[union(parameters('tags'), parameters('_appInsightsTag'))]",
@@ -88,7 +88,7 @@
         "ApplicationId": "[parameters('webAppName')]",
         "Application_Type": "web",
         "Request_Source": "rest",
-        "RetentionInDays": 90,
+        "ImmediatePurgeDataOn30Days": true,
         "publicNetworkAccessForIngestion": "Enabled",
         "publicNetworkAccessForQuery": "Enabled"
       }
