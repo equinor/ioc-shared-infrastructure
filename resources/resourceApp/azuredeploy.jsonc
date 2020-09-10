@@ -108,7 +108,7 @@
           "location": "[parameters('location')]",
           "dependsOn": [
             // Todo depends on itself?
-            //"[resourceId('Microsoft.Web/sites/', parameters('webAppName'))]",
+            "[resourceId('Microsoft.Web/sites/', parameters('webAppName'))]",
             "[resourceId('microsoft.insights/components', variables('appInsightsName'))]"
           ],
           "tags": "[parameters('tags')]",
