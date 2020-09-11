@@ -17,7 +17,7 @@
     {
       "type": "Microsoft.Insights/components",
       "apiVersion": "2018-05-01-preview",
-      "name": "[variables('appInsightsName')]",
+      "name": "[parameters('appInsightsName')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "kind": "web",
