@@ -3,8 +3,6 @@
 Description: 
 Resource template group for creating application gateway, public IP, Application Firewall and VNet configuration. 
 
-@TODO: Note that this version doesn't add SSL support yet. This work is ongoing at this point. 
-
 License: 
 https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
 
@@ -41,15 +39,13 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
     "applications": {
       "type": "array",
       "metadata": {
-        "description": "List of applications to configure in the application gateway. Array of objects. Format: { \"name\": \"testapp01\", \"fqdn\": \"testapp01.azurewebsites.net\", \"rootpath\": \"/\", \"paths\": [\"/testapp01\"]},"
+        "description": "List of applications to configure in the application gateway. Array of objects. Format: { \"name\": \"testapp01\", \"fqdn\": \"testapp01.azurewebsites.net\", \"rootpath\": \"/\", \"pathPrefix\": \"testapp01\"},"
         /*
           {
             "name": "testapp01", // Friendly name of the app (lowercase, no spaces)
             "fqdn": "testapp01.azurewebsites.net", // FQDN of the application load balancer (App service)
             "rootpath": "/", // Where on the backend host the app is located. Set typically to / for the app service 
-            "paths": [ // List of paths in the root domain to redirect to the configured application
-              "/testapp01" 
-            ]
+            "pathPrefix": "/testapp01" // Path prefix for the app in the root domain to redirect to the configured application
           },
         */
       }
@@ -71,6 +67,27 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
       "type": "object"
     }
   },
+  "functions": [
+    {
+      "namespace": "equinor",
+      "members": {
+        "createPathObject": {
+          "parameters": [
+            {
+              "name": "path",
+              "type": "string"
+            }
+          ],
+          "output": {
+            "type": "array",
+            "value": [
+              "[concat('/', parameters('path'), '/*')]"
+            ]
+          }
+        }
+      }
+    }
+  ],
   "variables": {
     "application-gateway-name": "[concat(parameters('applicationName'), '-agw-', parameters('applicationEnvironment'))]",
     "application-gateway-firewall-policy-name": "[concat(parameters('applicationName'), '-policy-', parameters('applicationEnvironment'))]",
@@ -294,7 +311,19 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
               "includePath": true,
               "includeQueryString": true
             }
-
+          },
+          {
+            "name": "[concat(parameters('applications')[copyIndex('pathRulesRedirectTargets')].name, '-redirect-target')]",
+            "properties": {
+              "redirectType": "Found",
+              "targetUrl": "[concat('/', parameters('applications')[copyIndex('pathRulesRedirectTargets')].pathPrefix)]",
+              "includePath": false,
+              "includeQueryString": false
+            },
+            "copy": {
+              "name": "pathRulesRedirectTargets",
+              "count": "[length(parameters('applications'))]"
+            }
           }
         ],
         "httpListeners": [
@@ -372,12 +401,25 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
                   "input": {
                     "name": "[concat(parameters('applications')[copyIndex('pathRules')].name, '-routing-rule')]",
                     "properties": {
-                      "paths": "[parameters('applications')[copyIndex('pathRules')].paths]",
+                      "paths": "[equinor.createPathObject(parameters('applications')[copyIndex('pathRules')].pathPrefix)]",
                       "backendAddressPool": {
                         "id": "[resourceId('Microsoft.Network/applicationGateways/backendAddressPools', variables('application-gateway-name'), concat(parameters('applications')[copyIndex('pathRules')].name, '-pool'))]"
                       },
                       "backendHttpSettings": {
                         "id": "[resourceId('Microsoft.Network/applicationGateways/backendHttpSettingsCollection', variables('application-gateway-name'), concat(parameters('applications')[copyIndex('pathRules')].name, '-http-settings'))]"
+                      }
+                    }
+                  }
+                },
+                {
+                  "name": "pathRulesRedirects",
+                  "count": "[length(parameters('applications'))]",
+                  "input": {
+                    "name": "[concat(parameters('applications')[copyIndex('pathRulesRedirects')].name, '-redirect-rule')]",
+                    "properties": {
+                      "paths": "[concat('/', parameters('applications')[copyIndex('pathRulesRedirects')].pathPrefix)]",
+                      "redirectConfiguration": {
+                        "id": "[resourceId('Microsoft.Network/applicationGateways/redirectConfigurations', variables('application-gateway-name'), concat(parameters('applications')[copyIndex('pathRulesRedirects')].name, '-redirect-target'))]"
                       }
                     }
                   }
