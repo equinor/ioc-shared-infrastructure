@@ -17,9 +17,23 @@
     "appInsightInstrumentationKey": {
       "type": "string"
     },
+    "numberOfWorkers": {
+      "type": "int"
+    },
+    "aadClientId": {
+      "type": "string",
+      "defaultValue": "testtest"
+    },
+    "language": {
+      "type": "string"
+    },
     "location": {
       "defaultValue": "[resourceGroup().location]",
       "type": "string"
+    },
+    "connectionStrings": {
+      "type": "array",
+      "defaultValue": []
     },
     "tags": {
       "type": "object"
@@ -55,14 +69,9 @@
   ],
   "variables": {
     "globalAppSettings": [
-
       {
         "name": "WEBSITES_ENABLE_APP_SERVICE_STORAGE",
         "value": "false"
-      },
-      {
-        "name": "DOCKER_ENABLE_CI",
-        "value": "true"
       }
     ]
   },
@@ -84,10 +93,48 @@
         "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]",
         "clientAffinityEnabled": false,
         "siteConfig": {
-          "appSettings": "[union(variables('globalAppSettings'), parameters('environmentVariables'), equinor.createSettingsObject('APPINSIGHTS_INSTRUMENTATIONKEY', parameters('appInsightInstrumentationKey')))]"
+          "appSettings": "[union(variables('globalAppSettings'), parameters('environmentVariables'), equinor.createSettingsObject('APPINSIGHTS_INSTRUMENTATIONKEY', parameters('appInsightInstrumentationKey')))]",
+          "connectionStrings": "[parameters('connectionStrings')]",
+          "javaVersion": "[if(equals(parameters('language'), 'java'), '1.8.0_181', json('null'))]",
+          "javaContainer": "[if(equals(parameters('language'), 'java'), 'TOMCAT', json('null'))]",
+          "javaContainerVersion": "[if(equals(parameters('language'), 'java'), '9.0.14', json('null'))]",
+          "managedPipelineMode": "Integrated",
+          "siteWeb": {
+            "alwaysOn": true,
+            "cors": {
+              "allowedOrigins": [
+                "http://localhost:3000"
+              ],
+              "supportCredentials": false
+            },
+            "http20Enabled": false,
+            "minTlsVersion": "1.2",
+            "ftpsState": "Disabled"
+          },
+          "siteAuthSettings": {
+            "enabled": "[greater(length(parameters('aadClientId')), 0)]",
+            "unauthenticatedClientAction": "RedirectToLoginPage",
+            "defaultProvider": "AzureActiveDirectory",
+            "tokenRefreshExtensionHours": 6,
+            "clientId": "[parameters('aadClientId')]",
+            "issuer": "[concat('https://sts.windows.net/', subscription().tenantId, '/')]",
+            "allowedAudiences": [
+              "[concat('https://', parameters('webAppName'), '.azurewebsites.net')]"
+            ]
+          }
         },
         "httpsOnly": true
       }
+    },
+    {
+      "condition": "[equals(parameters('language'),'python')]",
+      "type": "Microsoft.Web/sites/siteextensions",
+      "apiVersion": "2018-11-01",
+      "name": "[concat(parameters('webAppName'), '/azureappservice-python364x64')]",
+      "location": "North Europe",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', parameters('webAppName'))]"
+      ]
     },
     {
       "comments": "App Service Plan, https://docs.microsoft.com/en-us/azure/templates/microsoft.web/2018-02-01/serverfarms",
@@ -97,37 +144,10 @@
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "sku": {
-        "name": "[parameters('appServicePlanSku')]"
+        "name": "[parameters('appServicePlanSku')]",
+        "capacity": "[parameters('numberOfWorkers')]"
       },
-      "kind": "app",
-      "properties": {
-        "perSiteScaling": false,
-        "maximumElasticWorkerCount": 1,
-        "reserved": true
-      }
-    },
-    {
-      "type": "config",
-      "apiVersion": "2018-11-01",
-      "name": "web",
-      "location": "[parameters('location')]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Web/sites/', parameters('webAppName'))]"
-      ],
-      "tags": "[parameters('tags')]",
-      "properties": {
-        "numberOfWorkers": 1,
-        "alwaysOn": true,
-        "cors": {
-          "allowedOrigins": [
-            "http://localhost:3000"
-          ],
-          "supportCredentials": false
-        },
-        "http20Enabled": false,
-        "minTlsVersion": "1.2",
-        "ftpsState": "Disabled"
-      }
+      "kind": "app"
     }
   ],
   "outputs": {
