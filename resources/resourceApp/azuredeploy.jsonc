@@ -30,6 +30,12 @@
     "appCommandLine": {
       "defaultValue": "",
       "type": "string"
+    },
+    "allowedCorsOrigins": {
+      "type": "array",
+      "defaultValue": [
+        "http://localhost:3001"
+      ]
     }
   },
   "functions": [
@@ -108,9 +114,7 @@
             "numberOfWorkers": 1,
             "alwaysOn": true,
             "cors": {
-              "allowedOrigins": [
-                "http://localhost:3000"
-              ],
+              "allowedOrigins": "[parameters('allowedCorsOrigins')]",
               "supportCredentials": false
             },
             "http20Enabled": false,
