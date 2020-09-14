@@ -1,0 +1,152 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "webAppName": {
+      "type": "string"
+    },
+    "appServicePlanName": {
+      "type": "string"
+    },
+    "appServicePlanSku": {
+      "type": "string"
+    },
+    "location": {
+      "defaultValue": "[resourceGroup().location]",
+      "type": "string"
+    },
+    "tags": {
+      "type": "object"
+    },
+    "environmentVariables": {
+      "type": "array"
+    },
+    "appInsightInstrumentationKey": {
+      "type": "string"
+    }
+  },
+  "functions": [
+    {
+      "namespace": "equinor",
+      "members": {
+        "createSettingsObject": {
+          "parameters": [
+            {
+              "name": "key",
+              "type": "string"
+            },
+            {
+              "name": "value",
+              "type": "string"
+            }
+          ],
+          "output": {
+            "type": "array",
+            "value": [
+              {
+                "name": "[parameters('key')]",
+                "value": "[parameters('value')]"
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "variables": {
+    "appInsightsName": "[replace(parameters('webAppName'), '-app-', '-appi-')]",
+    "globalAppSettings": [
+
+      {
+        "name": "WEBSITES_ENABLE_APP_SERVICE_STORAGE",
+        "value": "false"
+      },
+      {
+        "name": "DOCKER_ENABLE_CI",
+        "value": "true"
+      }
+    ]
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Web/sites",
+      "apiVersion": "2018-11-01",
+      "name": "[parameters('webAppName')]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]"
+      ],
+      "tags": "[parameters('tags')]",
+      "identity": {
+        "type": "SystemAssigned"
+      },
+      "properties": {
+        "enabled": true,
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]",
+        "clientAffinityEnabled": false,
+        "siteConfig": {
+          //"linuxFxVersion": "[concat('DOCKER|', parameters('containerRegistryName'), '.azurecr.io/', toLower(parameters('webAppName')), ':', parameters('containerImageTag'))]",
+          "appSettings": "[union(variables('globalAppSettings'), parameters('environmentVariables'), equinor.createSettingsObject('APPINSIGHTS_INSTRUMENTATIONKEY', parameters('appInsightInstrumentationKey')))]"
+        },
+        "httpsOnly": true
+      },
+      "resources": [
+        {
+          "comments": "App Service Plan, https://docs.microsoft.com/en-us/azure/templates/microsoft.web/2018-02-01/serverfarms",
+          "type": "Microsoft.Web/serverfarms",
+          "apiVersion": "2019-08-01",
+          "name": "[parameters('appServicePlanName')]",
+          "location": "[parameters('location')]",
+          "tags": "[parameters('tags')]",
+          "sku": {
+            "name": "[parameters('appServicePlanSku')]"
+          },
+          "kind": "app",
+          "properties": {
+            "perSiteScaling": false,
+            "maximumElasticWorkerCount": 1,
+            "reserved": true
+          }
+        },
+        {
+          "type": "config",
+          "apiVersion": "2018-11-01",
+          "name": "web",
+          "location": "[parameters('location')]",
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/sites/', parameters('webAppName'))]",
+            "[resourceId('microsoft.insights/components', variables('appInsightsName'))]"
+          ],
+          "tags": "[parameters('tags')]",
+          "properties": {
+            "numberOfWorkers": 1,
+            "alwaysOn": true,
+            "cors": {
+              "allowedOrigins": [
+                "http://localhost:3000"
+              ],
+              "supportCredentials": false
+            },
+            "http20Enabled": false,
+            "minTlsVersion": "1.2",
+            "ftpsState": "Disabled"
+          }
+        }
+      ]
+    }
+  ],
+  "outputs": {
+    "objectId": {
+      "type": "string",
+      "value": "[resourceId('Microsoft.Web/sites', parameters('webAppName'))]"
+    },
+    "identityObjectId": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.Web/sites', parameters('webAppName')),'2019-08-01', 'full').identity.principalId]"
+    },
+    "appInsightsName": {
+      "type": "string",
+      "value": "[variables('appInsightsName')]"
+    }
+  }
+}
