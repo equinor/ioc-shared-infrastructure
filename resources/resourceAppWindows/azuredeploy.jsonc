@@ -11,18 +11,18 @@
     "appServicePlanSku": {
       "type": "string"
     },
+    "environmentVariables": {
+      "type": "array"
+    },
+    "appInsightInstrumentationKey": {
+      "type": "string"
+    },
     "location": {
       "defaultValue": "[resourceGroup().location]",
       "type": "string"
     },
     "tags": {
       "type": "object"
-    },
-    "environmentVariables": {
-      "type": "array"
-    },
-    "appInsightInstrumentationKey": {
-      "type": "string"
     }
   },
   "functions": [
@@ -54,7 +54,6 @@
     }
   ],
   "variables": {
-    "appInsightsName": "[replace(parameters('webAppName'), '-app-', '-appi-')]",
     "globalAppSettings": [
 
       {
@@ -85,54 +84,50 @@
         "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]",
         "clientAffinityEnabled": false,
         "siteConfig": {
-          //"linuxFxVersion": "[concat('DOCKER|', parameters('containerRegistryName'), '.azurecr.io/', toLower(parameters('webAppName')), ':', parameters('containerImageTag'))]",
           "appSettings": "[union(variables('globalAppSettings'), parameters('environmentVariables'), equinor.createSettingsObject('APPINSIGHTS_INSTRUMENTATIONKEY', parameters('appInsightInstrumentationKey')))]"
         },
         "httpsOnly": true
+      }
+    },
+    {
+      "comments": "App Service Plan, https://docs.microsoft.com/en-us/azure/templates/microsoft.web/2018-02-01/serverfarms",
+      "type": "Microsoft.Web/serverfarms",
+      "apiVersion": "2019-08-01",
+      "name": "[parameters('appServicePlanName')]",
+      "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]",
+      "sku": {
+        "name": "[parameters('appServicePlanSku')]"
       },
-      "resources": [
-        {
-          "comments": "App Service Plan, https://docs.microsoft.com/en-us/azure/templates/microsoft.web/2018-02-01/serverfarms",
-          "type": "Microsoft.Web/serverfarms",
-          "apiVersion": "2019-08-01",
-          "name": "[parameters('appServicePlanName')]",
-          "location": "[parameters('location')]",
-          "tags": "[parameters('tags')]",
-          "sku": {
-            "name": "[parameters('appServicePlanSku')]"
-          },
-          "kind": "app",
-          "properties": {
-            "perSiteScaling": false,
-            "maximumElasticWorkerCount": 1,
-            "reserved": true
-          }
-        },
-        {
-          "type": "config",
-          "apiVersion": "2018-11-01",
-          "name": "web",
-          "location": "[parameters('location')]",
-          "dependsOn": [
-            "[resourceId('Microsoft.Web/sites/', parameters('webAppName'))]",
-            "[resourceId('microsoft.insights/components', variables('appInsightsName'))]"
+      "kind": "app",
+      "properties": {
+        "perSiteScaling": false,
+        "maximumElasticWorkerCount": 1,
+        "reserved": true
+      }
+    },
+    {
+      "type": "config",
+      "apiVersion": "2018-11-01",
+      "name": "web",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites/', parameters('webAppName'))]"
+      ],
+      "tags": "[parameters('tags')]",
+      "properties": {
+        "numberOfWorkers": 1,
+        "alwaysOn": true,
+        "cors": {
+          "allowedOrigins": [
+            "http://localhost:3000"
           ],
-          "tags": "[parameters('tags')]",
-          "properties": {
-            "numberOfWorkers": 1,
-            "alwaysOn": true,
-            "cors": {
-              "allowedOrigins": [
-                "http://localhost:3000"
-              ],
-              "supportCredentials": false
-            },
-            "http20Enabled": false,
-            "minTlsVersion": "1.2",
-            "ftpsState": "Disabled"
-          }
-        }
-      ]
+          "supportCredentials": false
+        },
+        "http20Enabled": false,
+        "minTlsVersion": "1.2",
+        "ftpsState": "Disabled"
+      }
     }
   ],
   "outputs": {
@@ -143,10 +138,6 @@
     "identityObjectId": {
       "type": "string",
       "value": "[reference(resourceId('Microsoft.Web/sites', parameters('webAppName')),'2019-08-01', 'full').identity.principalId]"
-    },
-    "appInsightsName": {
-      "type": "string",
-      "value": "[variables('appInsightsName')]"
     }
   }
 }
