@@ -141,7 +141,8 @@
       "tags": "[parameters('tags')]",
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]",
-        "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
+        "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]",
+        "[resourceId('microsoft.insights/components/', variables('appinsightsName'))]"
       ],
       "identity": {
         "type": "SystemAssigned"
@@ -150,7 +151,7 @@
         "enabled": true,
         "siteConfig": {
           "appSettings":         
-          "[union(parameters('appSettings'), equinor.createSettingsObject('AzureWebJobsStorage',concat('DefaultEndpointsProtocol=https;AccountName=', parameters('storageAccountName'), ';AccountKey=', listKeys(variables('storageAccountId'),'2019-06-01').keys[0].value)))]"
+          "[union(parameters('appSettings'), equinor.createSettingsObject('AzureWebJobsStorage',concat('DefaultEndpointsProtocol=https;AccountName=', parameters('storageAccountName'), ';AccountKey=', listKeys(variables('storageAccountId'),'2019-06-01').keys[0].value)), equinor.createSettingsObject('APPINSIGHTS_INSTRUMENTATIONKEY', reference(resourceId('microsoft.insights/components/', variables('appinsightsName'))).InstrumentationKey))]"
         },
         "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]",
         "clientAffinityEnabled": false,
