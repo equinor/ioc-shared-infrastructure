@@ -42,9 +42,6 @@
           "apiVersion": "2017-04-01",
           "name": "[parameters('serviceBusQueueName')]",
           "type": "Queues",
-          "dependsOn": [
-            "[concat('Microsoft.ServiceBus/namespaces/', parameters('serviceBusNamespaceName'))]"
-          ],
           "properties": {
             "lockDuration": "PT5M",
             "maxSizeInMegabytes": 5120,
