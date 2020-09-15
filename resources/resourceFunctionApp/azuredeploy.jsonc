@@ -24,7 +24,8 @@
           "linux",   
           "windows"
         ],
-        "defaultValue": "linux",
+        "defaultValue": "linux"
+    },
     "functionAppName": {
       "type": "string",
       "metadata": {
