@@ -46,6 +46,10 @@
         "dataFactoryPrincipalId": {
             "type": "string",
             "value": "[reference(resourceId('Microsoft.DataFactory/factories', parameters('dataFactoryName')), '2018-06-01', 'full').identity.principalId]"
+        },
+        "dataFactoryResourceId" : {
+            "type": "string",
+            "value": "[resourceId('Microsoft.DataFactory/factories', parameters('dataFactoryName'))]"
         }
     }
 }
