@@ -8,6 +8,23 @@
         "description": "The name of the hosting plan."
       }
     },
+    "appServicePlanSku": {
+      "type": "string",
+      "allowedValues": [
+        "S1",   // Standard Small
+        "P1V2", // Premium V2 Small
+        "PC2",  // Premium Container Small
+        "PC3"   // Premium Container Medium
+      ],
+      "defaultValue": "P1V2"
+    },
+    "serverFarmsKind":{
+        "type": "string",
+        "allowedValues": [
+          "linux",   
+          "windows"
+        ],
+        "defaultValue": "linux",
     "functionAppName": {
       "type": "string",
       "metadata": {
@@ -119,6 +136,7 @@
       }
     },
     {
+      "condition": "[equals(parameters('serverFarmsKind'),'linux')]",
       "type": "Microsoft.Web/serverfarms",
       "apiVersion": "2019-08-01",
       "name": "[parameters('appServicePlanName')]",
@@ -133,10 +151,20 @@
       }
     },
     {
+      "condition": "[equals(parameters('serverFarmsKind'),'windows')]",
+      "type": "Microsoft.Web/serverfarms",
+      "apiVersion": "2019-08-01",
+      "name": "[parameters('appServicePlanName')]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "[parameters('appServicePlanSku')]"
+      }
+    },
+    {
       "type": "Microsoft.Web/sites",
       "apiVersion": "2019-08-01",
       "name": "[parameters('functionappName')]",
-      "kind": "functionapp,linux",
+      "kind": "[if(equals(parameters('serverFarmsKind'),'linux'), 'functionapp,linux', 'functionapp')]" ,
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "dependsOn": [

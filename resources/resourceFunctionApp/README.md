@@ -10,6 +10,14 @@ ApplicationInsights instance.
 | Parameter name         | Type   | Required | Value                                                                                                                                                                   |
 |------------------------|--------|----------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | appServicePlanName     | string | Yes      | The name of the hosting plan.                                                                                                                                           |
+| appServicePlanSku      | string | No       | The Name of AppServicePlan Sku allowedValues": [
+                                                                                                "S1",   // Standard Small
+                                                                                                "P1V2", // Premium V2 Small
+                                                                                                "PC2",  // Premium Container Small
+                                                                                                "PC3",   // Premium Container Medium
+                                                                                                "Y1"    //  Dynamic function consumption plan
+                                                                                             ],
+| serverFarmsKind        | string | No       | The kind of serverFarms to run the FunctionApp allowedValues ['linux','windows']                                                                                        |
 | functionAppName        | string | Yes      | The name of the function app.                                                                                                                                           |
 | storageAccountName     | string | Yes      | The name of the storage account used by the function(s).                                                                                                                |
 | location               | string | No       | The name of the resource group. "defaultValue": "[resourceGroup().location]"                                                                                            |
