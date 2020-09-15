@@ -131,7 +131,7 @@
       "type": "Microsoft.Web/sites/siteextensions",
       "apiVersion": "2018-11-01",
       "name": "[concat(parameters('webAppName'), '/azureappservice-python364x64')]",
-      "location": "North Europe",
+      "location": "[parameters('location')]",
       "dependsOn": [
         "[resourceId('Microsoft.Web/sites', parameters('webAppName'))]"
       ]
