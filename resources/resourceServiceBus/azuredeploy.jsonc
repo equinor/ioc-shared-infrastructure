@@ -66,6 +66,10 @@
     "resourceId": {
       "type": "string",
       "value": "[resourceId('Microsoft.Web/serverfarms', parameters('serviceBusNamespaceName'))]"
+    },
+    "rootAccessKeysResourceId": {
+      "type": "string",
+      "value": "[resourceId('Microsoft.ServiceBus/namespaces/authorizationRules', parameters('serviceBusNamespaceName'),'RootManageSharedAccessKey')]"
     }
   }
 }
