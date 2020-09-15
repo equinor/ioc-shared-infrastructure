@@ -36,6 +36,10 @@
       "defaultValue": [
         "http://localhost:3001"
       ]
+    },
+    "acrResourceGroup": {
+      "type": "string",
+      "defaultValue": "resourceGroup().name"
     }
   },
   "functions": [
@@ -94,7 +98,7 @@
         "clientAffinityEnabled": false,
         "siteConfig": {
           "linuxFxVersion": "[concat('DOCKER|', parameters('containerRegistryName'), '.azurecr.io/', toLower(parameters('webAppName')), ':', parameters('containerImageTag'))]",
-          "appSettings": "[union(variables('globalAppSettings'), parameters('environmentVariables'), equinor.createSettingsObject('DOCKER_REGISTRY_SERVER_URL', reference(resourceId('Microsoft.ContainerRegistry/registries/', parameters('containerRegistryName')), '2019-05-01').loginServer), equinor.createSettingsObject('DOCKER_REGISTRY_SERVER_USERNAME', listCredentials(resourceId('Microsoft.ContainerRegistry/registries/', parameters('containerRegistryName')), '2019-05-01').username), equinor.createSettingsObject('DOCKER_REGISTRY_SERVER_PASSWORD', listCredentials(resourceId('Microsoft.ContainerRegistry/registries/', parameters('containerRegistryName')), '2019-05-01').passwords[0].value))]",
+          "appSettings": "[union(variables('globalAppSettings'), parameters('environmentVariables'), equinor.createSettingsObject('DOCKER_REGISTRY_SERVER_URL', reference(resourceId(parameters('acrResourceGroup'), 'Microsoft.ContainerRegistry/registries/', parameters('containerRegistryName')), '2019-05-01').loginServer), equinor.createSettingsObject('DOCKER_REGISTRY_SERVER_USERNAME', listCredentials(resourceId(parameters('acrResourceGroup'), 'Microsoft.ContainerRegistry/registries/', parameters('containerRegistryName')), '2019-05-01').username), equinor.createSettingsObject('DOCKER_REGISTRY_SERVER_PASSWORD', listCredentials(resourceId(parameters('acrResourceGroup'), 'Microsoft.ContainerRegistry/registries/', parameters('containerRegistryName')), '2019-05-01').passwords[0].value))]",
           "appCommandLine": "[parameters('appCommandLine')]"
         },
         "httpsOnly": true
