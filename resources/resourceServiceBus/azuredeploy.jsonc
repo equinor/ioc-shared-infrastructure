@@ -25,7 +25,9 @@
       "type": "object"
     }
   },
-  "variables": {},
+  "variables": {
+    "serviceBusResource": "[concat('Microsoft.ServiceBus/namespaces/', parameters('serviceBusNamespaceName'))]"
+  },
   "resources": [
     {
       "apiVersion": "2017-04-01",
@@ -42,6 +44,9 @@
           "apiVersion": "2017-04-01",
           "name": "[parameters('serviceBusQueueName')]",
           "type": "Queues",
+          "dependsOn": [
+            "[variables('serviceBusResource')]"
+          ],
           "properties": {
             "lockDuration": "PT5M",
             "maxSizeInMegabytes": 5120,
