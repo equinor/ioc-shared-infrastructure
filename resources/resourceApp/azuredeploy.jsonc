@@ -105,6 +105,10 @@
           "apiVersion": "2018-11-01",
           "name": "web",
           "location": "[parameters('location')]",
+          "dependsOn": [
+            // Todo depends on itself?
+            "[resourceId('Microsoft.Web/sites/', parameters('webAppName'))]"
+          ],
           "tags": "[parameters('tags')]",
           "properties": {
             "numberOfWorkers": 1,
