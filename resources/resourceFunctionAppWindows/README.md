@@ -14,7 +14,8 @@ ApplicationInsights instance.
                                                                                                 "S1",   // Standard Small
                                                                                                 "P1V2", // Premium V2 Small
                                                                                                 "PC2",  // Premium Container Small
-                                                                                                "PC3",   // Premium Container Medium
+                                                                                                "PC3",   // Premium Container Medium                                                                                                
+                                                                                                "Y1"    //  Dynamic function consumption plan
                                                                                              ],                                                                                    |
 | functionAppName        | string | Yes      | The name of the function app.                                                                                                                                           |
 | storageAccountName     | string | Yes      | The name of the storage account used by the function(s).                                                                                                                |

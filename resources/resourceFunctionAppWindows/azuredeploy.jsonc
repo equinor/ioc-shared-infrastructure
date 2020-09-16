@@ -14,9 +14,10 @@
         "S1",   // Standard Small
         "P1V2", // Premium V2 Small
         "PC2",  // Premium Container Small
-        "PC3"   // Premium Container Medium
+        "PC3",   // Premium Container Medium
+        "Y1"    //  Dynamic function consumption plan
       ],
-      "defaultValue": "P1V2"
+      "defaultValue": "Y1"
     },
     "functionAppName": {
       "type": "string",

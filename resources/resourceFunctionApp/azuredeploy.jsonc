@@ -14,17 +14,10 @@
         "S1",   // Standard Small
         "P1V2", // Premium V2 Small
         "PC2",  // Premium Container Small
-        "PC3"   // Premium Container Medium
+        "PC3",   // Premium Container Medium
+        "Y1" // Dynamic consumption plan
       ],
-      "defaultValue": "P1V2"
-    },
-    "serverFarmsKind":{
-        "type": "string",
-        "allowedValues": [
-          "linux",   
-          "windows"
-        ],
-        "defaultValue": "linux"
+      "defaultValue": "Y1"
     },
     "functionAppName": {
       "type": "string",
@@ -137,7 +130,6 @@
       }
     },
     {
-      "condition": "[equals(parameters('serverFarmsKind'),'linux')]",
       "type": "Microsoft.Web/serverfarms",
       "apiVersion": "2019-08-01",
       "name": "[parameters('appServicePlanName')]",
@@ -147,25 +139,14 @@
         "reserved": true
       },
       "sku": {
-        "Tier": "Dynamic",
-        "Name": "Y1"
-      }
-    },
-    {
-      "condition": "[equals(parameters('serverFarmsKind'),'windows')]",
-      "type": "Microsoft.Web/serverfarms",
-      "apiVersion": "2019-08-01",
-      "name": "[parameters('appServicePlanName')]",
-      "location": "[parameters('location')]",
-      "sku": {
         "name": "[parameters('appServicePlanSku')]"
       }
-    },
+    },    
     {
       "type": "Microsoft.Web/sites",
       "apiVersion": "2019-08-01",
       "name": "[parameters('functionappName')]",
-      "kind": "[if(equals(parameters('serverFarmsKind'),'linux'), 'functionapp,linux', 'functionapp')]" ,
+      "kind": "functionapp,linux" ,
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "dependsOn": [
