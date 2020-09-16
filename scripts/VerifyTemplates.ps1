@@ -1,8 +1,9 @@
 if (!(Test-Path .\arm-ttk\arm-ttk.psd1)) {
     Invoke-WebRequest -Uri https://aka.ms/arm-ttk-latest -OutFile "armttk.zip"
     Expand-Archive -Path "armttk.zip" -DestinationPath .
-    Import-Module .\arm-ttk\arm-ttk.psd1
 }
+
+Import-Module .\arm-ttk\arm-ttk.psd1
 
 $totalErrorCount = 0;
 $files = Get-ChildItem "../resources" | ?{ $_.PSIsContainer }
@@ -20,9 +21,9 @@ foreach ($file in $files) {
     }
 
     Write-Host "Testing $fileName"
-    Copy-Item -Path "$directory\azuredeploy.jsonc" -Destination "azuredeploy.json"
+    Copy-Item -Path $fileName -Destination "azuredeploy.json"
 
-    if (("*resourceAzureSql*", "*resourceAzureSqlDatabase*" | %{$directory -like $_} ) -contains $true) {
+    if (("*resourceAzureSql*", "*resourceAzureSqlDatabase*", "*resourceServiceBus*" | %{$directory -like $_} ) -contains $true) {
         $r = Test-AzTemplate  -Skip "apiVersions_Should_Be_Recent"
     } else {
         $r = Test-AzTemplate
