@@ -289,12 +289,13 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
         "rewriteRuleSets": [
           {
             "name": "forward-host-header",
+            "type": "Microsoft.Network/applicationGateways/rewriteRuleSets",
             "properties": {
               "rewriteRules": [
                 {
                   "ruleSequence": 100,
                   "conditions": [],
-                  "name": "forward-host-header",
+                  "name": "forward-host-header-rule",
                   "actionSet": {
                     "requestHeaderConfigurations": [
                       {
