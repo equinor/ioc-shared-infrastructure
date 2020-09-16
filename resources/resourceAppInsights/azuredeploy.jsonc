@@ -30,5 +30,11 @@
         "publicNetworkAccessForQuery": "Enabled"
       }
     }
-  ]
+  ],
+  "outputs": {
+    "instrumentationKey": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.Insights/components', parameters('appInsightsName')), providers('Microsoft.Insights', 'components').apiVersions[0]).instrumentationKey]"
+    }
+  }
 }
