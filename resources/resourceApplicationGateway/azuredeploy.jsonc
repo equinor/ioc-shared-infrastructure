@@ -286,6 +286,33 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
             }
           }
         ],
+        "rewriteRuleSets": [
+          {
+            "name": "forward-host-header",
+            "properties": {
+              "rewriteRules": [
+                {
+                  "ruleSequence": 100,
+                  "conditions": [],
+                  "name": "forward-host-header",
+                  "actionSet": {
+                    "requestHeaderConfigurations": [
+                      {
+                        "headerName": "X-Forwarded-Host",
+                        "headerValue": "{var_host}"
+                      },
+                      {
+                        "headerName": "X-Forwarded-Proto",
+                        "headerValue": "{var_request_scheme}"
+                      }
+                    ],
+                    "responseHeaderConfigurations": []
+                  }
+                }
+              ]
+            }
+          }
+        ],
         "redirectConfigurations": [
           {
             "name": "http-to-https-redirect-config",
@@ -367,9 +394,9 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
               },
               "defaultBackendHttpSettings": {
                 "id": "[resourceId('Microsoft.Network/applicationGateways/backendHttpSettingsCollection', variables('application-gateway-name'), concat(parameters('defaultApplication'), '-http-settings'))]"
-              //},
-              //"defaultRewriteRuleSet": {
-//                "id": "[resourceId('Microsoft.Network/applicationGateways/rewriteRuleSets', variables('application-gateway-name'), 'forward-host-header')]"
+              },
+              "defaultRewriteRuleSet": {
+                "id": "[resourceId('Microsoft.Network/applicationGateways/rewriteRuleSets', variables('application-gateway-name'), 'forward-host-header')]"
               },
               "copy": [
                 {
@@ -384,9 +411,9 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
                       },
                       "backendHttpSettings": {
                         "id": "[resourceId('Microsoft.Network/applicationGateways/backendHttpSettingsCollection', variables('application-gateway-name'), concat(parameters('applications')[copyIndex('pathRules')].name, '-http-settings'))]"
-                      //},
-                   //   "rewriteRuleSet": {
-                     //   "id": "[resourceId('Microsoft.Network/applicationGateways/rewriteRuleSets', variables('application-gateway-name'), 'forward-host-header')]"
+                      },
+                      "rewriteRuleSet": {
+                        "id": "[resourceId('Microsoft.Network/applicationGateways/rewriteRuleSets', variables('application-gateway-name'), 'forward-host-header')]"
                       }
                     }
                   }
