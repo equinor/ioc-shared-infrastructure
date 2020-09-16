@@ -279,7 +279,37 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
               },
               "httpListener": {
                 "id": "[resourceId('Microsoft.Network/applicationGateways/httpListeners', variables('application-gateway-name'), 'http-listener')]"
+
+
+
               }
+            }
+          }
+        ],
+        "rewriteRuleSets": [
+          {
+            "name": "forward-host-header",
+            "properties": {
+              "rewriteRules": [
+                {
+                  "ruleSequence": 100,
+                  "conditions": [],
+                  "name": "forward-host-header",
+                  "actionSet": {
+                    "requestHeaderConfigurations": [
+                      {
+                        "headerName": "X-Forwarded-Host",
+                        "headerValue": "{var_host}"
+                      },
+                      {
+                        "headerName": "X-Forwarded-Proto",
+                        "headerValue": "{var_request_scheme}"
+                      }
+                    ],
+                    "responseHeaderConfigurations": []
+                  }
+                }
+              ]
             }
           }
         ],
@@ -365,6 +395,10 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
               "defaultBackendHttpSettings": {
                 "id": "[resourceId('Microsoft.Network/applicationGateways/backendHttpSettingsCollection', variables('application-gateway-name'), concat(parameters('defaultApplication'), '-http-settings'))]"
               },
+
+              "defaultRewriteRuleSet": {
+                "id": "[resourceId('Microsoft.Network/applicationGateways/rewriteRuleSets', variables('application-gateway-name'), 'forward-host-header')]"
+              },
               "copy": [
                 {
                   "name": "pathRules",
@@ -378,6 +412,9 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
                       },
                       "backendHttpSettings": {
                         "id": "[resourceId('Microsoft.Network/applicationGateways/backendHttpSettingsCollection', variables('application-gateway-name'), concat(parameters('applications')[copyIndex('pathRules')].name, '-http-settings'))]"
+                      },
+                      "rewriteRuleSet": {
+                        "id": "[resourceId('Microsoft.Network/applicationGateways/rewriteRuleSets', variables('application-gateway-name'), 'forward-host-header')]"
                       }
                     }
                   }
