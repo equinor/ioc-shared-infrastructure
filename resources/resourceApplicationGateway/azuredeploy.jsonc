@@ -395,7 +395,6 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
               "defaultBackendHttpSettings": {
                 "id": "[resourceId('Microsoft.Network/applicationGateways/backendHttpSettingsCollection', variables('application-gateway-name'), concat(parameters('defaultApplication'), '-http-settings'))]"
               },
-
               "defaultRewriteRuleSet": {
                 "id": "[resourceId('Microsoft.Network/applicationGateways/rewriteRuleSets', variables('application-gateway-name'), 'forward-host-header')]"
               },
