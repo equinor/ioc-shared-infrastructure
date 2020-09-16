@@ -10,13 +10,15 @@ ApplicationInsights instance.
 | Parameter name         | Type   | Required | Value                                                                                                                                                                   |
 |------------------------|--------|----------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | appServicePlanName     | string | Yes      | The name of the hosting plan.                                                                                                                                           |
-| appServicePlanSku      | string | No       | The Name of AppServicePlan Sku allowedValues": [
-                                                                                                "S1",   // Standard Small
-                                                                                                "P1V2", // Premium V2 Small
-                                                                                                "PC2",  // Premium Container Small
-                                                                                                "PC3",   // Premium Container Medium                                                                                                
-                                                                                                "Y1"    //  Dynamic function consumption plan
-                                                                                             ],                                                                                    |
+| appServicePlanSku      | string | No       | The Name of AppServicePlan Sku allowedValues":  "allowedValues": [
+        "S1",   // Standard 
+        "S2",   // Standard 
+        "S3",   // Standard 
+        "P1V2", // Premium V2 
+        "P2V2", // Premium V2 
+        "P3V2", // Premium V2       
+        "Y1" // Dynamic consumption plan
+      ],                                                                                    |
 | functionAppName        | string | Yes      | The name of the function app.                                                                                                                                           |
 | storageAccountName     | string | Yes      | The name of the storage account used by the function(s).                                                                                                                |
 | location               | string | No       | The name of the resource group. "defaultValue": "[resourceGroup().location]"                                                                                            |
