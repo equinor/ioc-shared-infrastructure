@@ -1,6 +1,6 @@
-# Function App
+# Function App Windows
 
-Combines a function app, the storage account required for it, and a connected
+Combines a windows hosted function app, the storage account required for it, and a connected
 ApplicationInsights instance.
 
 ![Resource view](overview.png)
@@ -18,8 +18,7 @@ ApplicationInsights instance.
         "P2V2", // Premium V2 
         "P3V2", // Premium V2       
         "Y1" // Dynamic consumption plan
-      ],
-| serverFarmsKind        | string | No       | The kind of serverFarms to run the FunctionApp allowedValues ['linux','windows']                                                                                        |
+      ],                                                                                    |
 | functionAppName        | string | Yes      | The name of the function app.                                                                                                                                           |
 | storageAccountName     | string | Yes      | The name of the storage account used by the function(s).                                                                                                                |
 | location               | string | No       | The name of the resource group. "defaultValue": "[resourceGroup().location]"                                                                                            |
@@ -51,6 +50,9 @@ az deployment group create --mode Incremental --name myFunctionAppDeployment --r
     "parameters": {
                     "appServicePlanName": {
                         "value": "MyAppServicePlanName"
+                    },
+                    "appServicePlanSku": {
+                        "value":  "S1" 
                     },
                     "functionAppName": {
                         "value":  "MyFunctionAppName" 
