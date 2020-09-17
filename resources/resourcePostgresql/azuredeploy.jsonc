@@ -1,0 +1,108 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "postgresServerName": {
+            "type": "string",
+            "metadata": {
+                "description": "Resulting name of the resource."
+            }
+        },
+        "tags": {
+            "type": "object"
+        },
+        "location": {
+            "type": "string",
+            "defaultValue": "[resourceGroup().location]",
+            "metadata": {
+                "description": "Location for the resources."
+            }
+        },
+        "postgresVersion": {
+            "type": "string",
+            "defaultValue": "11"
+        },
+        "sku": {
+            "type": "object",
+            "defaultValue": {
+                "name": "GP_Gen5_2",
+                "tier": "GeneralPurpose",
+                "family": "Gen5",
+                "capacity": 2
+            }
+        },
+        "administratorLogin": {
+            "type": "string"
+        },
+        "administratorLoginPassword": {
+            "type": "securestring"
+        }
+    },
+    "resources": [
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers",
+            "apiVersion": "2017-12-01",
+            "name": "[parameters('postgresServerName')]",
+            "location": "[parameters('location')]",
+            "tags": "[parameters('tags')]",
+            "sku": "[parameters('sku')]",
+            "properties": {
+                "storageProfile": {
+                    "storageMB": 102400,
+                    "backupRetentionDays": 7,
+                    "geoRedundantBackup": "Disabled",
+                    "storageAutogrow": "Disabled"
+                },
+                "version": "[parameters('postgresVersion')]",
+                "administratorLogin": "[parameters('administratorLogin')]",
+                "administratorLoginPassword": "[parameters('administratorLoginPassword')]",
+                "sslEnforcement": "Enabled",
+                "minimalTlsVersion": "TLS1_2",
+                "infrastructureEncryption": "Disabled",
+                "publicNetworkAccess": "Enabled"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/firewallRules",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('postgresServerName'), '/AllowAllWindowsAzureIps')]",
+            "dependsOn": [
+                "[parameters('postgresServerName')]"
+            ],
+            "properties": {
+                "startIpAddress": "0.0.0.0",
+                "endIpAddress": "0.0.0.0"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/firewallRules",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('postgresServerName'), '/Equinor-Bergen')]",
+            "dependsOn": [
+                "[parameters('postgresServerName')]"
+            ],
+            "properties": {
+                "startIpAddress": "143.97.2.35",
+                "endIpAddress": "143.97.2.35"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/firewallRules",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('postgresServerName'), '/Equinor-Statoil-Approved')]",
+            "dependsOn": [
+                "[parameters('postgresServerName')]"
+            ],
+            "properties": {
+                "startIpAddress": "143.97.2.129",
+                "endIpAddress": "143.97.2.129"
+            }
+        }
+    ],
+    "outputs": {
+        "postgresServer": {
+            "type": "string",
+            "value": "[parameters('postgresServerName')]"
+        }
+    }
+}
