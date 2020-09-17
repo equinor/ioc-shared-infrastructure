@@ -93,6 +93,7 @@
         "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]",
         "clientAffinityEnabled": false,
         "siteConfig": {
+          "alwaysOn": true,
           "appSettings": "[union(variables('globalAppSettings'), parameters('environmentVariables'), equinor.createSettingsObject('APPINSIGHTS_INSTRUMENTATIONKEY', parameters('appInsightInstrumentationKey')))]",
           "connectionStrings": "[parameters('connectionStrings')]",
           "javaVersion": "[if(equals(parameters('language'), 'java'), '1.8.0_181', json('null'))]",
@@ -100,7 +101,6 @@
           "javaContainerVersion": "[if(equals(parameters('language'), 'java'), '9.0.14', json('null'))]",
           "managedPipelineMode": "Integrated",
           "siteWeb": {
-            "alwaysOn": true,
             "cors": {
               "allowedOrigins": [
                 "http://localhost:3000"
