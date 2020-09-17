@@ -291,7 +291,7 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
               "rewriteRules": [
                 {
                   "ruleSequence": 100,
-                  "conditions": [],
+                  "conditions": "[json(' [ ] ')]",
                   "name": "forward-host-header-rule",
                   "actionSet": {
                     "requestHeaderConfigurations": [
@@ -304,7 +304,7 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
                         "headerValue": "{var_request_scheme}"
                       }
                     ],
-                    "responseHeaderConfigurations": []
+                    "responseHeaderConfigurations": "[json(' [ ] ')]"
                   }
                 }
               ]
