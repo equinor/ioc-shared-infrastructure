@@ -1,0 +1,163 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "webAppName": {
+      "type": "string"
+    },
+    "appServicePlanName": {
+      "type": "string"
+    },
+    "appServicePlanSku": {
+      "type": "string"
+    },
+    "environmentVariables": {
+      "type": "array"
+    },
+    "appInsightInstrumentationKey": {
+      "type": "string"
+    },
+    "numberOfWorkers": {
+      "type": "int"
+    },
+    "aadClientId": {
+      "type": "string",
+      "defaultValue": "testtest"
+    },
+    "language": {
+      "type": "string"
+    },
+    "location": {
+      "defaultValue": "[resourceGroup().location]",
+      "type": "string"
+    },
+    "connectionStrings": {
+      "type": "array",
+      "defaultValue": []
+    },
+    "tags": {
+      "type": "object"
+    }
+  },
+  "functions": [
+    {
+      "namespace": "equinor",
+      "members": {
+        "createSettingsObject": {
+          "parameters": [
+            {
+              "name": "key",
+              "type": "string"
+            },
+            {
+              "name": "value",
+              "type": "string"
+            }
+          ],
+          "output": {
+            "type": "array",
+            "value": [
+              {
+                "name": "[parameters('key')]",
+                "value": "[parameters('value')]"
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "variables": {
+    "globalAppSettings": [
+      {
+        "name": "WEBSITES_ENABLE_APP_SERVICE_STORAGE",
+        "value": "false"
+      }
+    ]
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Web/sites",
+      "apiVersion": "2018-11-01",
+      "name": "[parameters('webAppName')]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]"
+      ],
+      "tags": "[parameters('tags')]",
+      "identity": {
+        "type": "SystemAssigned"
+      },
+      "properties": {
+        "enabled": true,
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]",
+        "clientAffinityEnabled": false,
+        "siteConfig": {
+          "alwaysOn": true,
+          "appSettings": "[union(variables('globalAppSettings'), parameters('environmentVariables'), equinor.createSettingsObject('APPINSIGHTS_INSTRUMENTATIONKEY', parameters('appInsightInstrumentationKey')))]",
+          "connectionStrings": "[parameters('connectionStrings')]",
+          "javaVersion": "[if(equals(parameters('language'), 'java'), '1.8.0_181', json('null'))]",
+          "javaContainer": "[if(equals(parameters('language'), 'java'), 'TOMCAT', json('null'))]",
+          "javaContainerVersion": "[if(equals(parameters('language'), 'java'), '9.0.14', json('null'))]",
+          "managedPipelineMode": "Integrated",
+          "siteWeb": {
+            "cors": {
+              "allowedOrigins": [
+                "http://localhost:3000"
+              ],
+              "supportCredentials": false
+            },
+            "http20Enabled": false,
+            "minTlsVersion": "1.2",
+            "ftpsState": "Disabled"
+          },
+          "siteAuthSettings": {
+            "enabled": "[greater(length(parameters('aadClientId')), 0)]",
+            "unauthenticatedClientAction": "RedirectToLoginPage",
+            "defaultProvider": "AzureActiveDirectory",
+            "tokenRefreshExtensionHours": 6,
+            "clientId": "[parameters('aadClientId')]",
+            "issuer": "[concat('https://sts.windows.net/', subscription().tenantId, '/')]",
+            "allowedAudiences": [
+              "[concat('https://', parameters('webAppName'), '.azurewebsites.net')]"
+            ]
+          }
+        },
+        "httpsOnly": true
+      }
+    },
+    {
+      "condition": "[equals(parameters('language'),'python')]",
+      "type": "Microsoft.Web/sites/siteextensions",
+      "apiVersion": "2018-11-01",
+      "name": "[concat(parameters('webAppName'), '/azureappservice-python364x64')]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', parameters('webAppName'))]"
+      ]
+    },
+    {
+      "comments": "App Service Plan, https://docs.microsoft.com/en-us/azure/templates/microsoft.web/2018-02-01/serverfarms",
+      "type": "Microsoft.Web/serverfarms",
+      "apiVersion": "2019-08-01",
+      "name": "[parameters('appServicePlanName')]",
+      "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]",
+      "sku": {
+        "name": "[parameters('appServicePlanSku')]",
+        "capacity": "[parameters('numberOfWorkers')]"
+      },
+      "kind": "app"
+    }
+  ],
+  "outputs": {
+    "objectId": {
+      "type": "string",
+      "value": "[resourceId('Microsoft.Web/sites', parameters('webAppName'))]"
+    },
+    "identityObjectId": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.Web/sites', parameters('webAppName')),'2019-08-01', 'full').identity.principalId]"
+    }
+  }
+}
