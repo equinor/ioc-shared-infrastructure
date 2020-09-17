@@ -279,9 +279,6 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
               },
               "httpListener": {
                 "id": "[resourceId('Microsoft.Network/applicationGateways/httpListeners', variables('application-gateway-name'), 'http-listener')]"
-
-
-
               }
             }
           }
