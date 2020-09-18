@@ -38,6 +38,20 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
         "description": "ID to the KeyVault certificate secret used for SSL."
       }
     },
+    "allowIpList": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "List of IP's to allow traffic from"
+      }
+    },
+    "allowGeoRegionsList": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "List of geo regions to allow traffic from"
+      }
+    },
     "applications": {
       "type": "array",
       "metadata": {
@@ -480,8 +494,27 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
       "properties": {
         "customRules": [
           {
-            "name": "deny-non-norway-traffic",
+            "name": "allow-ip-addresses",
             "priority": 100,
+            "ruleType": "MatchRule",
+            "action": "Allow",
+            "matchConditions": [
+              {
+                "matchVariables": [
+                  {
+                    "variableName": "RemoteAddr"
+                  }
+                ],
+                "operator": "IPMatch",
+                "negationConditon": false,
+                "matchValues": "[parameters('allowIpList')]",
+                "transforms": []
+              }
+            ]
+          },
+          {
+            "name": "deny-non-approved-geo-traffic",
+            "priority": 200,
             "ruleType": "MatchRule",
             "action": "Block",
             "matchConditions": [
@@ -493,9 +526,8 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
                 ],
                 "operator": "GeoMatch",
                 "negationConditon": true,
-                "matchValues": [
-                  "NO"
-                ]
+                "matchValues": "[parameters('allowGeoRegionsList')]",
+                "transforms": []
               }
             ]
           }
