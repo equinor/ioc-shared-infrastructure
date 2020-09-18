@@ -110,7 +110,6 @@
           "name": "web",
           "location": "[parameters('location')]",
           "dependsOn": [
-            // Todo depends on itself?
             "[resourceId('Microsoft.Web/sites/', parameters('webAppName'))]"
           ],
           "tags": "[parameters('tags')]",
