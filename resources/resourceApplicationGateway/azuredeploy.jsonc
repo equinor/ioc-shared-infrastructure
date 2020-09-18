@@ -495,7 +495,7 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
         "customRules": [
           {
             "name": "allow-ip-addresses",
-            "priority": 100,
+            "priority": 10,
             "ruleType": "MatchRule",
             "action": "Allow",
             "matchConditions": [
@@ -514,7 +514,7 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
           },
           {
             "name": "deny-non-approved-geo-traffic",
-            "priority": 200,
+            "priority": 100,
             "ruleType": "MatchRule",
             "action": "Block",
             "matchConditions": [
