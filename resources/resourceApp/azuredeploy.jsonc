@@ -18,6 +18,10 @@
     "containerRegistryName": {
       "type": "string"
     },
+    "containerImageName": {
+      "type": "string",
+      "defaultValue": "[parameters('webAppName)]"
+    },
     "containerImageTag": {
       "type": "string"
     },
@@ -97,7 +101,7 @@
         "serverFarmId": "[parameters('appserviceResourceId')]",
         "clientAffinityEnabled": false,
         "siteConfig": {
-          "linuxFxVersion": "[concat('DOCKER|', parameters('containerRegistryName'), '.azurecr.io/', toLower(parameters('webAppName')), ':', parameters('containerImageTag'))]",
+          "linuxFxVersion": "[concat('DOCKER|', parameters('containerRegistryName'), '.azurecr.io/', toLower(parameters('containerImageName')), ':', parameters('containerImageTag'))]",
           "appSettings": "[union(variables('globalAppSettings'), parameters('environmentVariables'), equinor.createSettingsObject('DOCKER_REGISTRY_SERVER_URL', reference(resourceId(parameters('acrResourceGroup'), 'Microsoft.ContainerRegistry/registries/', parameters('containerRegistryName')), '2019-05-01').loginServer), equinor.createSettingsObject('DOCKER_REGISTRY_SERVER_USERNAME', listCredentials(resourceId(parameters('acrResourceGroup'), 'Microsoft.ContainerRegistry/registries/', parameters('containerRegistryName')), '2019-05-01').username), equinor.createSettingsObject('DOCKER_REGISTRY_SERVER_PASSWORD', listCredentials(resourceId(parameters('acrResourceGroup'), 'Microsoft.ContainerRegistry/registries/', parameters('containerRegistryName')), '2019-05-01').passwords[0].value))]",
           "appCommandLine": "[parameters('appCommandLine')]"
         },
