@@ -8,6 +8,13 @@
                 "description": "The name of the SQL logical server."
             }
         },
+        "sqlAssignIdentity" : {
+            "type": "bool",
+            "defaultValue" : false,
+            "metadata" : {
+                "description" : "If the SQL Server should get assigned an identity in Active Directory."
+            }
+        },
         "sqlServerAdministratorLogin" : {
             "type" : "securestring",
             "metadata" : {
@@ -105,7 +112,7 @@
             "properties": {
                 "networkAcls": {
                     "bypass": "AzureServices",
-                    "defaultAction": "[if(parameters('isStorageBehindVnet'), 'Deny', 'Allow')]"
+                    "defaultAction": "[if(parameters('isStorageBehindVnet') , 'Deny', 'Allow')]"
                 }
             },
             "tags": "[parameters('tags')]",
@@ -133,7 +140,7 @@
             "apiVersion": "2019-06-01-preview",
             "location": "[parameters('location')]",
             "name": "[variables('serverName')]",
-            "identity": "[if(parameters('isStorageBehindVnet'), json('{\"type\":\"SystemAssigned\"}'), json('null'))]",
+            "identity": "[if(or(parameters('isStorageBehindVnet'), parameters('sqlAssignIdentity')), json('{\"type\":\"SystemAssigned\"}'), json('null'))]",
             "properties": {
                 "administratorLogin": "[parameters('sqlServerAdministratorLogin')]",
                 "administratorLoginPassword": "[parameters('sqlServerAdministratorLoginPassword')]",
