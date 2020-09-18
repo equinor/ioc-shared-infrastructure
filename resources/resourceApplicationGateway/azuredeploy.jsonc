@@ -40,14 +40,14 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
     },
     "allowIpList": {
       "type": "array",
-      "defaultValue": [],
+      "defaultValue": "[json(' [ ] ')]",
       "metadata": {
         "description": "List of IP's to allow traffic from"
       }
     },
     "allowGeoRegionsList": {
       "type": "array",
-      "defaultValue": [],
+      "defaultValue": "[json(' [ ] ')]",
       "metadata": {
         "description": "List of geo regions to allow traffic from"
       }
@@ -508,7 +508,7 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
                 "operator": "IPMatch",
                 "negationConditon": false,
                 "matchValues": "[parameters('allowIpList')]",
-                "transforms": []
+                "transforms": "[json(' [ ] ')]"
               }
             ]
           },
@@ -527,7 +527,7 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
                 "operator": "GeoMatch",
                 "negationConditon": true,
                 "matchValues": "[parameters('allowGeoRegionsList')]",
-                "transforms": []
+                "transforms": "[json(' [ ] ')]"
               }
             ]
           }
