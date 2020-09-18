@@ -20,7 +20,7 @@
     },
     "containerImageName": {
       "type": "string",
-      "defaultValue": "[parameters('webAppName)]"
+      "defaultValue": "[parameters('webAppName')]"
     },
     "containerImageTag": {
       "type": "string"
