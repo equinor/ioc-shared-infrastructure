@@ -34,7 +34,7 @@
   "outputs": {
     "instrumentationKey": {
       "type": "string",
-      "value": "[reference(resourceId('Microsoft.Insights/components', parameters('appInsightsName')), providers('Microsoft.Insights', 'components').apiVersions[0]).instrumentationKey]"
+      "value": "[reference(resourceId('Microsoft.Insights/components', parameters('appInsightsName')), '2015-05-01').instrumentationKey]"
     }
   }
 }
