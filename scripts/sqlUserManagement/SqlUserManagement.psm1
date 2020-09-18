@@ -62,6 +62,8 @@ function Publish-DatabaseUsersAndPermissions {
         [switch]$EnablePasswordRotation,
         [int]$RotationDays=-90
     )
+    # If any errors has occured. Execution must be stopped.
+    $ErrorActionPreference = "Stop"
 
     # Supress breaking changes warnings
     # for this script.
@@ -75,17 +77,13 @@ function Publish-DatabaseUsersAndPermissions {
     # Import sqlGenerator module
     Get-ChildItem -Path "$PSScriptRoot\sqlGenerator\azureSql" | ForEach-Object { . $($_.FullName) }
 
-    # Define the output folder.
-    $outputFolder = ".\output"
-    Write-Verbose "Ouput folder is set to $outputFolder"
 
-    if ((Test-Path $outputFolder)) {
-        # Remove previously generated items
-        Remove-Item $outputFolder -Recurse | Out-Null
-    }
-
-    # Define the file name of script.
-    $sqlFileName = "create_database_users.sql"
+    # Define a string format that must be appended on each
+    # sql statment added to the sqlStatement variable.
+    # This is to enforce that a newline is added when appending
+    # a new statement to the variable.
+    $sqlStatementFormat = "{0} `r`n"
+    $sqlStatement = $sqlStatementFormat -f (Get-AzureSqlDropAllUsersStatement)
 
     # Parse yaml user configuration.
     Get-ChildItem -Path $ConfigurationPath |
@@ -93,8 +91,7 @@ function Publish-DatabaseUsersAndPermissions {
         Write-Verbose "Parsing user configuration file $_"
         $userConfig = ConvertFrom-YAML (Get-Content $_ -Raw)
 
-        # Skip a user creation if it's not part of targeted
-        # environment.
+        # Parse the environment mapping
         $usersFromEnvironmentToCreate = $userConfig.environments | ForEach-Object {
             $environmentMapping = $_.Split(":")
             if ($environmentMapping[1] -eq $environment ) {
@@ -102,24 +99,14 @@ function Publish-DatabaseUsersAndPermissions {
             }
         }
 
+        # Skip a user creation if it's not part of targeted
+        # environment.
         if ($usersFromEnvironmentToCreate -notcontains $environment) {
             return
         }
 
-        $currentFilePath = "$outputFolder\$TargetServer\$TargetDatbase\$sqlFileName"
-
-        # If the file already exists there is no
-        # need to re-create it or append the initial
-        # sql commands.
-        if (!(Test-Path $currentFilePath)) {
-            New-Item -Path $currentFilePath -Force | Out-Null
-
-            # Append the drop users statement so that
-            # we remove all users not defined as part
-            # of version control.
-            Add-Content -Path $currentFilePath -Value (Get-AzureSqlDropAllUsersStatement)
-        }
-
+        # If the user to create is of type active directory group
+        # then we should only process it once.
         $usersToCreate = $userConfig.type -eq "active_directory_group" ? $usersFromEnvironmentToCreate[0] : $usersFromEnvironmentToCreate
 
         $usersToCreate | ForEach-Object {
@@ -128,30 +115,36 @@ function Publish-DatabaseUsersAndPermissions {
             # Generate create user statement.
             switch ($userConfig.type) {
                 active_directory_group {
-                    Add-Content -Path $currentFilePath (Get-AzureSqlCreateUserStatement $currentUserName $true)
+                    $sqlStatement += $sqlStatementFormat -f (Get-AzureSqlCreateUserStatement $currentUserName $true)
                 }
                 active_directory_app_registration {
-                    Add-Content -Path $currentFilePath (Get-AzureSqlCreateUserStatement $currentUserName $true)
+                    $sqlStatement += $sqlStatementFormat -f (Get-AzureSqlCreateUserStatement $currentUserName $true)
                 }
                 sql_login {
+                    # Get the current secret from the KeyVault.
                     $currentSecret = Get-AzKeyVaultSecret -VaultName "$KeyVaultName" -Name ('sql-login-password-{0}' -f $currentUserName)
 
                     # If password rotation is enabled and the secret
                     # is older than number of allowed rotation days,
-                    # then update the secret.
+                    # then we must discard current secret version.
                     if ($currentSecret.Updated -lt (get-date).AddDays($RotationDays) -And $EnablePasswordRotation) {
                         Write-Verbose ('Password roation is enabled. The secret for [{0}] is older than 90 days and therefore updated.' -f $currentUserName)
                         $currentSecret = $null
                     }
 
+                    # If the current secret is not retrieved from the KeyVault
+                    # or that it has been nulled out by the password rotation
+                    # logic, we need to create or update the secret.
                     if (!$currentSecret) {
                         $password = ConvertTo-SecureString ( -join ((0x30..0x39) + ( 0x41..0x5A) + ( 0x61..0x7A) | Get-Random -Count 30  | % { [char]$_ }) ) -AsPlainText -Force
                         $currentSecret = Set-AzKeyVaultSecret -VaultName "$KeyVaultName" -Name ('sql-login-password-{0}' -f $currentUserName) -SecretValue $password -ContentType "password"
                     }
 
-                    Add-Content -Path $currentFilePath (Get-AzureSqlCreateUserStatement $currentUserName $false $currentSecret.SecretValue)
+                    $sqlStatement += $sqlStatementFormat -f (Get-AzureSqlCreateUserStatement $currentUserName $false $currentSecret.SecretValue)
 
-                    ## Try add application to Access policies so that it can retrieve the the created secrets.
+                    # Try add the application using sql-login to the KeyVault access
+                    # policies. This requires that the user name is the same as one
+                    # registered in app registration.
                     try {
                         $servicePrincipal = (Get-AzADServicePrincipal -SearchString "$currentUserName").Id
 
@@ -168,7 +161,7 @@ function Publish-DatabaseUsersAndPermissions {
 
             # Grant the user ability to connect
             # to the database.
-            Add-Content $currentFilePath -Value (Get-AzureSqlGrantConnectStatement $currentUserName)
+            $sqlStatement += $sqlStatementFormat -f (Get-AzureSqlGrantConnectStatement $currentUserName)
 
             # Grant the users permission on schema, objects or
             # or on a database level.
@@ -178,10 +171,10 @@ function Publish-DatabaseUsersAndPermissions {
 
                 $_.targets | ForEach-Object {
                     if ($type -eq "database") {
-                        Add-Content $currentFilePath -Value (Get-AzureSqlGrantPermissionsStatement $currentUserName $Grants)
+                        $sqlStatement += $sqlStatementFormat -f (Get-AzureSqlGrantPermissionsStatement $currentUserName $Grants)
                     }
                     else {
-                        Add-Content $currentFilePath -Value (Get-AzureSqlGrantPermissionsStatement $currentUserName $Grants $_ $type)
+                        $sqlStatement += $sqlStatementFormat -f (Get-AzureSqlGrantPermissionsStatement $currentUserName $Grants $_ $type)
                     }
                 }
             }
