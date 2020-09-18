@@ -118,7 +118,6 @@ function Publish-DatabaseUsersAndPermissions {
             # we remove all users not defined as part
             # of version control.
             Add-Content -Path $currentFilePath -Value (Get-AzureSqlDropAllUsersStatement)
-            Invoke
         }
 
         $usersToCreate = $userConfig.type -eq "active_directory_group" ? $usersFromEnvironmentToCreate[0] : $usersFromEnvironmentToCreate
