@@ -1,8 +1,8 @@
 {
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-          "eventGridDomainName": {
+        "eventGridDomainName": {
             "type": "string",
             "metadata": {
                 "description": "The name of the Event Grid domain."
@@ -34,62 +34,60 @@
             }
         },
         "tags": {
-          "type": "object",
-          "metadata": {
-              "description": "The tags to append on each resource created."
-          }
-      }
+            "type": "object",
+            "metadata": {
+                "description": "The tags to append on each resource created."
+            }
+        }
     },
     "resources": [
         {
-          "name": "[parameters('eventGridDomainName')]",
-          "type": "Microsoft.EventGrid/domains",
-          "apiVersion": "2020-06-01",
-          "location": "string",
-          "tags": "[parameters('tags')]",
-          "properties": {},
-          "resources": [
-            {
-              "name": "[parameters('eventGridDomainTopicName')]",
-              "type": "Microsoft.EventGrid/domains/topics",
-              "apiVersion": "2020-06-01",
-              "dependsOn": [
-                  "[parameters('eventGridDomainName')]"
-              ]
-              },
-              {
-                  "name": "[parameters('eventGridSubscriptionName']",
-                  "type": "Microsoft.EventGrid/eventSubscriptions",
-                  "apiVersion": "2020-06-01",
-                  "properties": {
-                      "destination": {
-                          "endpointType": "WebHook",
-                          "properties": {
-                              "maxEventsPerBatch": "1",
-                              "preferredBatchSizeInKilobytes": "64",
-                              "azureActiveDirectoryApplicationIdOrUri": "7e38aba9-2ca9-4605-86e1-b00ba76afd24",
-                              "azureActiveDirectoryTenantId": "3aa4a235-b6e2-48d5-9195-7fcf05b459b0",
-                              "endpointUrl": "[parameters('eventGridSubscriptionUrl')]"
-                          }
-                      },
-                      "filter": {
-                          "includedEventTypes": [
-                              "All"
-                          ]
-                      },
-                      "eventDeliverySchema": "EventGridSchema",
-                      "retryPolicy": {
-                        "maxDeliveryAttempts": "30",
-                        "eventTimeToLiveInMinutes": "1440"
-                      }
-                    
-                  },
-                  "dependsOn": [
-                      "[parameters('eventGridDomainTopicName')]"
-                  ]
-              }
-          ]
+            "name": "[parameters('eventGridDomainName')]",
+            "type": "Microsoft.EventGrid/domains",
+            "apiVersion": "2020-06-01",
+            "location": "string",
+            "tags": "[parameters('tags')]",
+            "properties": {},
+            "resources": [
+                {
+                    "name": "[parameters('eventGridDomainTopicName')]",
+                    "type": "Microsoft.EventGrid/domains/topics",
+                    "apiVersion": "2020-06-01",
+                    "dependsOn": [
+                        "[parameters('eventGridDomainName')]"
+                    ]
+                },
+                {
+                    "name": "[parameters('eventGridSubscriptionName')]",
+                    "type": "Microsoft.EventGrid/eventSubscriptions",
+                    "apiVersion": "2020-06-01",
+                    "properties": {
+                        "destination": {
+                            "endpointType": "WebHook",
+                            "properties": {
+                                "maxEventsPerBatch": "1",
+                                "preferredBatchSizeInKilobytes": "64",
+                                "azureActiveDirectoryApplicationIdOrUri": "7e38aba9-2ca9-4605-86e1-b00ba76afd24",
+                                "azureActiveDirectoryTenantId": "3aa4a235-b6e2-48d5-9195-7fcf05b459b0",
+                                "endpointUrl": "[parameters('eventGridSubscriptionUrl')]"
+                            }
+                        },
+                        "filter": {
+                            "includedEventTypes": [
+                                "All"
+                            ]
+                        },
+                        "eventDeliverySchema": "EventGridSchema",
+                        "retryPolicy": {
+                            "maxDeliveryAttempts": "30",
+                            "eventTimeToLiveInMinutes": "1440"
+                        }
+                    },
+                    "dependsOn": [
+                        "[parameters('eventGridDomainTopicName')]"
+                    ]
+                }
+            ]
         }
-       
     ]
 }
