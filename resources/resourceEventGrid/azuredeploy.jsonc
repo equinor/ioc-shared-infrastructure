@@ -54,20 +54,19 @@
             }
         },
         {
-            "name": "[parameters('eventGridDomainTopicName')]",
+            "name": "[concat(parameters('eventGridDomainName'),'/', parameters('eventGridDomainTopicName'))]",
             "type": "Microsoft.EventGrid/domains/topics",
             "apiVersion": "2020-06-01",
             "dependsOn": [
                 "[resourceId('Microsoft.EventGrid/domains', parameters('eventGridDomainName'))]"
             ]
-        }
-        ,
+        },
         {
             "name": "[parameters('eventGridSubscriptionName')]",
-            "type": "Microsoft.EventGrid/topics/providers/eventSubscriptions",
+            "type": "Microsoft.EventGrid/domain/topics/providers/eventSubscriptions",
             "apiVersion": "2020-06-01",
             "properties": {
-                "mode" :"Incremental",
+                "mode":"Incremental",
                 "destination": {
                     "endpointType": "WebHook",
                     "properties": {
@@ -90,7 +89,7 @@
                 }
             },
             "dependsOn": [
-                "[parameters('eventGridDomainTopicName')]"
+                "[resourceId('Microsoft.EventGrid/domains/topics', concat(parameters('eventGridDomainName'),'/', parameters('eventGridDomainTopicName'))]"
             ]
         } 
     ]
