@@ -52,7 +52,10 @@
                 {
                     "name": "[parameters('eventGridDomainTopicName')]",
                     "type": "topics",
-                    "apiVersion": "2020-06-01"
+                    "apiVersion": "2020-06-01",
+                    "dependsOn": [
+                        "[parameters('eventGridDomainName')]"
+                    ]
                 },
                 {
                     "name": "[parameters('eventGridSubscriptionName')]",
