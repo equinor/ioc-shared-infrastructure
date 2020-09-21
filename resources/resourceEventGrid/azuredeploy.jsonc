@@ -92,7 +92,8 @@
                 }
             },
             "dependsOn": [
-                "[resourceId(variables('topicRef'), parameters('eventGridDomainTopicName'))]"
+                "[extensionResourceId(resourceId('Microsoft.EventGrid/domains/topics', parameters('eventGridDomainTopicName')), 'Microsoft.EventGrid/topics/providers/eventSubscriptions/', parameters('eventGridSubscriptionName'))]"
+               
             ]
         } 
     ]
