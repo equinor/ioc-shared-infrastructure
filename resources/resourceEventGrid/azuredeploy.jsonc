@@ -89,7 +89,7 @@
                 }
             },
             "dependsOn": [
-                "[resourceId('Microsoft.EventGrid/domains/topics', concat(parameters('eventGridDomainName'),'/', parameters('eventGridDomainTopicName'))]"
+                "[resourceId('Microsoft.EventGrid/domains/topics', concat(parameters('eventGridDomainName'),'/', parameters('eventGridDomainTopicName')))]"
             ]
         } 
     ]
