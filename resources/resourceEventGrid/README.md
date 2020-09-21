@@ -1,40 +1,21 @@
-# Function App
+# Event Grid
 
-Combines a function app, the storage account required for it, and a connected
-ApplicationInsights instance.
+Creates a EventGrid domain, a domain topic and the domain topics' subscription,
 
 ![Resource view](overview.png)
 
 ## Template parameters
 
-| Parameter name         | Type   | Required | Value                                                                                                                                                                   |
-|------------------------|--------|----------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| appServicePlanName     | string | Yes      | The name of the hosting plan.                                                                                                                                           |
-| appServicePlanSku      | string | No       | The Name of AppServicePlan Sku allowedValues":  "allowedValues": [
-        "S1",   // Standard 
-        "S2",   // Standard 
-        "S3",   // Standard 
-        "P1V2", // Premium V2 
-        "P2V2", // Premium V2 
-        "P3V2", // Premium V2       
-        "Y1" // Dynamic consumption plan
-      ],
-| serverFarmsKind        | string | No       | The kind of serverFarms to run the FunctionApp allowedValues ['linux','windows']                                                                                        |
-| functionAppName        | string | Yes      | The name of the function app.                                                                                                                                           |
-| storageAccountName     | string | Yes      | The name of the storage account used by the function(s).                                                                                                                |
-| location               | string | No       | The name of the resource group. "defaultValue": "[resourceGroup().location]"                                                                                            |
-| tags                   | object | Yes      | Tags that are associated with the resource. (https://docs.microsoft.com/en-us/azure/templates/microsoft.resources/tags)                                                 |
-| appSettings            | array  | No       | The SiteConfig's appSettings of the functionApp   "defaultValue": [
-                                                                                                                    {
-                                                                                                                    "name": "FUNCTIONS_WORKER_RUNTIME",
-                                                                                                                    "value": "python"
-                                                                                                                    },
-                                                                                                                    {
-                                                                                                                    "name": "FUNCTIONS_EXTENSION_VERSION",
-                                                                                                                    "value": "~2"
-                                                                                                                    }]
-                                              Note:  appSettings must at least contains value for FUNCTIONS_WORKER_RUNTIME and  FUNCTIONS_EXTENSION_VERSION                                           
-|
+| Parameter name           | Type   | Required | Value                                                                                                                                                                   |
+|--------------------------|--------|----------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| eventGridDomainName      | string | Yes      | The name of the Event Grid domain.                                                                                                                                      |
+| eventGridDomainTopicName | string | Yes      | The name of the Event Grid domain topic.                                                                                                                                |
+| eventGridSubscriptionName| string | Yes      | The name of the Event Grid domain topic's subscription.                                                                                                                 |
+| eventGridSubscriptionUrl | string | Yes      | The webhook URL to send the subscription events to.                                                                                                                     |
+|                                                This URL must be valid and must be prepared to accept the Event Grid webhook URL challenge request                                                                      |
+| location               | string | No       | The name of the resource group. "defaultValue": "[resourceGroup().location]"                                                                                              |
+| tags                   | object | Yes      | Tags that are associated with the resource. (https://docs.microsoft.com/en-us/azure/templates/microsoft.resources/tags)                                                   |
+                                     
 
 ## Example usage
 
@@ -49,17 +30,21 @@ az deployment group create --mode Incremental --name myFunctionAppDeployment --r
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-                    "appServicePlanName": {
-                        "value": "MyAppServicePlanName"
+                    "eventGridDomainName": {
+                        "value": "MyeventGridDomainName"
                     },
-                    "functionAppName": {
-                        "value":  "MyFunctionAppName" 
+                    "eventGridDomainTopicName": {
+                        "value":  "MyeventGridDomainTopicName" 
                     },
-                     "storageAccountName": {
-                        "value": "MyStorageAccountName"
-                    },                    
+                     "eventGridSubscriptionName": {
+                        "value": "MyeventGridSubscriptionName"
+                    }, 
+                    },
+                     "eventGridSubscriptionUrl": {
+                        "value": "MyeventGridSubscriptionUrl"
+                    },                            
                     "location" : {
-                        "value" : "myFunctionAppLocation"
+                        "value" : "myEventGridLocation"
                     },
                     "tags": {
                         "value": {
@@ -67,25 +52,7 @@ az deployment group create --mode Incremental --name myFunctionAppDeployment --r
                                 "ServiceName": "MyServiceName",
                                 "Team": "MyTeam",
                                 "GeneratedBy": "[concat('myApp-', deployment().properties.template.contentVersion)]"            
-                            },
-                    
-                    "appSettings": {
-                        "value": [
-                             {
-                                "name": "FUNCTIONS_WORKER_RUNTIME",
-                                "value": "python"
-                             },
-                             {
-                               "name": "FUNCTIONS_EXTENSION_VERSION",
-                               "value": "~2"
-                            },
-                            {
-                                "name": "MyCustomAppsetting",
-                                "value": "120d"
-                            },            
-                            ]
-                                                                                                                   
-                    }                
+                            }
                 }
     }
 }

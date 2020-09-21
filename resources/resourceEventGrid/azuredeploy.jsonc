@@ -2,7 +2,13 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "eventGridTopicName": {
+          "eventGridDomainName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the Event Grid domain."
+            }
+        },
+        "eventGridDomainTopicName": {
             "type": "string",
             "metadata": {
                 "description": "The name of the Event Grid custom topic."
@@ -36,32 +42,54 @@
     },
     "resources": [
         {
-            "name": "[parameters('eventGridTopicName')]",
-            "type": "Microsoft.EventGrid/topics",
-            "location": "[parameters('location')]",
-            "apiVersion": "2018-01-01"
-        },
-        {
-            "name": "[concat(parameters('eventGridTopicName'), '/Microsoft.EventGrid/', parameters('eventGridSubscriptionName'))]",
-            "type": "Microsoft.EventGrid/topics/providers/eventSubscriptions",
-            "location": "[parameters('location')]",
-            "apiVersion": "2018-01-01",
-            "properties": {
-                "destination": {
-                    "endpointType": "WebHook",
-                    "properties": {
-                        "endpointUrl": "[parameters('eventGridSubscriptionUrl')]"
-                    }
-                },
-                "filter": {
-                    "includedEventTypes": [
-                        "All"
-                    ]
-                }
-            },
-            "dependsOn": [
-                "[parameters('eventGridTopicName')]"
-            ]
+          "name": "[parameters('eventGridDomainName')]",
+          "type": "Microsoft.EventGrid/domains",
+          "apiVersion": "2020-06-01",
+          "location": "string",
+          "tags": "[parameters('tags')]",
+          "properties": {},
+          "resources": [
+            {
+              "name": "[parameters('eventGridDomainTopicName')]",
+              "type": "Microsoft.EventGrid/domains/topics",
+              "apiVersion": "2020-06-01",
+              "dependsOn": [
+                  "[parameters('eventGridDomainName')]"
+              ]
+              },
+              {
+                  "name": "[parameters('eventGridSubscriptionName']",
+                  "type": "Microsoft.EventGrid/eventSubscriptions",
+                  "apiVersion": "2020-06-01",
+                  "properties": {
+                      "destination": {
+                          "endpointType": "WebHook",
+                          "properties": {
+                              "maxEventsPerBatch": "1",
+                              "preferredBatchSizeInKilobytes": "64",
+                              "azureActiveDirectoryApplicationIdOrUri": "7e38aba9-2ca9-4605-86e1-b00ba76afd24",
+                              "azureActiveDirectoryTenantId": "3aa4a235-b6e2-48d5-9195-7fcf05b459b0",
+                              "endpointUrl": "[parameters('eventGridSubscriptionUrl')]"
+                          }
+                      },
+                      "filter": {
+                          "includedEventTypes": [
+                              "All"
+                          ]
+                      },
+                      "eventDeliverySchema": "EventGridSchema",
+                      "retryPolicy": {
+                        "maxDeliveryAttempts": "30",
+                        "eventTimeToLiveInMinutes": "1440"
+                      }
+                    
+                  },
+                  "dependsOn": [
+                      "[parameters('eventGridDomainTopicName')]"
+                  ]
+              }
+          ]
         }
+       
     ]
 }
