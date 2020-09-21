@@ -58,7 +58,7 @@ function Publish-DatabaseUsersAndPermissions {
         [Parameter(Mandatory = $true)]
         [string]$TargetServer,
         [Parameter(Mandatory = $true)]
-        [string]$TargetDatbase,
+        [string]$TargetDatabase,
         [switch]$EnablePasswordRotation,
         [int]$RotationDays=-90
     )
@@ -149,6 +149,7 @@ function Publish-DatabaseUsersAndPermissions {
                         $servicePrincipal = (Get-AzADServicePrincipal -SearchString "$currentUserName").Id
 
                         if($servicePrincipal) {
+                            Write-Verbose ("Assiging access policy to {0} on KeyVault {1}" -f $currentUserName, $KeyVaultName)
                             Set-AzKeyVaultAccessPolicy -VaultName "$KeyVaultName" -ObjectId $servicePrincipal -PermissionsToSecrets Get
                         }
                     }
@@ -183,6 +184,7 @@ function Publish-DatabaseUsersAndPermissions {
 
     # When the sql statements are generated. It must be run
     # towards the target sql server.
+    Write-Verbose 'Executing query on target database'
     $token = az account get-access-token --resource https://database.windows.net --output tsv --query accessToken
     $accessToken = $token
 
