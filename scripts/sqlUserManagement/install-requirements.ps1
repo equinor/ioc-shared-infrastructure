@@ -7,9 +7,7 @@ if (!(Test-Path .\.psyaml\source\PSYaml\PSYaml.psd1)) {
     Get-Item .\.psyaml\PSYaml-master | Rename-Item -newName source
 }
 
-## TODO : Add support for direct query towards database
-## in a secure way.
-# if(!(Get-Module -ListAvailable -Name SqlServer)) {
-#     Write-Host 'SqlServer module was not found and must be installed.'
-#     Install-Module -Name SqlServer -Scope CurrentUser
-# }
+if(!(Get-Module -ListAvailable -Name MSAL.PS)) {
+    Write-Host 'MSAL.PS module was not found'
+    Install-Module -Name MSAL.PS -Scope CurrentUser
+}

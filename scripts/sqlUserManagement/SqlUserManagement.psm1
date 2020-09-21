@@ -180,6 +180,22 @@ function Publish-DatabaseUsersAndPermissions {
             }
         }
     }
+
+    # When the sql statements are generated. It must be run
+    # towards the target sql server.
+    $token = az account get-access-token --resource https://database.windows.net --output tsv --query accessToken
+    $accessToken = $token
+
+    $sqlConnection = New-Object System.Data.SqlClient.SqlConnection
+    $sqlConnection.ConnectionString = "Data Source=tcp:{0},1433;Initial Catalog={1};Persist Security Info=True;Connect Timeout=30;Encrypt=True;TrustServerCertificate=True" -f "$TargetServer.database.windows.net", $TargetDatbase
+    $sqlConnection.AccessToken = $accessToken
+
+    $command = $sqlConnection.CreateCommand()
+    $command.CommandText = $sqlStatement
+    $command.CommandType.Text
+    $command.Connection.Open()
+    $command.ExecuteReader()
+    $sqlConnection.Close()
 }
 
 Export-ModuleMember -Function 'Publish-DatabaseUsersAndPermissions'
