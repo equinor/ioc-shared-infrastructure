@@ -189,7 +189,7 @@ function Publish-DatabaseUsersAndPermissions {
     $accessToken = $token
 
     $sqlConnection = New-Object System.Data.SqlClient.SqlConnection
-    $sqlConnection.ConnectionString = "Data Source=tcp:{0},1433;Initial Catalog={1};Persist Security Info=True;Connect Timeout=30;Encrypt=True;TrustServerCertificate=True" -f "$TargetServer.database.windows.net", $TargetDatbase
+    $sqlConnection.ConnectionString = ("Data Source=tcp:{0},1433;Initial Catalog={1};Persist Security Info=True;Connect Timeout=30;Encrypt=True;TrustServerCertificate=True" -f "$TargetServer.database.windows.net", $TargetDatabase)
     $sqlConnection.AccessToken = $accessToken
 
     $command = $sqlConnection.CreateCommand()
