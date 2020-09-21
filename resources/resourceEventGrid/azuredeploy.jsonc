@@ -46,7 +46,7 @@
             "name": "[parameters('eventGridDomainName')]",
             "type": "Microsoft.EventGrid/domains",
             "apiVersion": "2020-06-01",
-            "location": "norwayeast",
+            "location": "[parameters('location')]",
             "tags": "[parameters('tags')]",
             "properties": {
                 "inputSchema": "EventGridSchema",
@@ -54,19 +54,20 @@
             }
         },
         {
-            "name": "[concat(parameters('eventGridDomainName'),'/', parameters('eventGridDomainTopicName'))]",
+            "name": "[parameters('eventGridDomainTopicName')]",
             "type": "Microsoft.EventGrid/domains/topics",
             "apiVersion": "2020-06-01",
             "dependsOn": [
                 "[resourceId('Microsoft.EventGrid/domains', parameters('eventGridDomainName'))]"
             ]
         }
-        /* ,
+        ,
         {
             "name": "[parameters('eventGridSubscriptionName')]",
-            "type": "Microsoft.EventGrid/eventSubscriptions",
+            "type": "Microsoft.EventGrid/topics/providers/eventSubscriptions",
             "apiVersion": "2020-06-01",
             "properties": {
+                "mode" :"Incremental",
                 "destination": {
                     "endpointType": "WebHook",
                     "properties": {
@@ -89,8 +90,8 @@
                 }
             },
             "dependsOn": [
-                "[resourceId('Microsoft.EventGrid/domains/topics', concat(parameters('eventGridDomainName'),'/', parameters('eventGridDomainTopicName'))]"
+                "[parameters('eventGridDomainTopicName')]"
             ]
-        } */
+        } 
     ]
 }
