@@ -54,13 +54,14 @@
             }
         },
         {
-            "name": "[parameters('eventGridDomainTopicName')]",
+            "name": "[concat(parameters('eventGridDomainName'),'/', parameters('eventGridDomainTopicName'))]",
             "type": "Microsoft.EventGrid/domains/topics",
             "apiVersion": "2020-06-01",
             "dependsOn": [
                 "[resourceId('Microsoft.EventGrid/domains', parameters('eventGridDomainName'))]"
             ]
-        },
+        }
+        /* ,
         {
             "name": "[parameters('eventGridSubscriptionName')]",
             "type": "Microsoft.EventGrid/eventSubscriptions",
@@ -88,8 +89,8 @@
                 }
             },
             "dependsOn": [
-                "[resourceId('Microsoft.EventGrid/domains/topics', parameters('eventGridDomainTopicName'))]"
+                "[resourceId('Microsoft.EventGrid/domains/topics', concat(parameters('eventGridDomainName'),'/', parameters('eventGridDomainTopicName'))]"
             ]
-        }
+        } */
     ]
 }
