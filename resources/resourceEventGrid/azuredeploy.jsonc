@@ -11,7 +11,7 @@
         "eventGridDomainTopicName": {
             "type": "string",
             "metadata": {
-                "description": "The name of the Event Grid custom topic."
+                "description": "The names of the Event Grid topics."
             }
         },
         "eventGridSubscriptionName": {
@@ -35,6 +35,10 @@
         },
         "tags": {
             "type": "object",
+            "defaultValue": {
+                    "ServiceName": "CoreDataAPI",
+                    "Team": "IOC-EIS"
+                },
             "metadata": {
                 "description": "The tags to append on each resource created."
             }
@@ -56,14 +60,14 @@
             }
         },
         {
-            "name": "[parameters('eventGridDomainTopicName')]",
+            "name":  "[concat(parameters('eventGridDomainName'), '/',parameters('eventGridDomainTopicName'))]" ,
             "type": "Microsoft.EventGrid/domains/topics",
             "apiVersion": "2020-06-01",
             "dependsOn": [
                 "[resourceId('Microsoft.EventGrid/domains', parameters('eventGridDomainName'))]"
             ]
         }
-        ,
+      /*   ,
         {
             "name": "[parameters('eventGridSubscriptionName')]",
             "type": "Microsoft.EventGrid/topics/providers/eventSubscriptions",
@@ -95,6 +99,16 @@
                 "[extensionResourceId(resourceId('Microsoft.EventGrid/domains/topics', parameters('eventGridDomainTopicName')), 'Microsoft.EventGrid/topics/providers/eventSubscriptions/', parameters('eventGridSubscriptionName'))]"
                
             ]
-        } 
-    ]
+        }  */
+    ],
+     "outputs": {
+        "objectId": {
+        "type": "string",
+        "value": "[resourceId('Microsoft.EventGrid/domains', parameters('eventGridDomainName'))]"
+        },
+        "identityObjectId": {
+        "type": "string",
+        "value": "[reference(resourceId('Microsoft.Web/sites', parameters('eventGridDomainName')),'2020-06-01', 'full').identity.principalId]"
+        }
+  }
 }
