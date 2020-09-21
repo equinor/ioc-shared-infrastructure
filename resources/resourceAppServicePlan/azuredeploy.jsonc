@@ -10,6 +10,8 @@
       "allowedValues": [
         "S1",   // Standard Small
         "P1V2", // Premium V2 Small
+        "P2V2", // Premium V2 Medium
+        "P3V2", // Premium V2 Large
         "PC2",  // Premium Container Small
         "PC3"   // Premium Container Medium
       ],
