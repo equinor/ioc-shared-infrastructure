@@ -45,7 +45,7 @@
             "name": "[parameters('eventGridDomainName')]",
             "type": "Microsoft.EventGrid/domains",
             "apiVersion": "2020-06-01",
-            "location": "string",
+            "location": "[parameters('location')]",
             "tags": "[parameters('tags')]",
             "properties": {},
             "resources": [
