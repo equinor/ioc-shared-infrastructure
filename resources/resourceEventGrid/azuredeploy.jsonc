@@ -40,7 +40,9 @@
             }
         }
     },
-    "variables": {},
+    "variables": {
+        "topicRef": "[concat('Microsoft.EventGrid/domains/', parameters('eventGridDomainName'),'topics')]"
+    },
     "resources": [
         {
             "name": "[parameters('eventGridDomainName')]",
@@ -90,7 +92,7 @@
                 }
             },
             "dependsOn": [
-                "[resourceId('Microsoft.EventGrid/domains/topics', parameters('eventGridDomainTopicName'))]"
+                "[resourceId(variables('topicRef'), parameters('eventGridDomainTopicName'))]"
             ]
         } 
     ]
