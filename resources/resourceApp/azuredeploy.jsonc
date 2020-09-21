@@ -43,7 +43,7 @@
     },
     "acrResourceGroup": {
       "type": "string",
-      "defaultValue": "resourceGroup().name"
+      "defaultValue": "[resourceGroup().name]"
     }
   },
   "functions": [
