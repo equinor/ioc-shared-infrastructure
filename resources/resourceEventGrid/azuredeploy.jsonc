@@ -41,7 +41,7 @@
         }
     },
     "variables": {
-        "topicRef": "[concat('Microsoft.EventGrid/domains/', parameters('eventGridDomainName'),'/topics/')]"
+        "topicRef": "[concat('Microsoft.EventGrid/domains/', parameters('eventGridDomainName'),'/topics')]"
     },
     "resources": [
         {
