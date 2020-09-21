@@ -60,7 +60,8 @@
             "dependsOn": [
                 "[resourceId('Microsoft.EventGrid/domains', parameters('eventGridDomainName'))]"
             ]
-        },
+        }
+       /*  ,
         {
             "name": "[parameters('eventGridSubscriptionName')]",
             "type": "Microsoft.EventGrid/domain/topics/providers/eventSubscriptions",
@@ -89,8 +90,8 @@
                 }
             },
             "dependsOn": [
-                "[resourceId('Microsoft.EventGrid/domains/topics', concat(parameters('eventGridDomainName'),'/', parameters('eventGridDomainTopicName')))]"
+                "[resourceId('Microsoft.EventGrid/domains/topics', parameters('eventGridDomainTopicName'))]"
             ]
-        } 
+        }  */
     ]
 }
