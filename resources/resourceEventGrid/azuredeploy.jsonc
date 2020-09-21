@@ -8,22 +8,10 @@
                 "description": "The name of the Event Grid domain."
             }
         },
-        "eventGridDomainTopicName": {
-            "type": "string",
+        "eventGridDomainTopicNames": {
+            "type": "array",
             "metadata": {
-                "description": "The names of the Event Grid topics."
-            }
-        },
-        "eventGridSubscriptionName": {
-            "type": "string",
-            "metadata": {
-                "description": "The name of the Event Grid custom topic's subscription."
-            }
-        },
-        "eventGridSubscriptionUrl": {
-            "type": "string",
-            "metadata": {
-                "description": "The webhook URL to send the subscription events to. This URL must be valid and must be prepared to accept the Event Grid webhook URL challenge request."
+                "description": "The names of the Event Grid domain topics."
             }
         },
         "location": {
@@ -44,9 +32,7 @@
             }
         }
     },
-    "variables": {
-        "topicRef": "[concat('Microsoft.EventGrid/domains/', parameters('eventGridDomainName'),'/topics')]"
-    },
+    "variables": {},
     "resources": [
         {
             "name": "[parameters('eventGridDomainName')]",
@@ -60,55 +46,24 @@
             }
         },
         {
-            "name":  "[concat(parameters('eventGridDomainName'), '/',parameters('eventGridDomainTopicName'))]" ,
+            "name":  "[concat(parameters('eventGridDomainName'), '/',parameters('eventGridDomainTopicNames')[copyIndex()])]" ,
             "type": "Microsoft.EventGrid/domains/topics",
             "apiVersion": "2020-06-01",
+            "properties":{                
+            },
+            "copy": {
+                     "name": "topics",
+                    "count": "[length(parameters('eventGridDomainTopicNames'))]"
+            },         
             "dependsOn": [
                 "[resourceId('Microsoft.EventGrid/domains', parameters('eventGridDomainName'))]"
             ]
         }
-      /*   ,
-        {
-            "name": "[parameters('eventGridSubscriptionName')]",
-            "type": "Microsoft.EventGrid/topics/providers/eventSubscriptions",
-            "apiVersion": "2020-06-01",
-            "properties": {
-                "mode":"Incremental",
-                "destination": {
-                    "endpointType": "WebHook",
-                    "properties": {
-                        "maxEventsPerBatch": "1",
-                        "preferredBatchSizeInKilobytes": "64",
-                        "azureActiveDirectoryApplicationIdOrUri": "7e38aba9-2ca9-4605-86e1-b00ba76afd24",
-                        "azureActiveDirectoryTenantId": "3aa4a235-b6e2-48d5-9195-7fcf05b459b0",
-                        "endpointUrl": "[parameters('eventGridSubscriptionUrl')]"
-                    }
-                },
-                "filter": {
-                    "includedEventTypes": [
-                        "All"
-                    ]
-                },
-                "eventDeliverySchema": "EventGridSchema",
-                "retryPolicy": {
-                    "maxDeliveryAttempts": "30",
-                    "eventTimeToLiveInMinutes": "1440"
-                }
-            },
-            "dependsOn": [
-                "[extensionResourceId(resourceId('Microsoft.EventGrid/domains/topics', parameters('eventGridDomainTopicName')), 'Microsoft.EventGrid/topics/providers/eventSubscriptions/', parameters('eventGridSubscriptionName'))]"
-               
-            ]
-        }  */
     ],
      "outputs": {
         "objectId": {
         "type": "string",
         "value": "[resourceId('Microsoft.EventGrid/domains', parameters('eventGridDomainName'))]"
-        },
-        "identityObjectId": {
-        "type": "string",
-        "value": "[reference(resourceId('Microsoft.Web/sites', parameters('eventGridDomainName')),'2020-06-01', 'full').identity.principalId]"
         }
   }
 }
