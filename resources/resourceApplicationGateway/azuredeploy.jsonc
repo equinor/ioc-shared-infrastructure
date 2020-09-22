@@ -38,6 +38,20 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
         "description": "ID to the KeyVault certificate secret used for SSL."
       }
     },
+    "allowIpList": {
+      "type": "array",
+      "defaultValue": "[json(' [ ] ')]",
+      "metadata": {
+        "description": "List of IP's to allow traffic from"
+      }
+    },
+    "allowGeoRegionsList": {
+      "type": "array",
+      "defaultValue": "[json(' [ ] ')]",
+      "metadata": {
+        "description": "List of geo regions to allow traffic from"
+      }
+    },
     "applications": {
       "type": "array",
       "metadata": {
@@ -283,6 +297,34 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
             }
           }
         ],
+        "rewriteRuleSets": [
+          {
+            "name": "forward-host-header",
+            "type": "Microsoft.Network/applicationGateways/rewriteRuleSets",
+            "properties": {
+              "rewriteRules": [
+                {
+                  "ruleSequence": 100,
+                  "conditions": "[json(' [ ] ')]",
+                  "name": "forward-host-header-rule",
+                  "actionSet": {
+                    "requestHeaderConfigurations": [
+                      {
+                        "headerName": "X-Forwarded-Host",
+                        "headerValue": "{var_host}"
+                      },
+                      {
+                        "headerName": "X-Forwarded-Proto",
+                        "headerValue": "{var_request_scheme}"
+                      }
+                    ],
+                    "responseHeaderConfigurations": "[json(' [ ] ')]"
+                  }
+                }
+              ]
+            }
+          }
+        ],
         "redirectConfigurations": [
           {
             "name": "http-to-https-redirect-config",
@@ -365,6 +407,9 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
               "defaultBackendHttpSettings": {
                 "id": "[resourceId('Microsoft.Network/applicationGateways/backendHttpSettingsCollection', variables('application-gateway-name'), concat(parameters('defaultApplication'), '-http-settings'))]"
               },
+              "defaultRewriteRuleSet": {
+                "id": "[resourceId('Microsoft.Network/applicationGateways/rewriteRuleSets', variables('application-gateway-name'), 'forward-host-header')]"
+              },
               "copy": [
                 {
                   "name": "pathRules",
@@ -378,6 +423,9 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
                       },
                       "backendHttpSettings": {
                         "id": "[resourceId('Microsoft.Network/applicationGateways/backendHttpSettingsCollection', variables('application-gateway-name'), concat(parameters('applications')[copyIndex('pathRules')].name, '-http-settings'))]"
+                      },
+                      "rewriteRuleSet": {
+                        "id": "[resourceId('Microsoft.Network/applicationGateways/rewriteRuleSets', variables('application-gateway-name'), 'forward-host-header')]"
                       }
                     }
                   }
@@ -446,7 +494,26 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
       "properties": {
         "customRules": [
           {
-            "name": "deny-non-norway-traffic",
+            "name": "AllowIpAddresses",
+            "priority": 10,
+            "ruleType": "MatchRule",
+            "action": "Allow",
+            "matchConditions": [
+              {
+                "matchVariables": [
+                  {
+                    "variableName": "RemoteAddr"
+                  }
+                ],
+                "operator": "IPMatch",
+                "negationConditon": false,
+                "matchValues": "[parameters('allowIpList')]",
+                "transforms": "[json(' [ ] ')]"
+              }
+            ]
+          },
+          {
+            "name": "DenyNonApprovedGeoTraffic",
             "priority": 100,
             "ruleType": "MatchRule",
             "action": "Block",
@@ -459,9 +526,8 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
                 ],
                 "operator": "GeoMatch",
                 "negationConditon": true,
-                "matchValues": [
-                  "NO"
-                ]
+                "matchValues": "[parameters('allowGeoRegionsList')]",
+                "transforms": "[json(' [ ] ')]"
               }
             ]
           }
