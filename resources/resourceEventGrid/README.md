@@ -1,6 +1,6 @@
 # Event Grid
 
-Creates a EventGrid domain, a domain topic and the domain topics' subscription,
+Creates a EventGrid domain, and one one or multiple domain topics,
 
 ![Resource view](overview.png)
 
@@ -9,18 +9,15 @@ Creates a EventGrid domain, a domain topic and the domain topics' subscription,
 | Parameter name           | Type   | Required | Value                                                                                                                                                                   |
 |--------------------------|--------|----------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | eventGridDomainName      | string | Yes      | The name of the Event Grid domain.                                                                                                                                      |
-| eventGridDomainTopicName | string | Yes      | The name of the Event Grid domain topic.                                                                                                                                |
-| eventGridSubscriptionName| string | Yes      | The name of the Event Grid domain topic's subscription.                                                                                                                 |
-| eventGridSubscriptionUrl | string | Yes      | The webhook URL to send the subscription events to.                                                                                                                     |
-|                                                This URL must be valid and must be prepared to accept the Event Grid webhook URL challenge request                                                                      |
-| location               | string | No       | The name of the resource group. "defaultValue": "[resourceGroup().location]"                                                                                              |
-| tags                   | object | Yes      | Tags that are associated with the resource. (https://docs.microsoft.com/en-us/azure/templates/microsoft.resources/tags)                                                   |
+| eventGridDomainTopicName | string | Yes      | The name of the Event Grid domain topics.                                                                                                                                |
+| location                 | string | No       | The name of the resource group. "defaultValue": "[resourceGroup().location]"                                                                                              |
+| tags                     | object | Yes      | Tags that are associated with the resource. (https://docs.microsoft.com/en-us/azure/templates/microsoft.resources/tags)                                                   |
                                      
 
 ## Example usage
 
 ``` ps
-az deployment group create --mode Incremental --name myFunctionAppDeployment --resource-group myResourceGroup --template-file ./azuredeploy.json --template-uri "https://raw.githubusercontent.com/equinor/ioc-shared-infrastructure/master/resources/resourceFunctionApp/azuredeploy.jsonc"
+az deployment group create --mode Incremental --name myEventGridDeployment --resource-group myResourceGroup --template-file ./azuredeploy.json --template-uri "https://raw.githubusercontent.com/equinor/ioc-shared-infrastructure/master/resources/resourceFunctionApp/azuredeploy.jsonc"
 ```
 
 ## Example parameter file
@@ -33,16 +30,9 @@ az deployment group create --mode Incremental --name myFunctionAppDeployment --r
                     "eventGridDomainName": {
                         "value": "MyeventGridDomainName"
                     },
-                    "eventGridDomainTopicName": {
-                        "value":  "MyeventGridDomainTopicName" 
-                    },
-                     "eventGridSubscriptionName": {
-                        "value": "MyeventGridSubscriptionName"
-                    }, 
-                    },
-                     "eventGridSubscriptionUrl": {
-                        "value": "MyeventGridSubscriptionUrl"
-                    },                            
+                    "eventGridDomainTopicNames": {
+                        "value":   ["Mytopic1","Mytopic2"] 
+                    },                   
                     "location" : {
                         "value" : "myEventGridLocation"
                     },
