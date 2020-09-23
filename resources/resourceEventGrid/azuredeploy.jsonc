@@ -8,10 +8,16 @@
                 "description": "The name of the Event Grid domain."
             }
         },
-        "eventGridTopicName": {
-            "type": "string",
+        "eventGridDomainTopicNames": {
+            "type": "array",
             "metadata": {
-                "description": "The name of the Event Grid domain."
+                "description": "The names of the Event Grid domain topics."
+            }
+        },
+        "eventGridDomainTopicSubscriptions": {
+            "type": "array",
+            "metadata": {
+                "description": "The configuration of the Event Grid domain topics subscriptions"
             }
         },
         "location": {
@@ -24,9 +30,9 @@
         "tags": {
             "type": "object",
             "defaultValue": {
-                "ServiceName": "CoreDataAPI",
-                "Team": "IOC-EIS"
-            },
+                    "ServiceName": "CoreDataAPI",
+                    "Team": "IOC-EIS"
+                },
             "metadata": {
                 "description": "The tags to append on each resource created."
             }
@@ -45,135 +51,40 @@
                 "publicNetworkAccess": "Enabled"
             }
         },
+
         {
+            "name":  "[concat(parameters('eventGridDomainName'), '/',parameters('eventGridDomainTopicNames')[copyIndex()])]" ,
             "type": "Microsoft.EventGrid/domains/topics",
             "apiVersion": "2020-06-01",
-            "name": "[concat(parameters('eventGridDomainName'), '/', parameters('eventGridTopicName'))]",
+            "properties":{               
+            },
+            "copy": {
+                     "name": "topics",
+                    "count": "[length(parameters('eventGridDomainTopicNames'))]"
+            },         
             "dependsOn": [
                 "[resourceId('Microsoft.EventGrid/domains', parameters('eventGridDomainName'))]"
             ]
         },
-        {
-            "name": "[concat(parameters('eventGridDomainName'), '/', parameters('eventGridTopicName'), '/Microsoft.EventGrid/calcengine-webhook-subscription')]",
+         {
+            "name": "[concat(parameters('eventGridDomainName'), '/', parameters('eventGridDomainTopicSubscriptions')[copyIndex()]['topic'], '/Microsoft.EventGrid/', parameters('eventGridDomainTopicSubscriptions')[copyIndex()]['name'])]",
             "type": "Microsoft.EventGrid/domains/topics/providers/eventSubscriptions",
             "apiVersion": "2020-06-01",
+             "copy": {
+                     "name": "subscriptions",
+                    "count": "[length(parameters('eventGridDomainTopicSubscriptions'))]"
+            },         
             "dependsOn": [
                 "[resourceId('Microsoft.EventGrid/domains', parameters('eventGridDomainName'))]",
-                "[resourceId('Microsoft.EventGrid/domains/topics', parameters('eventGridDomainName'), parameters('eventGridTopicName'))]"
+                "[resourceId('Microsoft.EventGrid/domains/topics', parameters('eventGridDomainName'), parameters('eventGridDomainTopicSubscriptions')[copyIndex()]['topic'])]"
             ],
-            "properties": {
-                "destination": {
-                    "endpointType": "WebHook",
-                    "properties": {
-                        "maxEventsPerBatch": "1",
-                        "preferredBatchSizeInKilobytes": "64",
-                        "azureActiveDirectoryApplicationIdOrUri": "cf7a92b2-fa5d-4549-9a9c-1fb53b92b3a6",
-                        "azureActiveDirectoryTenantId": "3aa4a235-b6e2-48d5-9195-7fcf05b459b0",
-                        "endpointUrl": "https://s039-ioc-calcengineorchestrator-app-dev.azurewebsites.net/api/events"
-                    }
-                }
-
-                /*,
-                        "filter": {
-                            "includedEventTypes": [
-                                "All"
-                            ]
-                        },
-                        "eventDeliverySchema": "EventGridSchema",
-                        "retryPolicy": {
-                            "maxDeliveryAttempts": "30",
-                            "eventTimeToLiveInMinutes": "1440"
-                        }*/
-            }
+            "properties": "[parameters('eventGridDomainTopicSubscriptions')[copyIndex()]['properties']]"              
         }
-
-
-
-
-
-        /*
-
-        {
-            "name": "[concat(parameters('eventGridDomainName'), '/Microsoft.EventGrid/domains/', parameters('eventGridTopicName'))]",
-            "type": "Microsoft.EventGrid/topics/providers/eventSubscriptions",
-            "location": "[parameters('location')]",
-            "apiVersion": "2018-01-01",
-            "properties": {
-                "destination": {
-                    "endpointType": "WebHook",
-                    "properties": {
-                        "endpointUrl": "https://ioccalcexpert.azurewebsites.net/api/events"
-                    }
-                },
-                "filter": {
-                    "includedEventTypes": [
-                        "All"
-                    ]
-                }
-            },
-            "dependsOn": [
-                "[resourceId('Microsoft.EventGrid/domains', parameters('eventGridDomainName'))]"
-            ]
-        }
-    
-
-,
-        {
-            "name": "[concat(parameters('eventGridDomainName'), '/',parameters('eventGridDomainTopicNames')[copyIndex()])]",
-            "type": "Microsoft.EventGrid/domains/topics",
-            "apiVersion": "2020-06-01",
-            "properties": {
-                "mode": "Incremental",
-                "template": {
-                    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                    "contentVersion": "1.0.0.0",
-                    "resources": [
-                        {
-                            "name": "calcengine-webhook-subscription",
-                            "type": "Microsoft.EventGrid/eventSubscriptions",
-                            "apiVersion": "2020-06-01",
-                            "properties": {
-                                "mode": "Incremental",
-                                "destination": {
-                                    "endpointType": "WebHook",
-                                    "properties": {
-                                        "maxEventsPerBatch": "1",
-                                        "preferredBatchSizeInKilobytes": "64",
-                                        "azureActiveDirectoryApplicationIdOrUri": "cf7a92b2-fa5d-4549-9a9c-1fb53b92b3a6",
-                                        "azureActiveDirectoryTenantId": "3aa4a235-b6e2-48d5-9195-7fcf05b459b0",
-                                        "endpointUrl": "https://s039-ioc-calcengineorchestrator-app-dev.azurewebsites.net/api/events"
-                                    }
-                                },
-                                "filter": {
-                                    "includedEventTypes": [
-                                        "All"
-                                    ]
-                                },
-                                "eventDeliverySchema": "EventGridSchema",
-                                "retryPolicy": {
-                                    "maxDeliveryAttempts": "30",
-                                    "eventTimeToLiveInMinutes": "1440"
-                                }
-                            }
-                        }
-                    ]
-                }
-            },
-            "copy": {
-                "name": "topics",
-                "count": "[length(parameters('eventGridDomainTopicNames'))]"
-            },
-            "dependsOn": [
-                "[resourceId('Microsoft.EventGrid/domains', parameters('eventGridDomainName'))]"
-            ]
-        }*/
-
-
     ],
-    "outputs": {
+     "outputs": {
         "objectId": {
-            "type": "string",
-            "value": "[resourceId('Microsoft.EventGrid/domains', parameters('eventGridDomainName'))]"
+        "type": "string",
+        "value": "[resourceId('Microsoft.EventGrid/domains', parameters('eventGridDomainName'))]"
         }
-    }
+  }
 }
