@@ -18,6 +18,10 @@
     "containerRegistryName": {
       "type": "string"
     },
+    "containerImageName": {
+      "type": "string",
+      "defaultValue": "[parameters('webAppName')]"
+    },
     "containerImageTag": {
       "type": "string"
     },
@@ -27,12 +31,19 @@
     "appGatewayIp": {
       "type": "string"
     },
-    "_appInsightsTag": {
-      "type": "object",
-      "defaultValue": {
-        "[concat('hidden-link:', resourceGroup().id, '/providers/Microsoft.Web/sites/', parameters('webAppName'))]": "Resource",
-        "displayName": "AppInsightsComponent"
-      }
+    "appCommandLine": {
+      "defaultValue": "",
+      "type": "string"
+    },
+    "allowedCorsOrigins": {
+      "type": "array",
+      "defaultValue": [
+        "http://localhost:3001"
+      ]
+    },
+    "acrResourceGroup": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().name]"
     }
   },
   "functions": [
@@ -63,7 +74,6 @@
     }
   ],
   "variables": {
-    "appInsightsName": "[replace(parameters('webAppName'), '-app-', '-appi-')]",
     "globalAppSettings": [
 
       {
@@ -78,32 +88,10 @@
   },
   "resources": [
     {
-      "type": "microsoft.insights/components",
-      "apiVersion": "2020-02-02-preview",
-      "name": "[variables('appInsightsName')]",
-      "location": "[parameters('location')]",
-      "tags": "[union(parameters('tags'), parameters('_appInsightsTag'))]",
-      "kind": "web",
-      "properties": {
-        "ApplicationId": "[parameters('webAppName')]",
-        "Application_Type": "web",
-        "Request_Source": "rest",
-        "ImmediatePurgeDataOn30Days": true,
-        "publicNetworkAccessForIngestion": "Enabled",
-        "publicNetworkAccessForQuery": "Enabled"
-      }
-    },
-    {
       "type": "Microsoft.Web/sites",
       "apiVersion": "2018-11-01",
       "name": "[parameters('webAppName')]",
       "location": "[parameters('location')]",
-      "dependsOn": [
-        "[resourceId('microsoft.insights/components/', variables('appInsightsName'))]"
-        // Should depend on the app service plan through a ref to
-        // appserviceResourceId, but that did not work. Instead, the
-        // dependency is set in the main template.
-      ],
       "tags": "[parameters('tags')]",
       "identity": {
         "type": "SystemAssigned"
@@ -113,8 +101,9 @@
         "serverFarmId": "[parameters('appserviceResourceId')]",
         "clientAffinityEnabled": false,
         "siteConfig": {
-          "linuxFxVersion": "[concat('DOCKER|', parameters('containerRegistryName'), '.azurecr.io/', toLower(parameters('webAppName')), ':', parameters('containerImageTag'))]",
-          "appSettings": "[union(variables('globalAppSettings'), parameters('environmentVariables'), equinor.createSettingsObject('APPINSIGHTS_INSTRUMENTATIONKEY', reference(resourceId('microsoft.insights/components/', variables('appInsightsName'))).InstrumentationKey), equinor.createSettingsObject('DOCKER_REGISTRY_SERVER_URL', reference(resourceId('Microsoft.ContainerRegistry/registries/', parameters('containerRegistryName')), '2019-05-01').loginServer), equinor.createSettingsObject('DOCKER_REGISTRY_SERVER_USERNAME', listCredentials(resourceId('Microsoft.ContainerRegistry/registries/', parameters('containerRegistryName')), '2019-05-01').username), equinor.createSettingsObject('DOCKER_REGISTRY_SERVER_PASSWORD', listCredentials(resourceId('Microsoft.ContainerRegistry/registries/', parameters('containerRegistryName')), '2019-05-01').passwords[0].value))]"
+          "linuxFxVersion": "[concat('DOCKER|', parameters('containerRegistryName'), '.azurecr.io/', toLower(parameters('containerImageName')), ':', parameters('containerImageTag'))]",
+          "appSettings": "[union(variables('globalAppSettings'), parameters('environmentVariables'), equinor.createSettingsObject('DOCKER_REGISTRY_SERVER_URL', reference(resourceId(parameters('acrResourceGroup'), 'Microsoft.ContainerRegistry/registries/', parameters('containerRegistryName')), '2019-05-01').loginServer), equinor.createSettingsObject('DOCKER_REGISTRY_SERVER_USERNAME', listCredentials(resourceId(parameters('acrResourceGroup'), 'Microsoft.ContainerRegistry/registries/', parameters('containerRegistryName')), '2019-05-01').username), equinor.createSettingsObject('DOCKER_REGISTRY_SERVER_PASSWORD', listCredentials(resourceId(parameters('acrResourceGroup'), 'Microsoft.ContainerRegistry/registries/', parameters('containerRegistryName')), '2019-05-01').passwords[0].value))]",
+          "appCommandLine": "[parameters('appCommandLine')]"
         },
         "httpsOnly": true
       },
@@ -125,17 +114,14 @@
           "name": "web",
           "location": "[parameters('location')]",
           "dependsOn": [
-            "[resourceId('Microsoft.Web/sites/', parameters('webAppName'))]",
-            "[resourceId('microsoft.insights/components', variables('appInsightsName'))]"
+            "[resourceId('Microsoft.Web/sites/', parameters('webAppName'))]"
           ],
           "tags": "[parameters('tags')]",
           "properties": {
             "numberOfWorkers": 1,
             "alwaysOn": true,
             "cors": {
-              "allowedOrigins": [
-                "http://localhost:3000"
-              ],
+              "allowedOrigins": "[parameters('allowedCorsOrigins')]",
               "supportCredentials": false
             },
             "http20Enabled": false,
@@ -162,10 +148,6 @@
     "identityObjectId": {
       "type": "string",
       "value": "[reference(resourceId('Microsoft.Web/sites', parameters('webAppName')),'2019-08-01', 'full').identity.principalId]"
-    },
-    "appInsightsName": {
-      "type": "string",
-      "value": "[variables('appInsightsName')]"
     }
   }
 }
