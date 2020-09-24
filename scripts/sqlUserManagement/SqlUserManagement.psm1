@@ -60,7 +60,7 @@ function Publish-DatabaseUsersAndPermissions {
         [Parameter(Mandatory = $true)]
         [string]$TargetDatabase,
         [switch]$EnablePasswordRotation,
-        [int]$RotationDays=-90
+        [int]$RotationDays = -90
     )
     # If any errors has occured. Execution must be stopped.
     $ErrorActionPreference = "Stop"
@@ -94,23 +94,29 @@ function Publish-DatabaseUsersAndPermissions {
         # Parse the environment mapping
         $usersFromEnvironmentToCreate = $userConfig.environments | ForEach-Object {
             $environmentMapping = $_.Split(":")
-            if ($environmentMapping[1] -eq $environment ) {
-                $environmentMapping[0]
-            }
-        }
 
-        # Skip a user creation if it's not part of targeted
-        # environment.
-        if ($usersFromEnvironmentToCreate -notcontains $environment) {
-            return
+            $hash = @{
+                sourceEnvironment = $environmentMapping[0]
+                targetEnvironment = $environmentMapping[1]
+            }
+
+            if ($hash.targetEnvironment -eq $environment ) {
+                $hash
+            }
         }
 
         # If the user to create is of type active directory group
         # then we should only process it once.
-        $usersToCreate = $userConfig.type -eq "active_directory_group" ? $usersFromEnvironmentToCreate[0] : $usersFromEnvironmentToCreate
+        $usersToCreate = $userConfig.type -eq "active_directory_group" -and $usersFromEnvironmentToCreate -is [array] ? $usersFromEnvironmentToCreate[0] : $usersFromEnvironmentToCreate
+
+        # Skip a user creation if it's not part of targeted
+        # environment.
+        if ($usersToCreate.targetEnvironment -ne $environment) {
+            return
+        }
 
         $usersToCreate | ForEach-Object {
-            $currentUserName = $userConfig.format -f $userConfig.name, $_
+            $currentUserName = $userConfig.format -f $userConfig.name, $_.sourceEnvironment
 
             # Generate create user statement.
             switch ($userConfig.type) {
@@ -136,6 +142,7 @@ function Publish-DatabaseUsersAndPermissions {
                     # or that it has been nulled out by the password rotation
                     # logic, we need to create or update the secret.
                     if (!$currentSecret) {
+                        Write-Verbose "Generating password for $currentUserName"
                         $password = ConvertTo-SecureString ( -join ((0x30..0x39) + ( 0x41..0x5A) + ( 0x61..0x7A) | Get-Random -Count 30  | % { [char]$_ }) ) -AsPlainText -Force
                         $currentSecret = Set-AzKeyVaultSecret -VaultName "$KeyVaultName" -Name ('sql-login-password-{0}' -f $currentUserName) -SecretValue $password -ContentType "password"
                     }
