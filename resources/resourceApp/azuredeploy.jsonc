@@ -37,9 +37,7 @@
     },
     "allowedCorsOrigins": {
       "type": "array",
-      "defaultValue": [
-        "http://localhost:3000"
-      ]
+      "defaultValue": "[json(' [ ] ')]"
     },
     "acrResourceGroup": {
       "type": "string",
