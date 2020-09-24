@@ -1,17 +1,24 @@
 # Event Grid
 
-Creates a EventGrid domain, and one one or multiple domain topics,
+Creates a EventGrid domain, one or multiple domain topics containing one or multiple subscriptions,
 
 ![Resource view](overview.png)
 
 ## Template parameters
 
-| Parameter name           | Type   | Required | Value                                                                                                                                                                   |
-|--------------------------|--------|----------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| eventGridDomainName      | string | Yes      | The name of the Event Grid domain.                                                                                                                                      |
-| eventGridDomainTopicName | string | Yes      | The name of the Event Grid domain topics.                                                                                                                                |
-| location                 | string | No       | The name of the resource group. "defaultValue": "[resourceGroup().location]"                                                                                              |
-| tags                     | object | Yes      | Tags that are associated with the resource. (https://docs.microsoft.com/en-us/azure/templates/microsoft.resources/tags)                                                   |
+| Parameter name                    | Type   | Required | Value                                                                                                                                                                   |
+|-----------------------------------|--------|----------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| eventGridDomainName               | string | Yes      | The name of the Event Grid domain.                                                                                                                                      |
+| eventGridDomainTopicNames         | array  | Yes      | The name of the Event Grid domain topics.                                                                                                                               |
+| eventGridDomainTopicSubscriptions | array  | Yes      | The configuration of the Event Grid domain topics' subscriptions.
+                                                            Array of configuration object
+                                                            {
+                                                                "name": "name of subscription ",
+                                                                "topic": "name of a topic from eventGridDomainTopicName",
+                                                                "properties": {subscription property}
+                                                            }
+| location                          | string | No       | The name of the resource group. "defaultValue": "[resourceGroup().location]"                                                                                              |
+| tags                              | object | Yes      | Tags that are associated with the resource. (https://docs.microsoft.com/en-us/azure/templates/microsoft.resources/tags)                                                   |
                                      
 
 ## Example usage
@@ -31,8 +38,38 @@ az deployment group create --mode Incremental --name myEventGridDeployment --res
                         "value": "MyeventGridDomainName"
                     },
                     "eventGridDomainTopicNames": {
-                        "value":   ["Mytopic1","Mytopic2"] 
-                    },                   
+                        "value":   ["MyTopic1","MyTopic2"] 
+                    }, 
+                    "eventGridDomainTopicSubscriptions": {
+                        "value": [{
+                            "name": "MySubscription1",
+                            "topic": "MyTopic1",
+                            "properties":  {
+                                "destination": {
+                                    "endpointType": "WebHook",
+                                    "properties": {
+                                        "azureActiveDirectoryApplicationIdOrUri": "id or uri",
+                                        "azureActiveDirectoryTenantId": "tenentId",
+                                        "endpointUrl": "https://MyApp.azurewebsites.net/api/events"
+                                    }
+                                }
+                            }
+                        },      
+                        {
+                            "name": "MySubscription2",
+                            "topic": "MyTopic2",
+                            "properties":  {
+                                "destination": {
+                                    "endpointType": "WebHook",
+                                    "properties": {                           
+                                        "azureActiveDirectoryApplicationIdOrUri": "id or uri",
+                                        "azureActiveDirectoryTenantId": "tenentId",
+                                        "endpointUrl": "https://MyOtherApp.azurewebsites.net/api/events"
+                                    }
+                                }
+                            }
+                        }
+                        ],               
                     "location" : {
                         "value" : "myEventGridLocation"
                     },
