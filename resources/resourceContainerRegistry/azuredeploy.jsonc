@@ -11,6 +11,10 @@
     },
     "tags": {
       "type": "object"
+    },
+    "sku": {
+      "type": "string",
+      "defaultValue": "Basic"
     }
   },
   "variables": {},
@@ -22,8 +26,8 @@
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "sku": {
-        "name": "Basic",
-        "tier": "Basic"
+        "name": "[parameters('sku')]",
+        "tier": "[parameters('sku')]"
       },
       "properties": {
         // The following properties can only be enabled in the premium sku.
