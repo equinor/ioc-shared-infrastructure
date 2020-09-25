@@ -22,7 +22,7 @@
     },
     "aadClientId": {
       "type": "string",
-      "defaultValue": "testtest"
+      "defaultValue": ""
     },
     "language": {
       "type": "string"
