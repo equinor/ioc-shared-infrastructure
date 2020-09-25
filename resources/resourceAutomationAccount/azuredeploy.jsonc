@@ -1,0 +1,53 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "automationAccountName": {
+            "type": "string"
+        },
+        "location": {
+            "type": "string",
+            "defaultValue": "[resourceGroup().location]"
+        },
+        "tags": {
+            "type": "object"
+        },
+        "automationAccountModules": {
+            "type": "array"
+        }
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Automation/automationAccounts",
+            "apiVersion": "2020-01-13-preview",
+            "name": "[parameters('automationAccountName')]",
+            "location": "[parameters('Location')]",
+            "properties": {
+                "sku": {
+                    "name": "Basic"
+                }
+            },
+            "tags": "[parameters('tags')]"
+        },
+
+        {
+            "name": "[concat(parameters('automationAccountName'), '/', parameters( 'automationAccountModules')[copyIndex()].name)]",
+            "type": "Microsoft.Automation/automationAccounts/modules",
+            "apiVersion": "2015-10-31",
+            "dependsOn": [
+                "[resourceId('Microsoft.Automation/automationAccounts', parameters('automationAccountName'))]"
+            ],
+            "properties": {
+                "contentLink": {
+                    "uri": "[concat('https://www.powershellgallery.com/api/v2/package/',parameters( 'automationAccountModules')[copyIndex()].name,'/',parameters('automationAccountModules')[copyIndex()].version)]"
+                }
+            },
+            "copy": {
+                "name": "AddAutomationAccountModules",
+                "count": "[length(parameters('automationAccountModules'))]"
+            }
+
+        }
+
+    ]
+}
