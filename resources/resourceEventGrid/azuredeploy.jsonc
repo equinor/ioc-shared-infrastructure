@@ -85,10 +85,6 @@
         "objectId": {
         "type": "string",
         "value": "[resourceId('Microsoft.EventGrid/domains', parameters('eventGridDomainName'))]"
-        },
-         "key": { 
-             "type": "securestring", 
-             "value": "[listKeys(resourceId('Microsoft.EventGrid/domains', parameters('eventGridDomainName')),'2020-06-01').key1]"
-        }         
+        }  
   }
 }
