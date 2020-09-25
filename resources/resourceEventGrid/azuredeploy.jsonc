@@ -48,10 +48,9 @@
             "tags": "[parameters('tags')]",
             "properties": {
                 "inputSchema": "EventGridSchema",
-                "publicNetworkAccess": "Enabled"
+                "publicNetworkAccess": "Disabled"
             }
         },
-
         {
             "name":  "[concat(parameters('eventGridDomainName'), '/',parameters('eventGridDomainTopicNames')[copyIndex()])]" ,
             "type": "Microsoft.EventGrid/domains/topics",
@@ -59,20 +58,20 @@
             "properties":{               
             },
             "copy": {
-                     "name": "topics",
-                    "count": "[length(parameters('eventGridDomainTopicNames'))]"
+                "name": "topics",
+                "count": "[length(parameters('eventGridDomainTopicNames'))]"
             },         
             "dependsOn": [
                 "[resourceId('Microsoft.EventGrid/domains', parameters('eventGridDomainName'))]"
             ]
         },
-         {
+        {
             "name": "[concat(parameters('eventGridDomainName'), '/', parameters('eventGridDomainTopicSubscriptions')[copyIndex()]['topic'], '/Microsoft.EventGrid/', parameters('eventGridDomainTopicSubscriptions')[copyIndex()]['name'])]",
             "type": "Microsoft.EventGrid/domains/topics/providers/eventSubscriptions",
             "apiVersion": "2020-06-01",
              "copy": {
-                     "name": "subscriptions",
-                    "count": "[length(parameters('eventGridDomainTopicSubscriptions'))]"
+                "name": "subscriptions",
+                "count": "[length(parameters('eventGridDomainTopicSubscriptions'))]"
             },         
             "dependsOn": [
                 "[resourceId('Microsoft.EventGrid/domains', parameters('eventGridDomainName'))]",
