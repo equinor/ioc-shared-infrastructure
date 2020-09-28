@@ -26,8 +26,7 @@
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "sku": {
-        "name": "[parameters('sku')]",
-        "tier": "[parameters('sku')]"
+        "name": "[parameters('sku')]"
       },
       "properties": {
         // The following properties can only be enabled in the premium sku.
