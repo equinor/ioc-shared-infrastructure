@@ -112,10 +112,11 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
     {
       "type": "Microsoft.OperationalInsights/workspaces",
       "name": "[variables('log-analytics-workspace-name')]",
+      "apiVersion": "2015-11-01-preview",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
-      "apiVersion": "2020-03-01-preview",
       "properties": {
+        "retentionInDays": 30,
         "sku": {
           "name": "[variables('log-analytics-workspace-sku')]"
         }
