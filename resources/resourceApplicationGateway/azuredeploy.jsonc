@@ -237,7 +237,7 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
       "type": "Microsoft.Network/applicationGateways/providers/diagnosticSettings",
       "location": "[parameters('location')]",
       "dependsOn": [
-        "[resourceId('Microsoft.Network/ApplicationGateways', variables('application-gateway-name'))]"
+        "[resourceId('Microsoft.Network/applicationGateways', variables('application-gateway-name'))]"
       ],
       "properties": {
         "name": "[concat(variables('application-gateway-name') ,'/Microsoft.Insights/DiagService')]",
@@ -460,7 +460,7 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
           "firewallMode": "Prevention",
           "ruleSetType": "OWASP",
           "ruleSetVersion": "3.1",
-          "requestBodyCheck": false,
+          "requestBodyCheck": true,
           "maxRequestBodySizeInKb": 128,
           "fileUploadLimitInMb": 100
         },
