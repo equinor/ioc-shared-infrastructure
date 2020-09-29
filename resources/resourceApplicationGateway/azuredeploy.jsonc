@@ -557,7 +557,7 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
     },
     {
       "type": "Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies",
-      "apiVersion": "2019-11-01",
+      "apiVersion": "2020-04-01",
       "tags": "[parameters('tags')]",
       "name": "[variables('application-gateway-firewall-policy-name')]",
       "location": "[parameters('location')]",
