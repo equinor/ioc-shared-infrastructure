@@ -3,8 +3,6 @@
 Description: 
 Resource template group for creating application gateway, public IP, Application Firewall and VNet configuration. 
 
-@TODO: Note that this version doesn't add SSL support yet. This work is ongoing at this point. 
-
 License: 
 https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
 
@@ -225,7 +223,7 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
     },
     {
       "apiVersion": "2020-01-01-preview",
-      "name": "[concat(variables('application-gateway-name'), '/Microsoft.Insights/service')]",
+      "name": "[concat(variables('application-gateway-name'), '/Microsoft.Insights/DiagService')]",
       "type": "Microsoft.Network/applicationGateways/providers/diagnosticsettings",
       "location": "[resourceGroup().location]",
       "dependsOn": [
