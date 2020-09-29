@@ -29,7 +29,6 @@
             },
             "tags": "[parameters('tags')]"
         },
-
         {
             "name": "[concat(parameters('automationAccountName'), '/', parameters( 'automationAccountModules')[copyIndex()].name)]",
             "type": "Microsoft.Automation/automationAccounts/modules",
@@ -48,6 +47,11 @@
             }
 
         }
-
-    ]
+    ],
+    "outputs" : {
+        "automationAccountResourceId" : {
+            "type" : "string",
+            "value": "[resourceId('Microsoft.Automation/automationAccounts', parameters('automationAccountName'))]"
+        }
+    }
 }
