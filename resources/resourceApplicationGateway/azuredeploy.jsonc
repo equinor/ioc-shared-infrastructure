@@ -72,6 +72,16 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
         "description": "Default application (name of app)"
       }
     },
+    "autoscaleConfiguration": {
+      "type": "string",
+      "defaultValue": {
+        "minCapacity": 0,
+        "maxCapacity": 10
+      },
+      "metadata": {
+        "description": "Auto scale configuration. Will default to 0 - 10 if unset. "
+      }
+    },
     "location": {
       "defaultValue": "[resourceGroup().location]",
       "type": "string",
@@ -116,7 +126,7 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "properties": {
-        "retentionInDays": 30,
+        //"retentionInDays": 30,
         "sku": {
           "name": "[variables('log-analytics-workspace-sku')]"
         }
@@ -296,10 +306,7 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
           "tier": "[variables('application-gateway-sku')]"
         },
         "enableHttp2": true,
-        "autoscaleConfiguration": {
-          "minCapacity": 0,
-          "maxCapacity": 10
-        },
+        "autoscaleConfiguration": "[parameters('autoscaleConfiguration')]",
         "gatewayIPConfigurations": [
           {
             "name": "application-gateway-ipconfig",
