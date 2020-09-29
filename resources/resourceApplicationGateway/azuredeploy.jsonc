@@ -230,7 +230,7 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
         "[concat('Microsoft.Network/ApplicationGateways/', variables('application-gateway-name'))]"
       ],
       "properties": {
-        "name": "DiagService",
+        "name": "[concat('Microsoft.Network/', variables('application-gateway-name') ,'/Microsoft.Insights/DiagService')]",
         "workspaceId": "[resourceId('Microsoft.OperationalInsights/workspaces', variables('log-analytics-workspace-name'))]",
         "logs": [
           {
