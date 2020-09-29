@@ -94,6 +94,9 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
     "public-ipv4-dns-label": "[toLower(variables('application-gateway-name'))]",
     "public-ip-sku": "Standard",
 
+    "log-analytics-workspace-name": "[concat(parameters('applicationName'), '-log-', parameters('applicationEnvironment'))]",
+    "log-analytics-workspace-sku": "pergb2018",
+
     "vnet-name": "[concat(parameters('applicationName'), '-vnet-', parameters('applicationEnvironment'))]",
     "vnet-subnet-name": "[concat(parameters('applicationName'),'-snet-', parameters('applicationEnvironment'))]",
     "network-security-group-name": "[concat(parameters('applicationName'), '-nsg-', parameters('applicationEnvironment'))]",
@@ -107,6 +110,18 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
       "name": "[variables('identityName')]",
       "apiVersion": "2018-11-30",
       "location": "[parameters('location')]"
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces",
+      "name": "[variables('log-analytics-workspace-name')]",
+      "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]",
+      "apiVersion": "2020-03-01-preview",
+      "properties": {
+        "sku": {
+          "name": "[variables('log-analytics-workspace-sku')]"
+        }
+      }
     },
     {
       "type": "Microsoft.Network/networkSecurityGroups",
@@ -204,6 +219,57 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
               "privateEndpointNetworkPolicies": "Enabled",
               "privateLinkServiceNetworkPolicies": "Enabled"
             }
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "2019-11-01",
+      "name": "[concat(variables('application-gateway-name'), '/Microsoft.Insights/service')]",
+      "type": "Microsoft.Network/applicationGateways/providers/diagnosticsettings",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[concat('Microsoft.Network/ApplicationGateways/', variables('application-gateway-name'))]"
+      ],
+      "properties": {
+        "name": "DiagService",
+        "workspaceId": "[resourceId('Microsoft.OperationalInsights/workspaces', variables('log-analytics-workspace-name'))]",
+        "logs": [
+          {
+            "category": "ApplicationGatewayAccessLog",
+            "enabled": true,
+            "retentionPolicy": {
+              "enabled": false,
+              "days": 0
+            }
+          },
+          {
+            "category": "ApplicationGatewayPerformanceLog",
+            "enabled": true,
+            "retentionPolicy": {
+              "enabled": false,
+              "days": 0
+            }
+          },
+          {
+            "category": "ApplicationGatewayFirewallLog",
+            "enabled": true,
+            "retentionPolicy": {
+              "enabled": false,
+              "days": 0
+            }
+          }
+        ],
+        "metrics": [
+          {
+            "category": "AllMetrics",
+            "timeGrain": "PT1M",
+            "enabled": true,
+            "retentionPolicy": {
+              "enabled": false,
+              "days": 0
+            }
+
           }
         ]
       }
