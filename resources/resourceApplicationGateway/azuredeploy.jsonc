@@ -247,24 +247,24 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
             "category": "ApplicationGatewayAccessLog",
             "enabled": true,
             "retentionPolicy": {
-              "enabled": false,
-              "days": 0
+              "days": 30,
+              "enabled": true
             }
           },
           {
             "category": "ApplicationGatewayPerformanceLog",
             "enabled": true,
             "retentionPolicy": {
-              "enabled": false,
-              "days": 0
+              "days": 30,
+              "enabled": true
             }
           },
           {
             "category": "ApplicationGatewayFirewallLog",
             "enabled": true,
             "retentionPolicy": {
-              "enabled": false,
-              "days": 0
+              "days": 30,
+              "enabled": true
             }
           }
         ],
@@ -274,8 +274,8 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
             "timeGrain": "PT1M",
             "enabled": true,
             "retentionPolicy": {
-              "enabled": false,
-              "days": 0
+              "days": 30,
+              "enabled": true
             }
           }
         ]
