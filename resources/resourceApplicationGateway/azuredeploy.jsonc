@@ -126,7 +126,6 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "properties": {
-        //"retentionInDays": 30,
         "sku": {
           "name": "[variables('log-analytics-workspace-sku')]"
         }
@@ -461,7 +460,7 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
           "firewallMode": "Prevention",
           "ruleSetType": "OWASP",
           "ruleSetVersion": "3.1",
-          "requestBodyCheck": true,
+          "requestBodyCheck": false,
           "maxRequestBodySizeInKb": 128,
           "fileUploadLimitInMb": 100
         },
