@@ -93,7 +93,7 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
     "public-ip-sku": "Standard",
 
     "log-analytics-workspace-name": "[concat(parameters('applicationName'), '-log-', parameters('applicationEnvironment'))]",
-    "log-analytics-workspace-sku": "pergb2018",
+    "log-analytics-workspace-sku": "pergb2018", // As 2020-09-29, Log Analytics only has one available current SKU. Rest are marked as legacy
 
     "vnet-name": "[concat(parameters('applicationName'), '-vnet-', parameters('applicationEnvironment'))]",
     "vnet-subnet-name": "[concat(parameters('applicationName'),'-snet-', parameters('applicationEnvironment'))]",
@@ -267,7 +267,6 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
               "enabled": false,
               "days": 0
             }
-
           }
         ]
       }
