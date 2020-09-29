@@ -223,14 +223,14 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
     },
     {
       "apiVersion": "2017-05-01-preview",
-      "name": "[concat('Microsoft.Network/', variables('application-gateway-name') ,'/Microsoft.Insights/DiagService')]",
+      "name": "[concat(variables('application-gateway-name') ,'/Microsoft.Insights/DiagService')]",
       "type": "Microsoft.Network/applicationGateways/providers/diagnosticSettings",
       "location": "[resourceGroup().location]",
       "dependsOn": [
         "[concat('Microsoft.Network/ApplicationGateways/', variables('application-gateway-name'))]"
       ],
       "properties": {
-        "name": "[concat('Microsoft.Network/', variables('application-gateway-name') ,'/Microsoft.Insights/DiagService')]",
+        "name": "[concat(variables('application-gateway-name') ,'/Microsoft.Insights/DiagService')]",
         "workspaceId": "[resourceId('Microsoft.OperationalInsights/workspaces', variables('log-analytics-workspace-name'))]",
         "logs": [
           {
