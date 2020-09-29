@@ -52,5 +52,11 @@
                 "collation": "[parameters('databaseCollation')]"
             }
         }
-    ]
+    ],
+    "outputs" : {
+        "azureSqlDatabaseResourceId" : {
+            "type" : "string",
+            "value": "[resourceId('Microsoft.Sql/servers/databases', parameters('sqlServerName') , parameters('databaseName'))]"
+        }
+    }
 }
