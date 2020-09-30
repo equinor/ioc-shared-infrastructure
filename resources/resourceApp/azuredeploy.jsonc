@@ -132,7 +132,18 @@
                 "priority": "100",
                 "name": "Allow IOC Application Gateway"
               }
+            ],
+                      "siteAuthSettings": {
+            "enabled": "[greater(length(parameters('aadClientId')), 0)]",
+            "unauthenticatedClientAction": "RedirectToLoginPage",
+            "defaultProvider": "AzureActiveDirectory",
+            "tokenRefreshExtensionHours": 6,
+            "clientId": "[parameters('aadClientId')]",
+            "issuer": "[concat('https://sts.windows.net/', subscription().tenantId, '/')]",
+            "allowedAudiences": [
+              "[concat('https://', parameters('webAppName'), '.azurewebsites.net')]"
             ]
+          }
           }
         }
       ]
