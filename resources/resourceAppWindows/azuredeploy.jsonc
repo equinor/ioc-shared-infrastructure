@@ -22,7 +22,7 @@
     },
     "aadClientId": {
       "type": "string",
-      "defaultValue": "testtest"
+      "defaultValue": ""
     },
     "language": {
       "type": "string"
@@ -106,11 +106,11 @@
                 "http://localhost:3000"
               ],
               "supportCredentials": false
-            },
-            "http20Enabled": false,
-            "minTlsVersion": "1.2",
-            "ftpsState": "Disabled"
+            }
           },
+          "http20Enabled": true,
+          "minTlsVersion": "1.2",
+          "ftpsState": "Disabled",
           "siteAuthSettings": {
             "enabled": "[greater(length(parameters('aadClientId')), 0)]",
             "unauthenticatedClientAction": "RedirectToLoginPage",
