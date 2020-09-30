@@ -545,7 +545,7 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
                 "protocol": "Https",
                 "cookieBasedAffinity": "Disabled",
                 "pickHostNameFromBackendAddress": true,
-                "requestTimeout": 20,
+                "requestTimeout": 300,
                 "probe": {
                   "id": "[resourceId('Microsoft.Network/applicationGateways/probes', variables('application-gateway-name'), concat(parameters('applications')[copyIndex('backendHttpSettingsCollection')].name, '-probe'))]"
                 }
