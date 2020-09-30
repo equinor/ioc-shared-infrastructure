@@ -11,9 +11,9 @@
     "appServicePlanSku": {
       "type": "string",
       "allowedValues": [
-        "S1",   // Standard 
-        "S2",   // Standard 
-        "S3",   // Standard 
+        "S1", // Standard 
+        "S2", // Standard 
+        "S3", // Standard 
         "P1V2", // Premium V2 
         "P2V2", // Premium V2 
         "P3V2", // Premium V2       
@@ -39,7 +39,7 @@
     },
     "tags": {
       "type": "object"
-    }, 
+    },
     "appSettings": {
       "defaultValue": [
         {
@@ -49,7 +49,8 @@
         {
           "name": "FUNCTIONS_EXTENSION_VERSION",
           "value": "~2"
-        }],
+        }
+      ],
       "type": "array"
     }
   },
@@ -62,7 +63,8 @@
             {
               "name": "key",
               "type": "string"
-            },{
+            },
+            {
               "name": "value",
               "type": "string"
             }
@@ -143,12 +145,12 @@
       "sku": {
         "name": "[parameters('appServicePlanSku')]"
       }
-    },    
+    },
     {
       "type": "Microsoft.Web/sites",
       "apiVersion": "2019-08-01",
       "name": "[parameters('functionappName')]",
-      "kind": "functionapp,linux" ,
+      "kind": "functionapp,linux",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "dependsOn": [
@@ -162,8 +164,17 @@
       "properties": {
         "enabled": true,
         "siteConfig": {
-          "appSettings":         
-          "[union(parameters('appSettings'), equinor.createSettingsObject('AzureWebJobsStorage',concat('DefaultEndpointsProtocol=https;AccountName=', parameters('storageAccountName'), ';AccountKey=', listKeys(variables('storageAccountId'),'2019-06-01').keys[0].value)), equinor.createSettingsObject('APPINSIGHTS_INSTRUMENTATIONKEY', reference(resourceId('microsoft.insights/components/', variables('appinsightsName'))).InstrumentationKey))]"
+          "alwaysOn": "[equals(parameters('appServicePlanSku'), 'Y1')]",
+          "appSettings": "[union(parameters('appSettings'), equinor.createSettingsObject('AzureWebJobsStorage',concat('DefaultEndpointsProtocol=https;AccountName=', parameters('storageAccountName'), ';AccountKey=', listKeys(variables('storageAccountId'),'2019-06-01').keys[0].value)), equinor.createSettingsObject('APPINSIGHTS_INSTRUMENTATIONKEY', reference(resourceId('microsoft.insights/components/', variables('appinsightsName'))).InstrumentationKey))]",
+          "siteWeb": {
+            "cors": {
+              "allowedOrigins": [],
+              "supportCredentials": false
+            },
+            "http20Enabled": false,
+            "minTlsVersion": "1.2",
+            "ftpsState": "Disabled"
+          }
         },
         "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]",
         "clientAffinityEnabled": false,
