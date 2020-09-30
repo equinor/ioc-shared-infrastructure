@@ -170,11 +170,11 @@
             "cors": {
               "allowedOrigins": [],
               "supportCredentials": false
-            },
-            "http20Enabled": false,
-            "minTlsVersion": "1.2",
-            "ftpsState": "Disabled"
-          }
+            }
+          },
+          "http20Enabled": false,
+          "minTlsVersion": "1.2",
+          "ftpsState": "Disabled"
         },
         "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]",
         "clientAffinityEnabled": false,
