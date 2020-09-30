@@ -11,9 +11,9 @@
     "appServicePlanSku": {
       "type": "string",
       "allowedValues": [
-        "S1",   // Standard 
-        "S2",   // Standard 
-        "S3",   // Standard 
+        "S1", // Standard 
+        "S2", // Standard 
+        "S3", // Standard 
         "P1V2", // Premium V2 
         "P2V2", // Premium V2 
         "P3V2", // Premium V2       
@@ -162,9 +162,16 @@
         "siteConfig": {
           "appSettings": "[union(parameters('appSettings'), equinor.createSettingsObject('AzureWebJobsStorage',concat('DefaultEndpointsProtocol=https;AccountName=', parameters('storageAccountName'), ';AccountKey=', listKeys(variables('storageAccountId'),'2019-06-01').keys[0].value)), equinor.createSettingsObject('APPINSIGHTS_INSTRUMENTATIONKEY', reference(resourceId('microsoft.insights/components/', variables('appinsightsName'))).InstrumentationKey))]",
           "alwaysOn": true,
-          "http20Enabled": false,
-          "minTlsVersion": "1.2",
-          "ftpsState": "Disabled"
+          "managedPipelineMode": "Integrated",
+          "siteWeb": {
+            "cors": {
+              "allowedOrigins": [],
+              "supportCredentials": false
+            },
+            "http20Enabled": false,
+            "minTlsVersion": "1.2",
+            "ftpsState": "Disabled"
+          }
         },
         "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]",
         "clientAffinityEnabled": false,
