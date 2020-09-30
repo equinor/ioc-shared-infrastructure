@@ -33,6 +33,30 @@
         "description": "The name of the storage account used by the function(s)."
       }
     },
+    "stackName": {
+      "type": "string",
+      "defaultValue": "PYTHON",
+      "allowedValues": [
+        "PYTHON",
+        "RUBY",
+        "NODE",
+        "PHP",
+        "WILDFLY",
+        "DOTNETCORE",
+        "TOMCAT",
+        "JAVA"
+      ],
+      "metadata": {
+        "description": "The name of the stack used in the function app"
+      }
+    },
+    "stackVersion": {
+      "type": "string",
+      "defaultValue": "3.8",
+      "metadata": {
+        "description": "The version of the stack running in the function app."
+      }
+    },
     "location": {
       "defaultValue": "[resourceGroup().location]",
       "type": "string"
@@ -164,7 +188,7 @@
       "properties": {
         "enabled": true,
         "siteConfig": {
-          "linuxFxVersion": "PYTHON|3.8",
+          "linuxFxVersion": "[concat(toUpper(parameters('stackName')), '|', parameters('stackVersion'))]",
           "alwaysOn": "[not(equals(parameters('appServicePlanSku'), 'Y1'))]",
           "appSettings": "[union(parameters('appSettings'), equinor.createSettingsObject('AzureWebJobsStorage',concat('DefaultEndpointsProtocol=https;AccountName=', parameters('storageAccountName'), ';AccountKey=', listKeys(variables('storageAccountId'),'2019-06-01').keys[0].value)), equinor.createSettingsObject('APPINSIGHTS_INSTRUMENTATIONKEY', reference(resourceId('microsoft.insights/components/', variables('appinsightsName'))).InstrumentationKey))]",
           "siteWeb": {
