@@ -52,7 +52,7 @@
     },
     "stackVersion": {
       "type": "string",
-      "defaultValue": "3.8",
+      "defaultValue": "3.7",
       "metadata": {
         "description": "The version of the stack running in the function app."
       }
