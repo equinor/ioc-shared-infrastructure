@@ -3,8 +3,6 @@
 Description: 
 Resource template group for creating application gateway, public IP, Application Firewall and VNet configuration. 
 
-@TODO: Note that this version doesn't add SSL support yet. This work is ongoing at this point. 
-
 License: 
 https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
 
@@ -74,6 +72,16 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
         "description": "Default application (name of app)"
       }
     },
+    "autoscaleConfiguration": {
+      "type": "object",
+      "defaultValue": {
+        "minCapacity": 0,
+        "maxCapacity": 10
+      },
+      "metadata": {
+        "description": "Auto scale configuration. Will default to 0 - 10 if unset. "
+      }
+    },
     "location": {
       "defaultValue": "[resourceGroup().location]",
       "type": "string",
@@ -94,6 +102,9 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
     "public-ipv4-dns-label": "[toLower(variables('application-gateway-name'))]",
     "public-ip-sku": "Standard",
 
+    "log-analytics-workspace-name": "[concat(parameters('applicationName'), '-log-', parameters('applicationEnvironment'))]",
+    "log-analytics-workspace-sku": "pergb2018", // As 2020-09-29, Log Analytics only has one available current SKU. Rest are marked as legacy
+
     "vnet-name": "[concat(parameters('applicationName'), '-vnet-', parameters('applicationEnvironment'))]",
     "vnet-subnet-name": "[concat(parameters('applicationName'),'-snet-', parameters('applicationEnvironment'))]",
     "network-security-group-name": "[concat(parameters('applicationName'), '-nsg-', parameters('applicationEnvironment'))]",
@@ -107,6 +118,18 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
       "name": "[variables('identityName')]",
       "apiVersion": "2018-11-30",
       "location": "[parameters('location')]"
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces",
+      "name": "[variables('log-analytics-workspace-name')]",
+      "apiVersion": "2020-08-01",
+      "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]",
+      "properties": {
+        "sku": {
+          "name": "[variables('log-analytics-workspace-sku')]"
+        }
+      }
     },
     {
       "type": "Microsoft.Network/networkSecurityGroups",
@@ -209,6 +232,56 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
       }
     },
     {
+      "apiVersion": "2017-05-01-preview",
+      "name": "[concat(variables('application-gateway-name') ,'/Microsoft.Insights/DiagService')]",
+      "type": "Microsoft.Network/applicationGateways/providers/diagnosticSettings",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/applicationGateways', variables('application-gateway-name'))]"
+      ],
+      "properties": {
+        "name": "[concat(variables('application-gateway-name') ,'/Microsoft.Insights/DiagService')]",
+        "workspaceId": "[resourceId('Microsoft.OperationalInsights/workspaces', variables('log-analytics-workspace-name'))]",
+        "logs": [
+          {
+            "category": "ApplicationGatewayAccessLog",
+            "enabled": true,
+            "retentionPolicy": {
+              "days": 30,
+              "enabled": true
+            }
+          },
+          {
+            "category": "ApplicationGatewayPerformanceLog",
+            "enabled": true,
+            "retentionPolicy": {
+              "days": 30,
+              "enabled": true
+            }
+          },
+          {
+            "category": "ApplicationGatewayFirewallLog",
+            "enabled": true,
+            "retentionPolicy": {
+              "days": 30,
+              "enabled": true
+            }
+          }
+        ],
+        "metrics": [
+          {
+            "category": "AllMetrics",
+            "timeGrain": "PT1M",
+            "enabled": true,
+            "retentionPolicy": {
+              "days": 30,
+              "enabled": true
+            }
+          }
+        ]
+      }
+    },
+    {
       "type": "Microsoft.Network/applicationGateways",
       "apiVersion": "2019-11-01",
       "tags": "[parameters('tags')]",
@@ -232,10 +305,7 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
           "tier": "[variables('application-gateway-sku')]"
         },
         "enableHttp2": true,
-        "autoscaleConfiguration": {
-          "minCapacity": 0,
-          "maxCapacity": 10
-        },
+        "autoscaleConfiguration": "[parameters('autoscaleConfiguration')]",
         "gatewayIPConfigurations": [
           {
             "name": "application-gateway-ipconfig",
@@ -475,7 +545,7 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
                 "protocol": "Https",
                 "cookieBasedAffinity": "Disabled",
                 "pickHostNameFromBackendAddress": true,
-                "requestTimeout": 20,
+                "requestTimeout": 300,
                 "probe": {
                   "id": "[resourceId('Microsoft.Network/applicationGateways/probes', variables('application-gateway-name'), concat(parameters('applications')[copyIndex('backendHttpSettingsCollection')].name, '-probe'))]"
                 }
@@ -487,7 +557,7 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
     },
     {
       "type": "Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies",
-      "apiVersion": "2019-11-01",
+      "apiVersion": "2020-04-01",
       "tags": "[parameters('tags')]",
       "name": "[variables('application-gateway-firewall-policy-name')]",
       "location": "[parameters('location')]",
@@ -533,7 +603,7 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
           }
         ],
         "policySettings": {
-          "requestBodyCheck": true,
+          "requestBodyCheck": false,
           "maxRequestBodySizeInKb": 128,
           "fileUploadLimitInMb": 100,
           "state": "Enabled",
