@@ -39,6 +39,11 @@ New-AzResourceGroupDeployment -ResourceGroupName  $resourceGroupName `
         "dockerComposeYaml": {
             "value": "BASE64_ENCODED_DOCKER_COMPOSE"
         },
+        "tags": {
+            "value": {
+                "Environment": "[parameters('environment')]"
+            }
+        },
         "environmentVariables": {
             "value": [
                 {
