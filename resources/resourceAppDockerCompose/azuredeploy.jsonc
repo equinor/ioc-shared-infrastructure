@@ -24,6 +24,10 @@
     "environmentVariables": {
       "type": "array"
     },
+    "allowedCorsOrigins": {
+      "type": "array",
+      "defaultValue": "[json(' [ ] ')]"
+    },
     "_appInsightsTag": {
       "type": "object",
       "defaultValue": {
@@ -130,7 +134,7 @@
             "numberOfWorkers": 1,
             "alwaysOn": true,
             "cors": {
-              "allowedOrigins": [],
+              "allowedOrigins": "[parameters('allowedCorsOrigins')]",
               "supportCredentials": false
             },
             "http20Enabled": false,
