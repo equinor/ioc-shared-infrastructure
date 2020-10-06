@@ -625,6 +625,11 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
               "matchVariable": "RequestArgNames",
               "selectorMatchOperator": "Equals",
               "selector": "code"
+            },
+            {
+              "matchVariable": "RequestCookieNames",
+              "selectorMatchOperator": "Equals",
+              "selector": "_oauth2_proxy"
             }
           ]
         }
