@@ -79,13 +79,13 @@
             ],
             "properties": "[parameters('eventGridDomainTopicSubscriptions')[copyIndex()]['properties']]"              
         }
-    ],
+    ],    
      "outputs": {
-        "eventGridPrincipalId": {
+        "objectId": {
             "type": "string",
             "value": "[reference(resourceId('Microsoft.EventGrid/domains', parameters('eventGridDomainName')), '2018-06-01', 'full').identity.principalId]"
         },
-        "eventGridResourceId" : {
+        "identityObjectId" : {
             "type": "string",
             "value": "[resourceId('Microsoft.EventGrid/domains', parameters('eventGridDomainName'))]"
         }
