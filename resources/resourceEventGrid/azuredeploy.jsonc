@@ -81,9 +81,13 @@
         }
     ],
      "outputs": {
-        "objectId": {
-        "type": "string",
-        "value": "[resourceId('Microsoft.EventGrid/domains', parameters('eventGridDomainName'))]"
-        }  
+        "eventGridPrincipalId": {
+            "type": "string",
+            "value": "[reference(resourceId('Microsoft.EventGrid/domains', parameters('eventGridDomainName')), '2018-06-01', 'full').identity.principalId]"
+        },
+        "eventGridResourceId" : {
+            "type": "string",
+            "value": "[resourceId('Microsoft.EventGrid/domains', parameters('eventGridDomainName'))]"
+        }
   }
 }
