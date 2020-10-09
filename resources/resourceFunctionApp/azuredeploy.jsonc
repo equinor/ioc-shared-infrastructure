@@ -221,5 +221,19 @@
         "redundancyMode": "None"
       }
     }
-  ]
+  ],
+  "outputs": {
+    "objectId": {
+      "type": "string",
+      "value": "[resourceId('Microsoft.Web/sites', parameters('functionappName'))]"
+    },
+    "identityObjectId": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.Web/sites', parameters('functionappName')),'2019-08-01', 'full').identity.principalId]"
+    },
+    "appInsightsName": {
+      "type": "string",
+      "value": "[variables('appInsightsName')]"
+    }
+  }
 }
