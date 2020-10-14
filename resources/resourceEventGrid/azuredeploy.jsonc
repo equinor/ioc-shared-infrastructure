@@ -79,11 +79,16 @@
             ],
             "properties": "[parameters('eventGridDomainTopicSubscriptions')[copyIndex()]['properties']]"              
         }
-    ],
+    ],    
      "outputs": {
         "objectId": {
-        "type": "string",
-        "value": "[resourceId('Microsoft.EventGrid/domains', parameters('eventGridDomainName'))]"
-        }  
+            "type": "string",
+            "value": "[resourceId('Microsoft.EventGrid/domains', parameters('eventGridDomainName'))]"
+        },
+        "identityObjectId" : {
+            "type": "string",
+            "value": "[reference(resourceId('Microsoft.EventGrid/domains', parameters('eventGridDomainName')), '2020-06-01', 'full').identity.principalId]"
+            
+        }
   }
 }
