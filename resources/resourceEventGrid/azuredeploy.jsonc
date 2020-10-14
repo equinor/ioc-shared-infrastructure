@@ -30,9 +30,9 @@
         "tags": {
             "type": "object",
             "defaultValue": {
-                    "ServiceName": "CoreDataAPI",
-                    "Team": "IOC-EIS"
-                },
+                "ServiceName": "CoreDataAPI",
+                "Team": "IOC-EIS"
+            },
             "metadata": {
                 "description": "The tags to append on each resource created."
             }
@@ -52,15 +52,15 @@
             }
         },
         {
-            "name":  "[concat(parameters('eventGridDomainName'), '/',parameters('eventGridDomainTopicNames')[copyIndex()])]" ,
+            "name": "[concat(parameters('eventGridDomainName'), '/',parameters('eventGridDomainTopicNames')[copyIndex()])]",
             "type": "Microsoft.EventGrid/domains/topics",
             "apiVersion": "2020-06-01",
-            "properties":{               
+            "properties": {
             },
             "copy": {
                 "name": "topics",
                 "count": "[length(parameters('eventGridDomainTopicNames'))]"
-            },         
+            },
             "dependsOn": [
                 "[resourceId('Microsoft.EventGrid/domains', parameters('eventGridDomainName'))]"
             ]
@@ -69,26 +69,21 @@
             "name": "[concat(parameters('eventGridDomainName'), '/', parameters('eventGridDomainTopicSubscriptions')[copyIndex()]['topic'], '/Microsoft.EventGrid/', parameters('eventGridDomainTopicSubscriptions')[copyIndex()]['name'])]",
             "type": "Microsoft.EventGrid/domains/topics/providers/eventSubscriptions",
             "apiVersion": "2020-06-01",
-             "copy": {
+            "copy": {
                 "name": "subscriptions",
                 "count": "[length(parameters('eventGridDomainTopicSubscriptions'))]"
-            },         
+            },
             "dependsOn": [
                 "[resourceId('Microsoft.EventGrid/domains', parameters('eventGridDomainName'))]",
                 "[resourceId('Microsoft.EventGrid/domains/topics', parameters('eventGridDomainName'), parameters('eventGridDomainTopicSubscriptions')[copyIndex()]['topic'])]"
             ],
-            "properties": "[parameters('eventGridDomainTopicSubscriptions')[copyIndex()]['properties']]"              
+            "properties": "[parameters('eventGridDomainTopicSubscriptions')[copyIndex()]['properties']]"
         }
-    ],    
-     "outputs": {
+    ],
+    "outputs": {
         "objectId": {
             "type": "string",
             "value": "[resourceId('Microsoft.EventGrid/domains', parameters('eventGridDomainName'))]"
-        },
-        "identityObjectId" : {
-            "type": "string",
-            "value": "[reference(resourceId('Microsoft.EventGrid/domains', parameters('eventGridDomainName')), '2020-06-01', 'full').identity.principalId]"
-            
         }
-  }
+    }
 }
