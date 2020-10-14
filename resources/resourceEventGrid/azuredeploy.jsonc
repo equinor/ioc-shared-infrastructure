@@ -87,7 +87,7 @@
         },
         "identityObjectId" : {
             "type": "string",
-            "value": "[reference(resourceId('Microsoft.EventGrid/domains', parameters('eventGridDomainName')), '2018-06-01', 'full').identity.principalId]"
+            "value": "[reference(resourceId('Microsoft.EventGrid/domains', parameters('eventGridDomainName')), '2020-06-01', 'full').identity.principalId]"
             
         }
   }
