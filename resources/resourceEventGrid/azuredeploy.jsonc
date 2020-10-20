@@ -48,7 +48,7 @@
             "tags": "[parameters('tags')]",
             "properties": {
                 "inputSchema": "EventGridSchema",
-                "publicNetworkAccess": "Disabled"
+                "publicNetworkAccess": "Enabled"
             }
         },
         {
