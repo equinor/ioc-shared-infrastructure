@@ -8,6 +8,10 @@
     "serviceBusQueueName": {
       "type": "string"
     },
+    "serviceBusQueueRequiresSession": {
+      "type": "bool",
+      "defaultValue": false
+    },
     "serviceBusSku": {
       "type": "string",
       "allowedValues": [
@@ -51,7 +55,7 @@
             "lockDuration": "PT5M",
             "maxSizeInMegabytes": 5120,
             "requiresDuplicateDetection": false,
-            "requiresSession": false,
+            "requiresSession": "[parameters('serviceBusQueueRequiresSession')]",
             "defaultMessageTimeToLive": "P14D",
             "deadLetteringOnMessageExpiration": false,
             "duplicateDetectionHistoryTimeWindow": "PT10M",
