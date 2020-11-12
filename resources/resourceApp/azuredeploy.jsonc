@@ -88,7 +88,7 @@
   "resources": [
     {
       "type": "Microsoft.Web/sites",
-      "apiVersion": "2018-11-01",
+      "apiVersion": "2020-06-01",
       "name": "[parameters('webAppName')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -109,7 +109,7 @@
       "resources": [
         {
           "type": "config",
-          "apiVersion": "2018-11-01",
+          "apiVersion": "2020-06-01",
           "name": "web",
           "location": "[parameters('location')]",
           "dependsOn": [
