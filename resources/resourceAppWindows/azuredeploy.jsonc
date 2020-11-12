@@ -78,7 +78,7 @@
   "resources": [
     {
       "type": "Microsoft.Web/sites",
-      "apiVersion": "2018-11-01",
+      "apiVersion": "2020-06-01",
       "name": "[parameters('webAppName')]",
       "location": "[parameters('location')]",
       "dependsOn": [
@@ -129,7 +129,7 @@
     {
       "condition": "[equals(parameters('language'),'python')]",
       "type": "Microsoft.Web/sites/siteextensions",
-      "apiVersion": "2018-11-01",
+      "apiVersion": "2020-06-01",
       "name": "[concat(parameters('webAppName'), '/azureappservice-python364x64')]",
       "location": "[parameters('location')]",
       "dependsOn": [
