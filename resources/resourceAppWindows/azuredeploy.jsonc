@@ -14,6 +14,9 @@
     "environmentVariables": {
       "type": "array"
     },
+    "appGatewayIp": {
+      "type": "string"
+    },
     "appInsightInstrumentationKey": {
       "type": "string"
     },
@@ -111,6 +114,14 @@
           "http20Enabled": true,
           "minTlsVersion": "1.2",
           "ftpsState": "Disabled",
+          "ipSecurityRestrictions": [
+            {
+              "ipAddress": "[parameters('appGatewayIp')]",
+              "action": "Allow",
+              "priority": "100",
+              "name": "Allow IOC Application Gateway"
+            }
+          ],
           "siteAuthSettings": {
             "enabled": "[greater(length(parameters('aadClientId')), 0)]",
             "unauthenticatedClientAction": "RedirectToLoginPage",
