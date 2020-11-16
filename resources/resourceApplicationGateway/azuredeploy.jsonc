@@ -50,6 +50,13 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
         "description": "List of geo regions to allow traffic from"
       }
     },
+    "allowUrlList": {
+      "type": "array",
+      "defaultValue": "[json(' [ ] ')]",
+      "metadata": {
+        "description": "List of URL's that aren't restricted by regions. Can be API endpoints"
+      }
+    },
     "applications": {
       "type": "array",
       "metadata": {
@@ -579,6 +586,27 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
                 "negationConditon": false,
                 "matchValues": "[parameters('allowIpList')]",
                 "transforms": "[json(' [ ] ')]"
+              }
+            ]
+          },
+          {
+            "name": "AllowUrls",
+            "priority": 20,
+            "ruleType": "MatchRule",
+            "action": "Allow",
+            "matchConditions": [
+              {
+                "matchVariables": [
+                  {
+                    "variableName": "RequestUri"
+                  }
+                ],
+                "operator": "Contains",
+                "negationConditon": false,
+                "matchValues": "[parameters('allowUrlList')]",
+                "transforms": [
+                  "Lowercase"
+                ]
               }
             ]
           },
