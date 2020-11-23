@@ -5,8 +5,8 @@
     "serviceBusNamespaceName": {
       "type": "string"
     },
-    "serviceBusQueueName": {
-      "type": "string"
+    "serviceBusQueueNames": {
+      "type": "array"
     },
     "serviceBusQueueRequiresSession": {
       "type": "bool",
@@ -42,30 +42,33 @@
       "sku": {
         "name": "[parameters('serviceBusSku')]"
       },
-      "properties": {},
-      "resources": [
-        {
-          "apiVersion": "2017-04-01",
-          "name": "[parameters('serviceBusQueueName')]",
-          "type": "Queues",
-          "dependsOn": [
-            "[variables('serviceBusResource')]"
-          ],
-          "properties": {
-            "lockDuration": "PT5M",
-            "maxSizeInMegabytes": 5120,
-            "requiresDuplicateDetection": false,
-            "requiresSession": "[parameters('serviceBusQueueRequiresSession')]",
-            "defaultMessageTimeToLive": "P14D",
-            "deadLetteringOnMessageExpiration": false,
-            "duplicateDetectionHistoryTimeWindow": "PT10M",
-            "maxDeliveryCount": 10,
-            "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
-            "enablePartitioning": false,
-            "enableExpress": false
-          }
-        }
-      ]
+      "properties": {}
+    },
+    {
+      "apiVersion": "2017-04-01",
+      "name": "[concat(parameters('serviceBusNamespaceName'), '/', parameters('serviceBusQueueNames')[copyIndex()])]",
+      "type": "Microsoft.ServiceBus/namespaces/queues",
+      "dependsOn": [
+        "[variables('serviceBusResource')]",
+        "[parameters('serviceBusNamespaceName')]"
+      ],
+      "properties": {
+        "lockDuration": "PT5M",
+        "maxSizeInMegabytes": 5120,
+        "requiresDuplicateDetection": false,
+        "requiresSession": "[parameters('serviceBusQueueRequiresSession')]",
+        "defaultMessageTimeToLive": "P14D",
+        "deadLetteringOnMessageExpiration": false,
+        "duplicateDetectionHistoryTimeWindow": "PT10M",
+        "maxDeliveryCount": 10,
+        "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
+        "enablePartitioning": false,
+        "enableExpress": false
+      },
+      "copy": {
+        "name": "serviceBusQueues",
+        "count": "[length(parameters('serviceBusQueueNames'))]"
+      }
     }
   ],
   "outputs": {
