@@ -21,8 +21,11 @@ az deployment group create --mode Incremental --name myRedisCacheDeployment --re
         "serviceBusNamespaceName": {
             "value": "myServiceBus"
         },
-        "serviceBusQueueName": {
-            "value": "myServiceBusQueue"
+        "serviceBusQueueNames": {
+            "value": [
+                "queue1",
+                "queue2"
+            ]
         },
         "tags": {
             "value": {
