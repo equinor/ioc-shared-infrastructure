@@ -239,56 +239,6 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
       }
     },
     {
-      "apiVersion": "2017-05-01-preview",
-      "name": "[concat(variables('application-gateway-name') ,'/Microsoft.Insights/DiagService')]",
-      "type": "Microsoft.Network/applicationGateways/providers/diagnosticSettings",
-      "location": "[parameters('location')]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Network/applicationGateways', variables('application-gateway-name'))]"
-      ],
-      "properties": {
-        "name": "[concat(variables('application-gateway-name') ,'/Microsoft.Insights/DiagService')]",
-        "workspaceId": "[resourceId('Microsoft.OperationalInsights/workspaces', variables('log-analytics-workspace-name'))]",
-        "logs": [
-          {
-            "category": "ApplicationGatewayAccessLog",
-            "enabled": true,
-            "retentionPolicy": {
-              "days": 30,
-              "enabled": true
-            }
-          },
-          {
-            "category": "ApplicationGatewayPerformanceLog",
-            "enabled": true,
-            "retentionPolicy": {
-              "days": 30,
-              "enabled": true
-            }
-          },
-          {
-            "category": "ApplicationGatewayFirewallLog",
-            "enabled": true,
-            "retentionPolicy": {
-              "days": 30,
-              "enabled": true
-            }
-          }
-        ],
-        "metrics": [
-          {
-            "category": "AllMetrics",
-            "timeGrain": "PT1M",
-            "enabled": true,
-            "retentionPolicy": {
-              "days": 30,
-              "enabled": true
-            }
-          }
-        ]
-      }
-    },
-    {
       "type": "Microsoft.Network/applicationGateways",
       "apiVersion": "2019-11-01",
       "tags": "[parameters('tags')]",
