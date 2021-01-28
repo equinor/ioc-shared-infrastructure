@@ -1,22 +1,40 @@
 # SQL User Management module
 
-The SQL User Management module is created to ease the work of managing users on the different databases in the project.
+The SQL User Management module is a PowerShell module you can use to ease the work of managing users in your Azure SQL databases.
 
-Currently the module supports creating users that are active directory group, managed identities and sql logins. However if the user is of type sql login then the password is added to a given KeyVault. If the app registration is found it is given get permission on secrets to the access policies.
+## Architecture
 
-## TODO
+The idea is that the module can be used in a DevOps pipeline (in the near future) to automate user management, but for many companies that is not possible yet before the Azure Active Directory [cloud groups](https://docs.microsoft.com/en-us/azure/active-directory/roles/groups-concept) concept is out of preview.
 
-  -Add support for users + role definitions
-  -Add support for Invoke-SqlCmd so that this module can be run automated without exposing secrets.
+The module takes a directory as input and will read all available yaml user configuration files. Then the module will take some actions based on user type before generating the final sql statement that will be run against the targeted database.
 
-## Requirements
+![architecture image](./overview.png)
 
-Make sure that you have Powershell 7 installed and Azure Powershell.
+As of now the following user objects is supported
 
-- The installer for Powershell 7 can be found at [GitHub](https://github.com/PowerShell/PowerShell/releases).
-- Once Powershell 7 are installed run the script **install-azurepowershell.ps1** to install Azure Powershell.
+- Creating SQL User with password. This require a Key Vault to store the secret, and that the application exists so that read permission to the Key Vault can be granted.
+- Creating Active Directory Group as user of the database.
+- Creating Managed Identity applications as user of the database.
 
-## Instructions
+## Before you start
+
+### Download PowerShell 7
+
+Please make sure that you have installed the newest version of PowerShell Core. Windows powershell will possibly cause the module execution to fail and is not recommended to use.
+
+- Powershell Core can be found at [GitHub](https://github.com/PowerShell/PowerShell/releases).
+
+When PowerShell Core is installed on your local machine, please install the [Azure Powershell](https://docs.microsoft.com/en-us/powershell/azure/install-az-ps?#install-for-current-user) module. The module is used for integration to Azure resources.
+
+**Note!** Make sure that you are in a Powershell 7 terminal when executing the installation of the Azure PowerShell module.
+
+### Connect to Azure
+
+Before running the module make sure that you have connected to Azure. Please follow the documentation and choose the appropiate sign in method.
+
+[https://docs.microsoft.com/en-us/powershell/module/az.accounts/connect-azaccount](https://docs.microsoft.com/en-us/powershell/module/az.accounts/connect-azaccount)
+
+## How to use the module
 
 ### Importing the module
 
@@ -46,6 +64,8 @@ permissions:
       - {<table_name> | <schema_name> | all}
     grants:
       - <sql server grants>
+roles:
+  - <roles available at the database>
 ```
 
 Example:
@@ -72,6 +92,8 @@ permissions:
     grants:
       - SELECT
       - INSERT
+roles:
+  - db_datareader
 ```
 
 ### Module Parameters
@@ -148,3 +170,8 @@ permissions:
 ```ps
 Publish-DatabaseUsersAndPermissions 'dev' .\my-folder-for-user-permission\ myKeyVaultName myTargetSqlServer myTargetDatabase
 ```
+
+## Todo's
+
+- Add support for individual users.
+- Add support for revoking access, instead of drop and re-create. Dropping a user and re-creating causes issue with the Azure SQL vulnerability assessment.

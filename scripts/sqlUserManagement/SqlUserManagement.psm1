@@ -186,6 +186,10 @@ function Publish-DatabaseUsersAndPermissions {
                     }
                 }
             }
+
+            $userConfig.roles | ForEach-Object {
+                $sqlStatement += $sqlStatementFormat -f (Get-AzureSqlAddRoleMemberStatement $currentUserName $_)
+            }
         }
     }
 
