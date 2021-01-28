@@ -252,38 +252,21 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
         "logs": [
           {
             "category": "ApplicationGatewayAccessLog",
-            "enabled": true,
-            "retentionPolicy": {
-              "days": 30,
-              "enabled": true
-            }
+            "enabled": true
           },
           {
             "category": "ApplicationGatewayPerformanceLog",
-            "enabled": true,
-            "retentionPolicy": {
-              "days": 30,
-              "enabled": true
-            }
+            "enabled": true
           },
           {
             "category": "ApplicationGatewayFirewallLog",
-            "enabled": true,
-            "retentionPolicy": {
-              "days": 30,
-              "enabled": true
-            }
+            "enabled": true
           }
         ],
         "metrics": [
           {
             "category": "AllMetrics",
-            "timeGrain": "PT1M",
-            "enabled": true,
-            "retentionPolicy": {
-              "days": 30,
-              "enabled": true
-            }
+            "enabled": true
           }
         ]
       }
