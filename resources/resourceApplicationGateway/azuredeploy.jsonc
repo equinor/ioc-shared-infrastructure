@@ -248,6 +248,9 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
       ],
       "properties": {
         "name": "[concat(variables('application-gateway-name') ,'/Microsoft.Insights/DiagService')]",
+        "storageAccountId": null,
+        "eventHubAuthorizationRuleId": null,
+        "eventHubName": null,
         "workspaceId": "[resourceId('Microsoft.OperationalInsights/workspaces', variables('log-analytics-workspace-name'))]",
         "logs": [
           {
