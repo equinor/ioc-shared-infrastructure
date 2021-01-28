@@ -188,7 +188,9 @@ function Publish-DatabaseUsersAndPermissions {
             }
 
             $userConfig.roles | ForEach-Object {
-                $sqlStatement += $sqlStatementFormat -f (Get-AzureSqlAddRoleMemberStatement $currentUserName $_)
+                if ($_){
+                    $sqlStatement += $sqlStatementFormat -f (Get-AzureSqlAddRoleMemberStatement $currentUserName $_)
+                }
             }
         }
     }
