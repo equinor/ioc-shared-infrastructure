@@ -22,12 +22,7 @@ foreach ($file in $files) {
 
     Write-Host "Testing $fileName"
     Copy-Item -Path $fileName -Destination "azuredeploy.json"
-
-    if (("*resourceAzureSql*", "*resourceAzureSqlDatabase*", "*resourceServiceBus*", "*resourceAppInsights*", "*resourceAppDockerCompose*", "*resourceApplicationGateway*" | %{$directory -like $_} ) -contains $true) {
-        $r = Test-AzTemplate  -Skip "apiVersions_Should_Be_Recent"
-    } else {
-        $r = Test-AzTemplate
-    }
+    $r = Test-AzTemplate  -Skip "apiVersions_Should_Be_Recent"
 
     # Dump test results
     $r
