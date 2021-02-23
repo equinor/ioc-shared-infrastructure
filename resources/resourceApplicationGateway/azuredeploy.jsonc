@@ -631,7 +631,7 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
           }
         ],
         "policySettings": {
-          "requestBodyCheck": false,
+          "requestBodyCheck": true,
           "maxRequestBodySizeInKb": 128,
           "fileUploadLimitInMb": 100,
           "state": "Enabled",
