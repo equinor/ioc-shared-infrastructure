@@ -290,7 +290,7 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
     },
     {
       "type": "Microsoft.Network/applicationGateways",
-      "apiVersion": "2019-11-01",
+      "apiVersion": "2020-05-01",
       "tags": "[parameters('tags')]",
       "name": "[variables('application-gateway-name')]",
       "location": "[parameters('location')]",
@@ -462,9 +462,20 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
             }
           }
         ],
+        "webApplicationFirewallConfiguration": {
+          "enabled": true,
+          "firewallMode": "Prevention",
+          "ruleSetType": "OWASP",
+          "ruleSetVersion": "3.1",
+          "disabledRuleGroups": [],
+          "requestBodyCheck": true,
+          "maxRequestBodySizeInKb": 128,
+          "fileUploadLimitInMb": 100
+        },
         "firewallPolicy": {
           "id": "[resourceId('Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies', variables('application-gateway-firewall-policy-name'))]"
         },
+        "forceFirewallPolicyAssociation": true,
         "urlPathMaps": [
           {
             "name": "default-urlpathmaps",
@@ -555,7 +566,7 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
     },
     {
       "type": "Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies",
-      "apiVersion": "2020-04-01",
+      "apiVersion": "2020-05-01",
       "tags": "[parameters('tags')]",
       "name": "[variables('application-gateway-firewall-policy-name')]",
       "location": "[parameters('location')]",
