@@ -79,6 +79,13 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
         "description": "Default application (name of app)"
       }
     },
+    "requestBodyCheck": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Configure to run security scan on request body"
+      }
+    },
     "autoscaleConfiguration": {
       "type": "object",
       "defaultValue": {
@@ -633,7 +640,7 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
           }
         ],
         "policySettings": {
-          "requestBodyCheck": true,
+          "requestBodyCheck": "[parameters('requestBodyCheck')]",
           "maxRequestBodySizeInKb": 128,
           "fileUploadLimitInMb": 100,
           "state": "Enabled",
