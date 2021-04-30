@@ -12,6 +12,9 @@
         "P1V2", // Premium V2 Small
         "P2V2", // Premium V2 Medium
         "P3V2", // Premium V2 Large
+        "P1V3", // Premium V3 Small
+        "P2V3", // Premium V3 Medium
+        "P3V3", // Premium V3 Large
         "PC2",  // Premium Container Small
         "PC3"   // Premium Container Medium
       ],
@@ -30,7 +33,7 @@
     {
       "comments": "App Service Plan, https://docs.microsoft.com/en-us/azure/templates/microsoft.web/2018-02-01/serverfarms",
       "type": "Microsoft.Web/serverfarms",
-      "apiVersion": "2019-08-01",
+      "apiVersion": "2020-12-01",
       "name": "[parameters('appServicePlanName')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
