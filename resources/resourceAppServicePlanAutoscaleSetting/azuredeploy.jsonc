@@ -2,6 +2,10 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
+      "location": {
+      "defaultValue": "[resourceGroup().location]",
+      "type": "string"
+      },
       "appServicePlanName": {
         "type": "string",
         "defaultValue": "S039-ioc-xyz-plan-dev",
@@ -85,7 +89,7 @@
         "type": "Microsoft.Insights/autoscalesettings",
         "name": "[variables('settingName')]",
         "apiVersion": "2015-04-01",
-        "location": "[resourceGroup().location]",
+        "location": "[parameters('location')]",
         "tags": "[parameters('tags')]",
         "properties": {
           "profiles": [
@@ -108,7 +112,6 @@
                     "timeAggregation": "Average",
                     "operator": "GreaterThan",
                     "threshold": "[parameters('metricThresholdToScaleOut')]",
-                    "Dimensions": [],
                     "dividePerInstance": false
 
                   },
@@ -130,7 +133,6 @@
                     "timeAggregation": "Average",
                     "operator": "LessThan",
                     "threshold": "[parameters('metricThresholdToScaleIn')]",
-                    "Dimensions": [],
                     "dividePerInstance": false
                   },
                   "scaleAction": {
