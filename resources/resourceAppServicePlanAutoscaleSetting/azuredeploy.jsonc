@@ -24,59 +24,7 @@
         "type": "object"
       },
       "profiles": {
-        "type": "array",
-        "defaultValue": [
-          {
-            "name": "DefaultAutoscaleProfile",
-            "capacity": {
-            "minimum": 1,
-            "maximum": 3,
-            "default": 1
-            },
-            "rules": [
-              {
-                "metricTrigger": {
-                  "metricName": "CpuPercentage",
-                  "metricNamespace": "microsoft.web/serverfarms",
-                  "metricResourceUri": "[variables('targetResourceId')]",
-                  "timeGrain": "PT1M",
-                  "statistic": "Average",
-                  "timeWindow": "PT5M",
-                  "timeAggregation": "Average",
-                  "operator": "GreaterThan",
-                  "threshold": 60,
-                  "dividePerInstance": false
-                },
-                "scaleAction": {
-                  "direction": "Increase",
-                  "type": "ChangeCount",
-                  "value": 1,
-                  "cooldown": "PT5M"
-                }
-              },
-              {
-                "metricTrigger": {
-                  "metricName": "CpuPercentage",
-                  "metricNamespace": "microsoft.web/serverfarms",
-                  "metricResourceUri": "[variables('targetResourceId')]",
-                  "timeGrain": "PT1M",
-                  "statistic": "Average",
-                  "timeWindow": "PT10M",
-                  "timeAggregation": "Average",
-                  "operator": "LessThan",
-                  "threshold": 20,
-                  "dividePerInstance": false
-                },
-                "scaleAction": {
-                  "direction": "Decrease",
-                  "type": "ChangeCount",
-                  "value": 1,
-                  "cooldown": "PT5M"
-                }
-              }
-            ]
-          }
-        ]
+        "type": "array"
       }
     },
     "variables": {
