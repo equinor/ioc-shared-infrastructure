@@ -13,62 +13,6 @@
           "description": "The name of the App Service plan (created elsewhere)."
         }
       },
-      "minimumCapacity": {
-        "type": "Int",
-        "defaultValue": 1,
-        "metadata": {
-          "description": "The minimum capacity.  Autoscale engine will ensure the instance count is at least this value."
-        }
-      },
-      "maximumCapacity": {
-        "type": "Int",
-        "defaultValue": 3,
-        "metadata": {
-          "description": "The maximum capacity.  Autoscale engine will ensure the instance count is not greater than this value."
-        }
-      },
-      "defaultCapacity": {
-        "type": "Int",
-        "defaultValue": 1,
-        "metadata": {
-          "description": "The default capacity.  Autoscale engine will preventively set the instance count to be this value if it can not find any metric data."
-        }
-      },
-      "metricName": {
-        "type": "string",
-        "defaultValue": "CpuPercentage",
-        "metadata": {
-          "description": "The metric name."
-        }
-      },
-      "metricThresholdToScaleOut": {
-        "type": "Int",
-        "defaultValue": 60,
-        "metadata": {
-          "description": "The metric upper threshold.  If the metric value is above this threshold then autoscale engine will initiate scale out action."
-        }
-      },
-      "metricThresholdToScaleIn": {
-        "type": "Int",
-        "defaultValue": 20,
-        "metadata": {
-          "description": "The metric lower threshold.  If the metric value is below this threshold then autoscale engine will initiate scale in action."
-        }
-      },
-      "changeCountScaleOut": {
-        "type": "Int",
-        "defaultValue": 1,
-        "metadata": {
-          "description": "The number by which to increase the instance count when autoscale engine is initiating scale out action."
-        }
-      },
-      "changeCountScaleIn": {
-        "type": "Int",
-        "defaultValue": 1,
-        "metadata": {
-          "description": "The number by which to decrease the instance count when autoscale engine is initiating scale in action."
-        }
-      },
       "autoscaleEnabled": {
         "type": "Bool",
         "defaultValue": true,
@@ -78,6 +22,61 @@
       },
       "tags": {
         "type": "object"
+      },
+      "profiles": {
+        "type": "array",
+        "defaultValue": [
+          {
+            "name": "DefaultAutoscaleProfile",
+            "capacity": {
+            "minimum": 1,
+            "maximum": 3,
+            "default": 1
+            },
+            "rules": [
+              {
+                "metricTrigger": {
+                  "metricName": "CpuPercentage",
+                  "metricNamespace": "microsoft.web/serverfarms",
+                  "metricResourceUri": "[variables('targetResourceId')]",
+                  "timeGrain": "PT1M",
+                  "statistic": "Average",
+                  "timeWindow": "PT5M",
+                  "timeAggregation": "Average",
+                  "operator": "GreaterThan",
+                  "threshold": 60,
+                  "dividePerInstance": false
+                },
+                "scaleAction": {
+                  "direction": "Increase",
+                  "type": "ChangeCount",
+                  "value": 1,
+                  "cooldown": "PT5M"
+                }
+              },
+              {
+                "metricTrigger": {
+                  "metricName": "CpuPercentage",
+                  "metricNamespace": "microsoft.web/serverfarms",
+                  "metricResourceUri": "[variables('targetResourceId')]",
+                  "timeGrain": "PT1M",
+                  "statistic": "Average",
+                  "timeWindow": "PT10M",
+                  "timeAggregation": "Average",
+                  "operator": "LessThan",
+                  "threshold": 20,
+                  "dividePerInstance": false
+                },
+                "scaleAction": {
+                  "direction": "Decrease",
+                  "type": "ChangeCount",
+                  "value": 1,
+                  "cooldown": "PT5M"
+                }
+              }
+            ]
+          }
+        ]
       }
     },
     "variables": {
@@ -92,59 +91,7 @@
         "location": "[parameters('location')]",
         "tags": "[parameters('tags')]",
         "properties": {
-          "profiles": [
-            {
-              "name": "DefaultAutoscaleProfile",
-              "capacity": {
-                "minimum": "[parameters('minimumCapacity')]",
-                "maximum": "[parameters('maximumCapacity')]",
-                "default": "[parameters('defaultCapacity')]"
-              },
-              "rules": [
-                {
-                  "metricTrigger": {
-                    "metricName": "[parameters('metricName')]",
-                    "metricNamespace": "microsoft.web/serverfarms",
-                    "metricResourceUri": "[variables('targetResourceId')]",
-                    "timeGrain": "PT1M",
-                    "statistic": "Average",
-                    "timeWindow": "PT5M",
-                    "timeAggregation": "Average",
-                    "operator": "GreaterThan",
-                    "threshold": "[parameters('metricThresholdToScaleOut')]",
-                    "dividePerInstance": false
-
-                  },
-                  "scaleAction": {
-                    "direction": "Increase",
-                    "type": "ChangeCount",
-                    "value": "[parameters('changeCountScaleOut')]",
-                    "cooldown": "PT5M"
-                  }
-                },
-                {
-                  "metricTrigger": {
-                    "metricName": "[parameters('metricName')]",
-                    "metricNamespace": "microsoft.web/serverfarms",
-                    "metricResourceUri": "[variables('targetResourceId')]",
-                    "timeGrain": "PT1M",
-                    "statistic": "Average",
-                    "timeWindow": "PT10M",
-                    "timeAggregation": "Average",
-                    "operator": "LessThan",
-                    "threshold": "[parameters('metricThresholdToScaleIn')]",
-                    "dividePerInstance": false
-                  },
-                  "scaleAction": {
-                    "direction": "Decrease",
-                    "type": "ChangeCount",
-                    "value": "[parameters('changeCountScaleIn')]",
-                    "cooldown": "PT5M"
-                  }
-                }
-              ]
-            }
-          ],
+          "profiles": "[parameters('profiles')]",
           "enabled": "[parameters('autoscaleEnabled')]",
           "targetResourceUri": "[variables('targetResourceId')]"
         }
