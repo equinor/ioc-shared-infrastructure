@@ -1,0 +1,50 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "location": {
+      "defaultValue": "[resourceGroup().location]",
+      "type": "string"
+      },
+      "appServicePlanName": {
+        "type": "string",
+        "defaultValue": "S039-ioc-xyz-plan-dev",
+        "metadata": {
+          "description": "The name of the App Service plan (created elsewhere)."
+        }
+      },
+      "autoscaleEnabled": {
+        "type": "Bool",
+        "defaultValue": true,
+        "metadata": {
+          "description": "A boolean to indicate whether the autoscale policy is enabled or disabled."
+        }
+      },
+      "tags": {
+        "type": "object"
+      },
+      "profiles": {
+        "type": "array"
+      }
+    },
+    "variables": {
+      "settingName": "[concat(toLower(parameters('appServicePlanName')), '-setting')]",
+      "targetResourceId": "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]"
+    },
+    "resources": [
+      {
+        "type": "Microsoft.Insights/autoscalesettings",
+        "name": "[variables('settingName')]",
+        "apiVersion": "2015-04-01",
+        "location": "[parameters('location')]",
+        "tags": "[parameters('tags')]",
+        "properties": {
+          "profiles": "[parameters('profiles')]",
+          "enabled": "[parameters('autoscaleEnabled')]",
+          "targetResourceUri": "[variables('targetResourceId')]"
+        }
+      }
+    ],
+    "outputs": {
+    }
+  }
