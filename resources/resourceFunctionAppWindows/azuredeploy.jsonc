@@ -172,6 +172,7 @@
         "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]",
         "clientAffinityEnabled": false,
         "reserved": true,
+        "containerSize": 128,
         "dailyMemoryTimeQuota": 0,
         "httpsOnly": true,
         "redundancyMode": "None"
