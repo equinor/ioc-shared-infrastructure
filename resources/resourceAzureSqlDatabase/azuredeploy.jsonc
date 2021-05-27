@@ -14,22 +14,34 @@
                 "description": "The name of the SQL Database."
             }
         },
-        "databaseCollation" : {
-            "type": "string",
-            "defaultValue" : "SQL_Latin1_General_CP1_CI_AS",
-            "metadata" : {
-                "description" : "The collation of the SQL Database."
-            }
-        },
+//       "databaseCollation" : {
+//           "type": "string",
+//           "defaultValue" : "SQL_Latin1_General_CP1_CI_AS",
+//          "metadata" : {
+//              "description" : "The collation of the SQL Database."
+//           }
+//       },
         "sku" : {
             "type" : "object",
             "metadata": {
-                "description": "As defined in https://docs.microsoft.com/en-us/azure/templates/microsoft.sql/2019-06-01-preview/servers/databases#sku-object"
+                "description": "As defined in https://docs.microsoft.com/en-us/azure/templates/microsoft.sql/2020-11-01-preview/servers/databases?tabs=json"
             },
             "defaultValue" : {
                 "name": "Standard",
                 "tier": "Standard",
                 "capacity": 10
+            }
+        },
+        "properties" : {
+            "type" : "object",
+            "metadata": {
+                "description": "As defined in https://docs.microsoft.com/en-us/azure/templates/microsoft.sql/2020-11-01-preview/servers/databases?tabs=json#databaseproperties-object"
+            },
+            "defaultValue" : {
+                "collation": "SQL_Latin1_General_CP1_CI_AS",
+                "zoneRedundant": "false",
+                "readScale": "Enabled",
+                "requestedBackupStorageRedundancy": "Geo"                
             }
         },
         "location": {
@@ -38,19 +50,24 @@
             "metadata": {
                 "description": "Location for all resources."
             }
+        },
+        "tags": {
+            "type": "object",
+            "metadata" : {
+                "description" : "The tags to append on each resource created."
+            }
         }
     },
     "variables": {},
     "resources": [
         {
-            "type": "Microsoft.Sql/servers/databases",
-            "apiVersion": "2019-06-01-preview",
             "name": "[concat(parameters('sqlServerName'),'/',parameters('databaseName'))]",
-            "sku": "[parameters('sku')]",
+            "type": "Microsoft.Sql/servers/databases",
+            "apiVersion": "2020-11-01-preview",
+            "tags": "[parameters('tags')]",
             "location": "[parameters('location')]",
-             "properties": {
-                "collation": "[parameters('databaseCollation')]"
-            }
+            "sku": "[parameters('sku')]",           
+            "properties": "[parameters('properties')]"
         }
     ],
     "outputs" : {
