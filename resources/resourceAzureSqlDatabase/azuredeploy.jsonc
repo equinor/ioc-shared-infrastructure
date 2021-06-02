@@ -24,7 +24,7 @@
         "sku" : {
             "type" : "object",
             "metadata": {
-                "description": "As defined in https://docs.microsoft.com/en-us/azure/templates/microsoft.sql/2019-06-01-preview/servers/databases#sku-object"
+                "description": "As defined in https://docs.microsoft.com/en-us/azure/templates/microsoft.sql/2020-11-01-preview/servers/databases#sku-object"
             },
             "defaultValue" : {
                 "name": "Standard",
@@ -44,7 +44,7 @@
     "resources": [
         {
             "type": "Microsoft.Sql/servers/databases",
-            "apiVersion": "2019-06-01-preview",
+            "apiVersion": "2020-11-01-preview",
             "name": "[concat(parameters('sqlServerName'),'/',parameters('databaseName'))]",
             "sku": "[parameters('sku')]",
             "location": "[parameters('location')]",

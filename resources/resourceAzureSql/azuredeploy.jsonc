@@ -128,7 +128,7 @@
                     ],
                     "properties": {
                         "roleDefinitionId": "[variables('StorageBlobContributor')]",
-                        "principalId": "[reference(resourceId('Microsoft.Sql/servers', variables('serverName')), '2019-06-01-preview', 'Full').identity.principalId]",
+                        "principalId": "[reference(resourceId('Microsoft.Sql/servers', variables('serverName')), '2020-11-01-preview', 'Full').identity.principalId]",
                         "scope": "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]",
                         "principalType": "ServicePrincipal"
                     }
@@ -137,7 +137,7 @@
         },
         {
             "type": "Microsoft.Sql/servers",
-            "apiVersion": "2019-06-01-preview",
+            "apiVersion": "2020-11-01-preview",
             "location": "[parameters('location')]",
             "name": "[variables('serverName')]",
             "identity": "[if(or(parameters('isStorageBehindVnet'), parameters('sqlAssignIdentity')), json('{\"type\":\"SystemAssigned\"}'), json('null'))]",
@@ -150,7 +150,7 @@
             "resources": [
                 {
                     "type": "Microsoft.Sql/servers/administrators",
-                    "apiVersion": "2019-06-01-preview",
+                    "apiVersion": "2020-11-01-preview",
                     "name": "[concat(variables('serverName'), '/ActiveDirectory')]",
                     "dependsOn": [
                         "[resourceId('Microsoft.Sql/servers', variables('serverName'))]"
@@ -164,7 +164,7 @@
                 },
                 {
                     "type": "Microsoft.Sql/servers/auditingSettings",
-                    "apiVersion": "2019-06-01-preview",
+                    "apiVersion": "2020-11-01-preview",
                     "name": "[concat(variables('serverName'), '/AuditSettings')]",
                     "dependsOn": [
                         "[parameters('storageAccountName')]",
@@ -182,7 +182,7 @@
                 {
                     "type": "Microsoft.Sql/servers/vulnerabilityAssessments",
                     "name": "[concat(variables('serverName'), '/VulnerabilityAssessments')]",
-                    "apiVersion": "2019-06-01-preview",
+                    "apiVersion": "2020-11-01-preview",
                     "dependsOn": [
                         "[extensionResourceId(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), 'Microsoft.Authorization/roleAssignments/', variables('uniqueRoleGuid'))]",
                         "[resourceId('Microsoft.Sql/servers', variables('serverName'))]"
@@ -253,7 +253,7 @@
         },
         {
             "type": "Microsoft.Sql/servers/firewallRules",
-            "apiVersion": "2015-05-01-preview",
+            "apiVersion": "2020-11-01-preview",
             "name": "[concat(variables('serverName'), '/',parameters('sqlFirewallIpRules')[copyIndex()].name)]",
             "dependsOn": [
                 "[resourceId('Microsoft.Sql/servers', variables('serverName'))]"

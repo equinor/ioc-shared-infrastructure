@@ -34,11 +34,11 @@
   "outputs": {
     "instrumentationKey": {
       "type": "string",
-      "value": "[reference(resourceId('Microsoft.Insights/components', parameters('appInsightsName')), '2015-05-01').instrumentationKey]"
+      "value": "[reference(resourceId('Microsoft.Insights/components', parameters('appInsightsName')), '2020-02-02-preview').instrumentationKey]"
     },
     "connectionString": {
       "type": "string",
-      "value": "[reference(resourceId('Microsoft.Insights/components', parameters('appInsightsName')), '2015-05-01').ConnectionString]"
+      "value": "[reference(resourceId('Microsoft.Insights/components', parameters('appInsightsName')), '2020-02-02-preview').ConnectionString]"
     }
   }
 }

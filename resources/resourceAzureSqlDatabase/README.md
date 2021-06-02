@@ -11,7 +11,7 @@ This template can be used to create a database on a target Azure SQL resource.
 | sqlServerName     | string | Yes      | The name of the SQL logical server.                                                                                                                                     |
 | databaseName      | string | Yes      | The name of the SQL database.                                                                                                                                           |
 | databaseCollation | string | No       | The collation of the SQL database. Defaults to SQL_Latin1_General_CP1_CI_AS.                                                                                            |
-| sku               | object | No       | The service tier of the database using the [sku object](https://docs.microsoft.com/en-us/azure/templates/microsoft.sql/2019-06-01-preview/servers/databases#sku-object) |
+| sku               | object | No       | The service tier of the database using the [sku object](https://docs.microsoft.com/en-us/azure/templates/microsoft.sql/2020-11-01-preview/servers/databases#sku-object) |
 
 ## Example usage
 
