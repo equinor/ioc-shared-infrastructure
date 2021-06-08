@@ -22,7 +22,6 @@ foreach ($file in $files) {
 
     Write-Host "Testing $fileName"
     Copy-Item -Path $fileName -Destination "azuredeploy.json"
-
     $r = Test-AzTemplate -Skip @("apiVersions_Should_Be_Recent", "apiVersions_Should_Be_Recent_In_Reference_Functions")
 
     # Dump test results
