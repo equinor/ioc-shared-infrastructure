@@ -6,7 +6,16 @@
       "type": "string"
     },
     "serviceBusQueueNames": {
-      "type": "array"
+      "type": "array",
+      "defaultValue": []
+    },
+    "serviceBusTopics": {
+      "type": "array",
+      "defaultValue": []
+    },
+    "serviceBusSubscriptions": {
+      "type": "array",
+      "defaultValue": []
     },
     "serviceBusQueueRequiresSession": {
       "type": "bool",
@@ -68,6 +77,55 @@
       "copy": {
         "name": "serviceBusQueues",
         "count": "[length(parameters('serviceBusQueueNames'))]"
+      }
+    },
+    {
+      "apiVersion": "2017-04-01",
+      "name": "[concat(parameters('serviceBusNamespaceName'), '/', parameters('serviceBusTopics')[copyIndex()])]",
+      "type": "Microsoft.ServiceBus/namespaces/topics",
+      "dependsOn": [
+        "[variables('serviceBusResource')]",
+        "[parameters('serviceBusNamespaceName')]"
+      ],
+      "properties": {
+        "lockDuration": "PT5M",
+        "maxSizeInMegabytes": 5120,
+        "requiresDuplicateDetection": false,
+        "requiresSession": "[parameters('serviceBusQueueRequiresSession')]",
+        "defaultMessageTimeToLive": "P14D",
+        "deadLetteringOnMessageExpiration": false,
+        "duplicateDetectionHistoryTimeWindow": "PT10M",
+        "maxDeliveryCount": 10,
+        "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
+        "enablePartitioning": false,
+        "enableExpress": false
+      },
+      "copy": {
+        "name": "serviceBusTopics",
+        "count": "[length(parameters('serviceBusTopics'))]"
+      }
+    },
+    {
+      "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions",
+      "apiVersion": "2017-04-01",
+      "name": "[concat(parameters('serviceBusNamespaceName'), '/', parameters('serviceBusSubscriptions')[copyIndex()].topic, '/', parameters('serviceBusSubscriptions')[copyIndex()].subscriber)]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.ServiceBus/namespaces', parameters('serviceBusNamespaceName'))]",
+        "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('serviceBusNamespaceName'), parameters('serviceBusSubscriptions')[copyIndex()].topic)]"
+      ],
+      "properties": {
+        "deadLetteringOnFilterEvaluationExceptions": false,
+        "deadLetteringOnMessageExpiration": true,
+        "defaultMessageTimeToLive": "P1D",
+        "enableBatchedOperations": false,
+        "lockDuration": "PT1M",
+        "maxDeliveryCount": 10,
+        "requiresSession": false
+      },
+      "copy": {
+        "name": "serviceBusSubscriptions",
+        "count": "[length(parameters('serviceBusSubscriptions'))]"
       }
     }
   ],
