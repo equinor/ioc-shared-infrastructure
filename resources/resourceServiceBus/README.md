@@ -1,9 +1,10 @@
 # Service bus namespace and queue
 
-A servicebus namespace and queue
+A servicebus namespace. Optionally add queues or topics+subscriptions
 
 ![Resource view](overview.png)
 
+![Topics example](sb-topics-01.png)
 
 ## Example usage
 
@@ -25,6 +26,23 @@ az deployment group create --mode Incremental --name myRedisCacheDeployment --re
             "value": [
                 "queue1",
                 "queue2"
+            ]
+        },
+        "serviceBusTopics": {
+            "value": [
+                "topic1"
+            ]
+        },
+        "serviceBusSubscriptions": {
+            "value": [
+                {
+                    "topic": "topic1",
+                    "subscriber": "subscriber1"
+                },
+                {
+                    "topic": "topic1",
+                    "subscriber": "subscriber2"
+                }
             ]
         },
         "tags": {
