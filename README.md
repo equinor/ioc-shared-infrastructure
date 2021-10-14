@@ -35,7 +35,7 @@ links to a resource template:
   {
     "name": "linkedTemplateContainerRegistry",
     "type": "Microsoft.Resources/deployments",
-    "apiVersion": "2018-05-01",
+    "apiVersion": "2021-04-01",
     "properties": {
       "mode": "Incremental",
       "templateLink": {

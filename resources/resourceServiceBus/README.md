@@ -1,6 +1,7 @@
 # Service bus namespace and queue
 
 A servicebus namespace. Optionally add queues or topics+subscriptions
+This template fails if linked using API version older than 2019-05-10.
 
 ![Resource view](overview.png)
 
