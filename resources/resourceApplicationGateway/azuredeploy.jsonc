@@ -57,6 +57,13 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
         "description": "List of URL's that aren't restricted by regions. Can be API endpoints"
       }
     },
+    "firewallExclusionList": {
+      "type": "array",
+      "defaultValue": "[json(' [ ] ')]",
+      "metadata": {
+        "description": "List of path segments that are exempted from firewall policies"
+      }
+    },
     "applications": {
       "type": "array",
       "metadata": {
@@ -657,23 +664,7 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
               "ruleSetVersion": "0.1"
             }
           ],
-          "exclusions": [
-            {
-              "matchVariable": "RequestArgNames",
-              "selectorMatchOperator": "Equals",
-              "selector": "code"
-            },
-            {
-              "matchVariable": "RequestCookieNames",
-              "selectorMatchOperator": "Equals",
-              "selector": "_oauth2_proxy"
-            },
-            {
-              "matchVariable": "RequestCookieNames",
-              "selectorMatchOperator": "Equals",
-              "selector": "_oauth2_proxy_csrf"
-            }
-          ]
+          "exclusions": "[parameters('firewallExclusionList')]"
         }
       }
     }
