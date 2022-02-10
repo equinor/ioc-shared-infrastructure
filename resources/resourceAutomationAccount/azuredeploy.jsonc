@@ -16,6 +16,11 @@
             "type": "array"
         }
     },
+    "variables": {
+        "contentLinkUriPart1": "[concat('https://www.powershellgallery.com/api/v2/package/', parameters('automationAccountModules')[copyIndex()].name)]",
+        "contentLinkUriPart2": "[concat('/', parameters('automationAccountModules')[copyIndex()].version)]",
+        "contentLinkUri": "[concat(variables('contentLinkUriPart1'), variables('contentLinkUriPart2'))]"
+    },
     "resources": [
         {
             "type": "Microsoft.Automation/automationAccounts",
@@ -38,7 +43,7 @@
             ],
             "properties": {
                 "contentLink": {
-                    "uri": "[concat('https://www.powershellgallery.com/api/v2/package/',parameters( 'automationAccountModules')[copyIndex()].name,'/',parameters('automationAccountModules')[copyIndex()].version)]"
+                    "uri": "[variables('contentLinkUri')]"
                 }
             },
             "copy": {
