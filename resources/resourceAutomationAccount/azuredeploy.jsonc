@@ -17,9 +17,20 @@
         }
     },
     "variables": {
-        "contentLinkUriPart1": "[concat('https://www.powershellgallery.com/api/v2/package/', parameters('automationAccountModules')[copyIndex()].name)]",
-        "contentLinkUriPart2": "[concat('/', parameters('automationAccountModules')[copyIndex()].version)]",
-        "contentLinkUri": "[concat(variables('contentLinkUriPart1'), variables('contentLinkUriPart2'))]"
+        "automationAccount": {
+            "copy": [
+                {
+                "name": "modules",
+                "count": "[length(parameters('automationAccountModules'))]",
+                "input": {
+                    "uri": "[concat('https://www.powershellgallery.com/api/v2/package/',
+                            parameters('automationAccountModules')[copyIndex()].name,
+                            '/',
+                            parameters('automationAccountModules')[copyIndex()].version)]"
+                    }
+                }
+            ]
+        }
     },
     "resources": [
         {
@@ -43,7 +54,7 @@
             ],
             "properties": {
                 "contentLink": {
-                    "uri": "[variables('contentLinkUri')]"
+                    "uri": "[variables('automationAccount').modules[copyIndex()].uri]"
                 }
             },
             "copy": {
