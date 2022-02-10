@@ -9,6 +9,13 @@
       "defaultValue": "[resourceGroup().location]",
       "type": "string"
     },
+    "workspaceResourceId": {
+      "type": "string"
+    },
+    "ingestionMode": {
+      "defaultValue": "ApplicationInsights",
+      "type": "string"
+    },
     "tags": {
       "type": "object"
     }
@@ -16,7 +23,7 @@
   "resources": [
     {
       "type": "Microsoft.Insights/components",
-      "apiVersion": "2018-05-01-preview",
+      "apiVersion": "2020-02-02",
       "name": "[parameters('appInsightsName')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -26,8 +33,10 @@
         "Application_Type": "web",
         "Request_Source": "rest",
         "RetentionInDays": 90,
+        "IngestionMode": "[parameters('ingestionMode')]",
         "publicNetworkAccessForIngestion": "Enabled",
-        "publicNetworkAccessForQuery": "Enabled"
+        "publicNetworkAccessForQuery": "Enabled",
+        "WorkspaceResourceId": "[parameters('workspaceResourceId')]"
       }
     }
   ],
