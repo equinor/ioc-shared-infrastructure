@@ -17,11 +17,13 @@
       "defaultValue": "Basic"
     }
   },
-  "variables": {},
+  "variables": {
+    "serverPath": "[concat(parameters('registryName'),'.azurecr.io')]"
+  },
   "resources": [
     {
       "type": "Microsoft.ContainerRegistry/registries",
-      "apiVersion": "2019-12-01-preview",
+      "apiVersion": "2021-09-01",
       "name": "[parameters('registryName')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -55,7 +57,7 @@
   "outputs": {
     "acrServerUrl": {
       "type": "string",
-      "value": "[uri(parameters('registryName'), '.azurecr.io')]"
+      "value": "[variables('serverPath')]"
     }
   }
 }

@@ -23,8 +23,9 @@
                 "name": "modules",
                 "count": "[length(parameters('automationAccountModules'))]",
                 "input": {
-                    "uri": "[uri('https://www.powershellgallery.com/api/v2/package/',
-                            concat(parameters('automationAccountModules')[copyIndex()].name,
+                    "uri": "[uri('https://www.powershellgallery.com/',
+                            concat('api/v2/package/',
+                            parameters('automationAccountModules')[copyIndex()].name,
                             '/',
                             parameters('automationAccountModules')[copyIndex()].version))]"
                     }
