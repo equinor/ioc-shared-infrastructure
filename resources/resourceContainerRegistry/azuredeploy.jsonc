@@ -55,7 +55,7 @@
   "outputs": {
     "acrServerUrl": {
       "type": "string",
-      "value": "[concat(parameters('registryName'), '.azurecr.io')]"
+      "value": "[uri(parameters('registryName'), '.azurecr.io')]"
     }
   }
 }

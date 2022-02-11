@@ -35,6 +35,12 @@ application insights key to the app.
             "appInsightsName": {
                 "value": "[variables('appInsightsName')]"
             },
+            "workspaceResourceId": {
+                "value": "[variables('workspaceResourceId')]"
+            },
+            "ingestionMode": {
+                "value": "[variables('ingestionMode')]"
+            },
             "tags": {
                 "value": {
                     "Environment": "[parameters('environment')]"
