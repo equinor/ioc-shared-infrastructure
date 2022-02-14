@@ -1,0 +1,66 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "workspaceName": {
+        "type": "string"
+      },
+      "location": {
+        "defaultValue": "[resourceGroup().location]",
+        "type": "string"
+      },
+      "sku": {
+        "defaultValue": "Standard",
+        "type": "string"
+      },
+      "enableDataExport": {
+        "defaultValue": true,
+        "type": "bool"
+      },
+      "disableLocalAuth": {
+        "defaultValue": false,
+        "type": "bool"
+      },
+      "retentionInDays": {
+        "defaultValue": 30,
+        "type": "int"
+      },
+      "dailyQuotaGb": {
+        "defaultValue": 1,
+        "type": "int"
+      },
+      "tags": {
+        "type": "object"
+      }
+    },
+    "resources": [
+        {
+            "type": "Microsoft.OperationalInsights/workspaces",
+            "apiVersion": "2021-06-01",
+            "name": "[parameters('workspaceName')]",
+            "location": "[parameters('location')]",
+            "tags": "[parameters('tags')]",
+            "properties": {
+                "features": {
+                    "disableLocalAuth": "[parameters('disableLocalAuth')]",
+                    "enableDataExport": "[parameters('enableDataExport')]",
+                    "enableLogAccessUsingOnlyResourcePermissions": true,
+                    "immediatePurgeDataOn30Days": false
+                },
+                "retentionInDays": "[parameters('retentionInDays')]",
+                "sku": {
+                    "name": "[parameters('sku')]"
+                },
+                "workspaceCapping": {
+                    "dailyQuotaGb": "[parameters('dailyQuotaGb')]"
+                }
+            }
+        }
+    ],
+    "outputs": {
+        "logAnalyticsWorkspaceId": {
+            "type": "string",
+            "value": "[reference(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaceName')), '2021-06-01').id]"
+        }
+    }
+}
