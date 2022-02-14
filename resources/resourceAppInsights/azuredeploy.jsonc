@@ -13,7 +13,7 @@
       "type": "string"
     },
     "ingestionMode": {
-      "defaultValue": "ApplicationInsights",
+      "defaultValue": "LogAnalytics",
       "type": "string"
     },
     "tags": {
