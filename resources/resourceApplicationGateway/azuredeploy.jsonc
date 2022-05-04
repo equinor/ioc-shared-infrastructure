@@ -112,6 +112,25 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
     },
     "tags": {
       "type": "object"
+    },
+    "sslPolicyType": {
+      "type": "string",
+      "defaultValue": "Custom",
+      "metadata": {
+        "description": "Type of ssl policy"
+    },
+    "sslMinProtocolVersion": {
+      "type": "string",
+      "defaultValue": "TLSv1_2",
+      "metadata": {
+        "description": "min version requirement for ssl protocol"
+    },
+    "sslCipherSuites": {
+      "type": "array",
+      "defaultValue": "[json(' [ ] ')]",
+      "metadata": {
+        "description": "List ciphers used by ssl policy"
+      }
     }
   },
   "variables": {
@@ -476,6 +495,11 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
             }
           }
         ],
+        "sslPolicy": {
+          "policyType": "[parameters('sslPolicyType')]",
+          "minProtocolVersion": "[parameters('sslMinProtocolVersion')]",
+          "cipherSuites": "[parameters('sslCipherSuites')]"
+        },
         "webApplicationFirewallConfiguration": {
           "enabled": true,
           "firewallMode": "Prevention",
