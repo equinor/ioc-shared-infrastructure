@@ -118,16 +118,18 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
       "defaultValue": "Custom",
       "metadata": {
         "description": "Type of ssl policy"
+      }
     },
     "sslMinProtocolVersion": {
       "type": "string",
       "defaultValue": "TLSv1_2",
       "metadata": {
         "description": "min version requirement for ssl protocol"
+      }
     },
     "sslCipherSuites": {
       "type": "array",
-      "defaultValue": "[json(' [ ] ')]",
+      "defaultValue": "[json(' [ 'TLS_RSA_WITH_AES_256_CBC_SHA256','TLS_RSA_WITH_AES_256_CBC_SHA256','TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384','TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256','TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256','TLS_DHE_RSA_WITH_AES_128_GCM_SHA256','TLS_RSA_WITH_AES_128_GCM_SHA256','TLS_RSA_WITH_AES_128_CBC_SHA256' ] ')]",
       "metadata": {
         "description": "List ciphers used by ssl policy"
       }
@@ -697,6 +699,11 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
     "publicIPAddress": {
       "type": "string",
       "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses', variables('public-ipv4-address-name'))).IpAddress]"
+    },
+    "logAnalyticsWorkspaceId": {
+      "type": "string",
+      "value": "[resourceId('Microsoft.OperationalInsights/workspaces', variables('log-analytics-workspace-name'))]"
     }
   }
 }
+
