@@ -129,7 +129,7 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
     },
     "sslCipherSuites": {
       "type": "array",
-      "defaultValue": "[json(' [ 'TLS_RSA_WITH_AES_256_CBC_SHA256','TLS_RSA_WITH_AES_256_CBC_SHA256','TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384','TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256','TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256','TLS_DHE_RSA_WITH_AES_128_GCM_SHA256','TLS_RSA_WITH_AES_128_GCM_SHA256','TLS_RSA_WITH_AES_128_CBC_SHA256' ] ')]",
+      "defaultValue": "[json(' [ 'TLS_RSA_WITH_AES_256_CBC_SHA256', 'TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384','TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256','TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256','TLS_DHE_RSA_WITH_AES_128_GCM_SHA256','TLS_RSA_WITH_AES_128_GCM_SHA256','TLS_RSA_WITH_AES_128_CBC_SHA256' ] ')]",
       "metadata": {
         "description": "List ciphers used by ssl policy"
       }
