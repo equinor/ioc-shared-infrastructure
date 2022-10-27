@@ -22,6 +22,10 @@
         "maxmemory-delta": "50"
       }
     },
+    "redisVersion": {
+      "type": "string",
+      "defaultValue": "6"
+    },
     "sku": {
       "type": "object",
       "defaultValue": {
@@ -34,7 +38,7 @@
   "resources": [
     {
       "type": "Microsoft.Cache/Redis",
-      "apiVersion": "2019-07-01",
+      "apiVersion": "2022-06-01",
       "name": "[parameters('redisName')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -42,7 +46,8 @@
         "sku": "[parameters('sku')]",
         "enableNonSslPort": false,
         "minimumTlsVersion": "1.2",
-        "redisConfiguration": "[parameters('redisConfiguration')]"
+        "redisConfiguration": "[parameters('redisConfiguration')]",
+        "redisVersion": "[parameters('redisVersion')]"
       }
     }
   ]
