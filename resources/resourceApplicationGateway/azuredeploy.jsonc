@@ -57,6 +57,26 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
         "description": "List of URL's that aren't restricted by regions. Can be API endpoints"
       }
     },
+    "requestRoutingRules": {
+      "type": "array",
+      "defaultValue": [
+        {
+          "name": "ioc-applications-routing-rule",
+          "properties": {
+            "ruleType": "PathBasedRouting",
+            "httpListener": {
+              "id": "[resourceId('Microsoft.Network/applicationGateways/httpListeners', variables('application-gateway-name'), 'https-listener')]"
+            },
+            "urlPathMap": {
+              "id": "[resourceId('Microsoft.Network/applicationGateways/urlPathMaps', variables('application-gateway-name'), 'default-urlpathmaps')]"
+            }
+          }
+        }
+      ],
+      "metadata": {
+        "description": "List of request routing rules. See https://docs.microsoft.com/en-us/azure/templates/microsoft.network/2019-04-01/applicationgateways#requestroutingrule"
+      }
+    },
     "firewallExclusionList": {
       "type": "array",
       "defaultValue": "[json(' [ ] ')]",
@@ -383,32 +403,7 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
             }
           }
         ],
-        "requestRoutingRules": [
-          {
-            "name": "ioc-applications-routing-rule",
-            "properties": {
-              "ruleType": "PathBasedRouting",
-              "httpListener": {
-                "id": "[resourceId('Microsoft.Network/applicationGateways/httpListeners', variables('application-gateway-name'), 'https-listener')]"
-              },
-              "urlPathMap": {
-                "id": "[resourceId('Microsoft.Network/applicationGateways/urlPathMaps', variables('application-gateway-name'), 'default-urlpathmaps')]"
-              }
-            }
-          },
-          {
-            "name": "http-to-https-routing-rule",
-            "properties": {
-              "ruleType": "Basic",
-              "redirectConfiguration": {
-                "id": "[resourceId('Microsoft.Network/applicationGateways/redirectConfigurations', variables('application-gateway-name'), 'http-to-https-redirect-config')]"
-              },
-              "httpListener": {
-                "id": "[resourceId('Microsoft.Network/applicationGateways/httpListeners', variables('application-gateway-name'), 'http-listener')]"
-              }
-            }
-          }
-        ],
+        "requestRoutingRules": "[parameters('requestRoutingRules')]",
         "rewriteRuleSets": [
           {
             "name": "forward-host-header",
