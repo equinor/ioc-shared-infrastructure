@@ -17,6 +17,20 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
         "description": "Name of the application/solution. Will be used for generating resource names."
       }
     },
+    "applicationFirewalPolicyName": {
+      "type": "string",
+      "defaultValue": "[parameters('applicationName')]",
+      "metadata": {
+        "description": "Name of the application firewall policy. Typically the same as application name."
+      }
+    },
+    "logAnalyticsWorkspaceName": {
+      "type": "string",
+      "defaultValue": "[parameters('applicationName')]",
+      "metadata": {
+        "description": "Name prefix of the Log Analytics workspace to use for logging. Typically the same as application name."
+      }
+    },
     "applicationEnvironment": {
       "type": "string",
       "allowedValues": [ "dev", "test", "prod", "ee" ],
@@ -59,22 +73,16 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
     },
     "requestRoutingRules": {
       "type": "array",
-      "defaultValue": [
-        {
-          "name": "ioc-applications-routing-rule",
-          "properties": {
-            "ruleType": "PathBasedRouting",
-            "httpListener": {
-              "id": "[resourceId('Microsoft.Network/applicationGateways/httpListeners', variables('application-gateway-name'), 'https-listener')]"
-            },
-            "urlPathMap": {
-              "id": "[resourceId('Microsoft.Network/applicationGateways/urlPathMaps', variables('application-gateway-name'), 'default-urlpathmaps')]"
-            }
-          }
-        }
-      ],
+      "defaultValue": "[json(' [ ] ')]",
       "metadata": {
         "description": "List of request routing rules. See https://docs.microsoft.com/en-us/azure/templates/microsoft.network/2019-04-01/applicationgateways#requestroutingrule"
+      }
+    },
+    "httpListeners": {
+      "type": "array",
+      "defaultValue": "[json(' [ ] ')]",
+      "metadata": {
+        "description": "List of http listeners."
       }
     },
     "firewallExclusionList": {
@@ -157,14 +165,13 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
   },
   "variables": {
     "application-gateway-name": "[concat(parameters('applicationName'), '-agw-', parameters('applicationEnvironment'))]",
-    "application-gateway-firewall-policy-name": "[concat(parameters('applicationName'), '-policy-', parameters('applicationEnvironment'))]",
     "application-gateway-sku": "WAF_v2",
 
     "public-ipv4-address-name": "[concat(parameters('applicationName'), '-pip-', parameters('applicationEnvironment'))]",
     "public-ipv4-dns-label": "[toLower(variables('application-gateway-name'))]",
     "public-ip-sku": "Standard",
 
-    "log-analytics-workspace-name": "[concat(parameters('applicationName'), '-log-', parameters('applicationEnvironment'))]",
+    "log-analytics-workspace-name": "[concat(parameters('logAnalyticsWorkspaceName'), '-log-', parameters('applicationEnvironment'))]",
     "log-analytics-workspace-sku": "pergb2018", // As 2020-09-29, Log Analytics only has one available current SKU. Rest are marked as legacy
 
     "vnet-name": "[concat(parameters('applicationName'), '-vnet-', parameters('applicationEnvironment'))]",
@@ -352,7 +359,7 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
       "dependsOn": [
         "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet-name'))]",
         "[resourceId('Microsoft.Network/publicIPAddresses', concat(variables('public-ipv4-address-name')))]",
-        "[resourceId('Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies', variables('application-gateway-firewall-policy-name'))]"
+        "[resourceId('Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies', parameters('applicationFirewalPolicyName'))]"
       ],
       "identity": {
         "type": "UserAssigned",
@@ -446,44 +453,7 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
 
           }
         ],
-        "httpListeners": [
-          {
-            "name": "http-listener",
-            "properties": {
-              "firewallPolicy": {
-                "id": "[resourceId('Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies', variables('application-gateway-firewall-policy-name'))]"
-              },
-              "frontendIPConfiguration": {
-                "id": "[resourceId('Microsoft.Network/applicationGateways/frontendIPConfigurations', variables('application-gateway-name'), 'application-gateway-public-ipv4')]"
-              },
-              "frontendPort": {
-                "id": "[resourceId('Microsoft.Network/applicationGateways/frontendPorts',variables('application-gateway-name'), 'port_80')]"
-              },
-              "protocol": "Http",
-              "requireServerNameIndication": false
-            }
-          },
-          {
-            "name": "https-listener",
-            "properties": {
-              "firewallPolicy": {
-                "id": "[resourceId('Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies', variables('application-gateway-firewall-policy-name'))]"
-              },
-              "frontendIPConfiguration": {
-                "id": "[resourceId('Microsoft.Network/applicationGateways/frontendIPConfigurations', variables('application-gateway-name'), 'application-gateway-public-ipv4')]"
-              },
-              "frontendPort": {
-                "id": "[resourceId('Microsoft.Network/applicationGateways/frontendPorts', variables('application-gateway-name'), 'port_443')]"
-              },
-              "SslCertificate": {
-                // "Id": "[concat(variables('application-gateway-name'), '/sslCertificates/appGatewaySslCert')]"
-                "id": "[resourceId('Microsoft.Network/applicationGateways/sslCertificates', variables('application-gateway-name'), 'default-appgw-ssl-cert')]"
-              },
-              "protocol": "Https",
-              "requireServerNameIndication": false
-            }
-          }
-        ],
+        "httpListeners": "[parameters('httpListeners')]",
         "sslCertificates": [
           {
             "name": "default-appgw-ssl-cert",
@@ -508,7 +478,7 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
           "fileUploadLimitInMb": 100
         },
         "firewallPolicy": {
-          "id": "[resourceId('Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies', variables('application-gateway-firewall-policy-name'))]"
+          "id": "[resourceId('Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies', parameters('applicationFirewalPolicyName'))]"
         },
         "forceFirewallPolicyAssociation": true,
         "urlPathMaps": [
@@ -603,7 +573,7 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
       "type": "Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies",
       "apiVersion": "2020-05-01",
       "tags": "[parameters('tags')]",
-      "name": "[variables('application-gateway-firewall-policy-name')]",
+      "name": "[parameters('applicationFirewalPolicyName')]",
       "location": "[parameters('location')]",
       "properties": {
         "customRules": [
