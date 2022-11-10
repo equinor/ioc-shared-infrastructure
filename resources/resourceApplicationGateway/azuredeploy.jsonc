@@ -578,25 +578,6 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
       "properties": {
         "customRules": [
           {
-            "name": "AllowIpAddresses",
-            "priority": 10,
-            "ruleType": "MatchRule",
-            "action": "Allow",
-            "matchConditions": [
-              {
-                "matchVariables": [
-                  {
-                    "variableName": "RemoteAddr"
-                  }
-                ],
-                "operator": "IPMatch",
-                "negationConditon": false,
-                "matchValues": "[parameters('allowIpList')]",
-                "transforms": "[json(' [ ] ')]"
-              }
-            ]
-          },
-          {
             "name": "AllowUrls",
             "priority": 20,
             "ruleType": "MatchRule",
