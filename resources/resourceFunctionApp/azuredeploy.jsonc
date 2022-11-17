@@ -149,6 +149,7 @@
           "defaultAction": "Allow"
         },
         "supportsHttpsTrafficOnly": true,
+        "minimumTlsVersion": "TLS1_2",
         "encryption": {
           "services": {
             "file": {

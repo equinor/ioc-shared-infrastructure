@@ -113,7 +113,8 @@
                 "networkAcls": {
                     "bypass": "AzureServices",
                     "defaultAction": "[if(parameters('isStorageBehindVnet') , 'Deny', 'Allow')]"
-                }
+                },
+                "minimumTlsVersion": "TLS1_2"
             },
             "tags": "[parameters('tags')]",
             "resources": [
