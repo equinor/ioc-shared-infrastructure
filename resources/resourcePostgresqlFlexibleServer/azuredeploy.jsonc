@@ -1,0 +1,132 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "administratorLogin": {
+        "type": "string"
+      },
+      "administratorLoginPassword": {
+        "type": "securestring"
+      },
+      "location": {
+        "type": "string",
+        "defaultValue": "[resourceGroup().location]",
+        "metadata": {
+            "description": "Location for the resources."
+        }
+      },
+      "tags": {
+        "type": "object"
+      },
+      "postgresServerName": {
+        "type": "string",
+        "metadata": {
+            "description": "Resulting name of the resource."
+        }
+      },
+      "sku": {
+        "type": "object",
+        "defaultValue": {
+            "name": "Standard_D4ds_v4",
+            "tier": "GeneralPurpose"
+        }
+      },
+      "skuSizeGB": {
+        "type": "int",
+        "defaultValue": 128
+      },
+      "haMode": {
+        "type": "string",
+        "defaultValue": "NotEnabled"
+      },
+      "availabilityZone": {
+        "type": "string",
+        "defaultValue": "1"
+      },
+      "postgresVersion": {
+        "type": "string",
+        "defaultValue": "14"
+      },
+      "virtualNetworkExternalId": {
+        "type": "string",
+        "defaultValue": ""
+      },
+      "subnetName": {
+        "type": "string",
+        "defaultValue": ""
+      },
+      "privateDnsZoneArmResourceId": {
+        "type": "string",
+        "defaultValue": ""
+      }
+    },
+    "resources": [
+      {
+        "type": "Microsoft.DBforPostgreSQL/flexibleServers",
+        "apiVersion": "2021-06-01",
+        "name": "[parameters('postgresServerName')]",
+        "location": "[parameters('location')]",
+        "tags": "[parameters('tags')]",
+        "sku": "[parameters('sku')]",
+        "properties": {
+          "version": "[parameters('postgresVersion')]",
+          "administratorLogin": "[parameters('administratorLogin')]",
+          "administratorLoginPassword": "[parameters('administratorLoginPassword')]",
+          "network": {
+            "publicNetworkAccess" : "[if(empty(parameters('virtualNetworkExternalId')), 'Enabled', 'Disabled')]",
+            "delegatedSubnetResourceId": "[if(empty(parameters('virtualNetworkExternalId')), json('null'), json(format('{0}/subnets/{1}', parameters('virtualNetworkExternalId'), parameters('subnetName'))))]",
+            "privateDnsZoneArmResourceId": "[if(empty(parameters('virtualNetworkExternalId')), json('null'), parameters('privateDnsZoneArmResourceId'))]"
+          },
+          "highAvailability": {
+            "mode": "[parameters('haMode')]"
+          },
+          "storage": {
+            "storageSizeGB": "[parameters('skuSizeGB')]"
+          },
+          "backup": {
+            "backupRetentionDays": 7,
+            "geoRedundantBackup": "Disabled"
+          },
+          "availabilityZone": "[parameters('availabilityZone')]",
+          "sslEnforcement": "Enabled",
+          "minimalTlsVersion": "TLS1_2"
+        }
+      },
+      {
+        "type": "Microsoft.DBforPostgreSQL/servers/firewallRules",
+        "apiVersion": "2017-12-01",
+        "name": "[concat(parameters('postgresServerName'), '/AllowAllWindowsAzureIps')]",
+        "dependsOn": [
+            "[parameters('postgresServerName')]"
+        ],
+        "properties": {
+            "startIpAddress": "0.0.0.0",
+            "endIpAddress": "0.0.0.0"
+        }
+    },
+    {
+        "type": "Microsoft.DBforPostgreSQL/servers/firewallRules",
+        "apiVersion": "2017-12-01",
+        "name": "[concat(parameters('postgresServerName'), '/Equinor-Bergen')]",
+        "dependsOn": [
+            "[parameters('postgresServerName')]"
+        ],
+        "properties": {
+            "startIpAddress": "143.97.2.35",
+            "endIpAddress": "143.97.2.35"
+        }
+    },
+    {
+        "type": "Microsoft.DBforPostgreSQL/servers/firewallRules",
+        "apiVersion": "2017-12-01",
+        "name": "[concat(parameters('postgresServerName'), '/Equinor-Statoil-Approved')]",
+        "dependsOn": [
+            "[parameters('postgresServerName')]"
+        ],
+        "properties": {
+            "startIpAddress": "143.97.2.129",
+            "endIpAddress": "143.97.2.129"
+        }
+    }
+    ]
+  }
