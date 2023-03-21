@@ -12,7 +12,7 @@ Provisions a managed postgresql database. Parameters:
 | postgresVersion            | string       | no       | The postgres version [11, 12, 13, 14]               |
 | sku                        | object       | no       | Postgresql [SKU][sku]                               |
 | skuSizeGB                  | int          | no       | The db storage size                                 |
-| haMode                     | string       | no       | high availability mode [Disabled (default), Enabled]|
+| haMode                     | string       | no       | high availability mode [Disabled, ZoneRedundant]    |
 | availabilityZone           | string       | no       | how many zones in which resource is available       |
 | virtualNetworkExternalId   | string       | no       | If virtual network (defaults to publicNetworkAccess)|
 | subnetName                 | string       | no       | If located in a subnet                              |
