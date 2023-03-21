@@ -37,7 +37,7 @@
       },
       "haMode": {
         "type": "string",
-        "defaultValue": "NotEnabled"
+        "defaultValue": "Disabled"
       },
       "availabilityZone": {
         "type": "string",
