@@ -63,7 +63,7 @@
     "resources": [
       {
         "type": "Microsoft.DBforPostgreSQL/flexibleServers",
-        "apiVersion": "2022-12-01",
+        "apiVersion": "2022-01-20-preview",
         "name": "[parameters('postgresServerName')]",
         "location": "[parameters('location')]",
         "tags": "[parameters('tags')]",

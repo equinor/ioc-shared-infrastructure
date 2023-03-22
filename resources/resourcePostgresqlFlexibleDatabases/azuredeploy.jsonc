@@ -12,15 +12,11 @@
     "resources": [
         {
             "type": "Microsoft.DBforPostgreSQL/flexibleServers/databases",
-            "apiVersion": "2022-12-01",
+            "apiVersion": "2022-01-20-preview",
             "name": "[concat(parameters('server'), '/', parameters('databases')[copyIndex()])]",
             "properties": {
                 "charset": "UTF8",
                 "collation": "English_United States.1252"
-            },
-            "copy": {
-                "name": "databasecopy",
-                "count": "[length(parameters('databases'))]"
             }
         }
     ]
