@@ -128,5 +128,15 @@
             "endIpAddress": "143.97.2.129"
         }
     }
-    ]
+    ],
+    "outputs": {
+        "postgresServer": {
+            "type": "string",
+            "value": "[parameters('postgresServerName')]"
+        },
+        "fullyQualifiedDomainName": {
+            "type": "string",
+            "value": "[reference(parameters('postgresServerName')).fullyQualifiedDomainName]"
+        }
+    }
   }
