@@ -93,7 +93,7 @@
       },
       {
         "type": "Microsoft.DBforPostgreSQL/flexibleServers/firewallRules",
-        "apiVersion": "2022-12-01",
+        "apiVersion": "2022-01-20-preview",
         "name": "[concat(parameters('postgresServerName'), '/AllowAllWindowsAzureIps')]",
         "dependsOn": [
             "[parameters('postgresServerName')]"
@@ -105,7 +105,7 @@
     },
     {
         "type": "Microsoft.DBforPostgreSQL/flexibleServers/firewallRules",
-        "apiVersion": "2022-12-01",
+        "apiVersion": "2022-01-20-preview",
         "name": "[concat(parameters('postgresServerName'), '/Equinor-Bergen')]",
         "dependsOn": [
             "[parameters('postgresServerName')]"
@@ -117,7 +117,7 @@
     },
     {
         "type": "Microsoft.DBforPostgreSQL/flexibleServers/firewallRules",
-        "apiVersion": "2022-12-01",
+        "apiVersion": "2022-01-20-preview",
         "name": "[concat(parameters('postgresServerName'), '/Equinor-Statoil-Approved')]",
         "dependsOn": [
             "[parameters('postgresServerName')]"
