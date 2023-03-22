@@ -63,7 +63,7 @@
     "resources": [
       {
         "type": "Microsoft.DBforPostgreSQL/flexibleServers",
-        "apiVersion": "2021-06-01",
+        "apiVersion": "2022-12-01",
         "name": "[parameters('postgresServerName')]",
         "location": "[parameters('location')]",
         "tags": "[parameters('tags')]",
@@ -73,7 +73,6 @@
           "administratorLogin": "[parameters('administratorLogin')]",
           "administratorLoginPassword": "[parameters('administratorLoginPassword')]",
           "network": {
-            "publicNetworkAccess" : "[if(empty(parameters('virtualNetworkExternalId')), 'Enabled', 'Disabled')]",
             "delegatedSubnetResourceId": "[if(empty(parameters('virtualNetworkExternalId')), json('null'), json(format('{0}/subnets/{1}', parameters('virtualNetworkExternalId'), parameters('subnetName'))))]",
             "privateDnsZoneArmResourceId": "[if(empty(parameters('virtualNetworkExternalId')), json('null'), parameters('privateDnsZoneArmResourceId'))]"
           },
