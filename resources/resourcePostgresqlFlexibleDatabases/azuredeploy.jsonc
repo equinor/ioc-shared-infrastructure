@@ -1,0 +1,27 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "server": {
+            "type": "string"
+        },
+        "databases": {
+            "type": "array"
+        }
+    },
+    "resources": [
+        {
+            "type": "Microsoft.DBforPostgreSQL/flexibleServers/databases",
+            "apiVersion": "2021-06-01",
+            "name": "[concat(parameters('server'), '/', parameters('databases')[copyIndex()])]",
+            "properties": {
+                "charset": "UTF8",
+                "collation": "English_United States.1252"
+            },
+            "copy": {
+                "name": "databasecopy",
+                "count": "[length(parameters('databases'))]"
+            }
+        }
+    ]
+}
