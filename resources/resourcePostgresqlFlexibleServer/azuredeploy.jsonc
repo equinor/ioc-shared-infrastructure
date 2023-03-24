@@ -8,6 +8,18 @@
       "administratorLoginPassword": {
         "type": "securestring"
       },
+      "tenantId": {
+        "type": "string",
+        "defaultValue": "3aa4a235-b6e2-48d5-9195-7fcf05b459b0"
+      },
+      "passwordAuth": {
+        "type": "string",
+        "defaultValue": "Enabled"
+      },
+      "activeDirectoryAuth": {
+        "type": "string",
+        "defaultValue": "Enabled"
+      },
       "location": {
         "type": "string",
         "defaultValue": "[resourceGroup().location]",
@@ -34,6 +46,10 @@
       "skuSizeGB": {
         "type": "int",
         "defaultValue": 128
+      },
+      "backupRetention": {
+        "type": "int",
+        "defaultValue": 30
       },
       "haMode": {
         "type": "string",
@@ -72,6 +88,11 @@
           "version": "[parameters('postgresVersion')]",
           "administratorLogin": "[parameters('administratorLogin')]",
           "administratorLoginPassword": "[parameters('administratorLoginPassword')]",
+          "authConfig": {
+            "activeDirectoryAuth": "[parameters('activeDirectoryAuth')]",
+            "passwordAuth": "[parameters('passwordAuth')]",
+            "tenantId": "[parameters('tenantId')]"
+          },
           "network": {
             "delegatedSubnetResourceId": "[if(empty(parameters('virtualNetworkExternalId')), json('null'), json(format('{0}/subnets/{1}', parameters('virtualNetworkExternalId'), parameters('subnetName'))))]",
             "privateDnsZoneArmResourceId": "[if(empty(parameters('virtualNetworkExternalId')), json('null'), parameters('privateDnsZoneArmResourceId'))]"
@@ -83,7 +104,7 @@
             "storageSizeGB": "[parameters('skuSizeGB')]"
           },
           "backup": {
-            "backupRetentionDays": 7,
+            "backupRetentionDays": "[parameters('backupRetention')]",
             "geoRedundantBackup": "Disabled"
           },
           "availabilityZone": "[parameters('availabilityZone')]",
