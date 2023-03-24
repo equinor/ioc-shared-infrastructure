@@ -8,6 +8,18 @@
       "administratorLoginPassword": {
         "type": "securestring"
       },
+      "tenantId": {
+        "type": "string",
+        "defaultValue": "3aa4a235-b6e2-48d5-9195-7fcf05b459b0"
+      },
+      "pwdAuthConfig": {
+        "type": "string",
+        "defaultValue": "Enabled"
+      },
+      "activeDirectoryAuthConfig": {
+        "type": "string",
+        "defaultValue": "Enabled"
+      },
       "location": {
         "type": "string",
         "defaultValue": "[resourceGroup().location]",
@@ -34,6 +46,14 @@
       "skuSizeGB": {
         "type": "int",
         "defaultValue": 128
+      },
+      "backupRetention": {
+        "type": "int",
+        "defaultValue": 30
+      },
+      "geoRedundantBackup": {
+        "type": "string",
+        "defaultValue": "Disabled"
       },
       "haMode": {
         "type": "string",
@@ -63,7 +83,7 @@
     "resources": [
       {
         "type": "Microsoft.DBforPostgreSQL/flexibleServers",
-        "apiVersion": "2021-06-01",
+        "apiVersion": "2022-12-01",
         "name": "[parameters('postgresServerName')]",
         "location": "[parameters('location')]",
         "tags": "[parameters('tags')]",
@@ -72,8 +92,12 @@
           "version": "[parameters('postgresVersion')]",
           "administratorLogin": "[parameters('administratorLogin')]",
           "administratorLoginPassword": "[parameters('administratorLoginPassword')]",
+          "authConfig": {
+            "activeDirectoryAuth": "[parameters('activeDirectoryAuthConfig')]",
+            "passwordAuth": "[parameters('pwdAuthConfig')]",
+            "tenantId": "[parameters('tenantId')]"
+          },
           "network": {
-            "publicNetworkAccess" : "[if(empty(parameters('virtualNetworkExternalId')), 'Enabled', 'Disabled')]",
             "delegatedSubnetResourceId": "[if(empty(parameters('virtualNetworkExternalId')), json('null'), json(format('{0}/subnets/{1}', parameters('virtualNetworkExternalId'), parameters('subnetName'))))]",
             "privateDnsZoneArmResourceId": "[if(empty(parameters('virtualNetworkExternalId')), json('null'), parameters('privateDnsZoneArmResourceId'))]"
           },
@@ -84,8 +108,8 @@
             "storageSizeGB": "[parameters('skuSizeGB')]"
           },
           "backup": {
-            "backupRetentionDays": 7,
-            "geoRedundantBackup": "Disabled"
+            "backupRetentionDays": "[parameters('backupRetention')]",
+            "geoRedundantBackup": "[parameters('geoRedundantBackup')]"
           },
           "availabilityZone": "[parameters('availabilityZone')]",
           "sslEnforcement": "Enabled",
@@ -93,8 +117,8 @@
         }
       },
       {
-        "type": "Microsoft.DBforPostgreSQL/servers/firewallRules",
-        "apiVersion": "2017-12-01",
+        "type": "Microsoft.DBforPostgreSQL/flexibleServers/firewallRules",
+        "apiVersion": "2022-12-01",
         "name": "[concat(parameters('postgresServerName'), '/AllowAllWindowsAzureIps')]",
         "dependsOn": [
             "[parameters('postgresServerName')]"
@@ -105,8 +129,8 @@
         }
     },
     {
-        "type": "Microsoft.DBforPostgreSQL/servers/firewallRules",
-        "apiVersion": "2017-12-01",
+        "type": "Microsoft.DBforPostgreSQL/flexibleServers/firewallRules",
+        "apiVersion": "2022-12-01",
         "name": "[concat(parameters('postgresServerName'), '/Equinor-Bergen')]",
         "dependsOn": [
             "[parameters('postgresServerName')]"
@@ -117,8 +141,8 @@
         }
     },
     {
-        "type": "Microsoft.DBforPostgreSQL/servers/firewallRules",
-        "apiVersion": "2017-12-01",
+        "type": "Microsoft.DBforPostgreSQL/flexibleServers/firewallRules",
+        "apiVersion": "2022-12-01",
         "name": "[concat(parameters('postgresServerName'), '/Equinor-Statoil-Approved')]",
         "dependsOn": [
             "[parameters('postgresServerName')]"
@@ -128,5 +152,15 @@
             "endIpAddress": "143.97.2.129"
         }
     }
-    ]
+    ],
+    "outputs": {
+        "postgresServer": {
+            "type": "string",
+            "value": "[parameters('postgresServerName')]"
+        },
+        "fullyQualifiedDomainName": {
+            "type": "string",
+            "value": "[reference(parameters('postgresServerName')).fullyQualifiedDomainName]"
+        }
+    }
   }
