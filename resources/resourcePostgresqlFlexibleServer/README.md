@@ -9,7 +9,7 @@ Provisions a managed postgresql database. Parameters:
 | adminstratorLogin          | string       | yes      | The username of the postgresql administrator        |
 | adminstratorLoginPassword  | securestring | yes      | The administrator password                          |
 | tenantId                   | string       | no       | Defaults to Equinor tenant                          |
-| passwordAuthConfig         | string       | no       | Disabled/Enabled. Defaults to Enabled               |
+| pwdAuthConfig              | string       | no       | Disabled/Enabled. Defaults to Enabled               |
 | activeDirectoryAuthConfig  | string       | no       | Disabled/Enabled. Defaults to Enabled               |
 | location                   | string       | no       | Location(use the default)                           |
 | postgresVersion            | string       | no       | The postgres version [11, 12, 13, 14]               |
