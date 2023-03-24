@@ -12,7 +12,7 @@
         "type": "string",
         "defaultValue": "3aa4a235-b6e2-48d5-9195-7fcf05b459b0"
       },
-      "passwordAuthConfig": {
+      "pwdAuthConfig": {
         "type": "string",
         "defaultValue": "Enabled"
       },
@@ -94,7 +94,7 @@
           "administratorLoginPassword": "[parameters('administratorLoginPassword')]",
           "authConfig": {
             "activeDirectoryAuth": "[parameters('activeDirectoryAuthConfig')]",
-            "passwordAuth": "[parameters('passwordAuthConfig')]",
+            "passwordAuth": "[parameters('pwdAuthConfig')]",
             "tenantId": "[parameters('tenantId')]"
           },
           "network": {
