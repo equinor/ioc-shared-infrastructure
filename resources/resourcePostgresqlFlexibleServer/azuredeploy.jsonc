@@ -12,11 +12,11 @@
         "type": "string",
         "defaultValue": "3aa4a235-b6e2-48d5-9195-7fcf05b459b0"
       },
-      "passwordAuth": {
+      "passwordAuthConfig": {
         "type": "string",
         "defaultValue": "Enabled"
       },
-      "activeDirectoryAuth": {
+      "activeDirectoryAuthConfig": {
         "type": "string",
         "defaultValue": "Enabled"
       },
@@ -93,8 +93,8 @@
           "administratorLogin": "[parameters('administratorLogin')]",
           "administratorLoginPassword": "[parameters('administratorLoginPassword')]",
           "authConfig": {
-            "activeDirectoryAuth": "[parameters('activeDirectoryAuth')]",
-            "passwordAuth": "[parameters('passwordAuth')]",
+            "activeDirectoryAuth": "[parameters('activeDirectoryAuthConfig')]",
+            "passwordAuth": "[parameters('passwordAuthConfig')]",
             "tenantId": "[parameters('tenantId')]"
           },
           "network": {
