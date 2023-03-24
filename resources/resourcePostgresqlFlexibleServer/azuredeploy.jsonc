@@ -51,6 +51,10 @@
         "type": "int",
         "defaultValue": 30
       },
+      "geoRedundantBackup": {
+        "type": "string",
+        "defaultValue": "Disabled"
+      },
       "haMode": {
         "type": "string",
         "defaultValue": "Disabled"
@@ -79,7 +83,7 @@
     "resources": [
       {
         "type": "Microsoft.DBforPostgreSQL/flexibleServers",
-        "apiVersion": "2022-01-20-preview",
+        "apiVersion": "2022-12-01",
         "name": "[parameters('postgresServerName')]",
         "location": "[parameters('location')]",
         "tags": "[parameters('tags')]",
@@ -105,7 +109,7 @@
           },
           "backup": {
             "backupRetentionDays": "[parameters('backupRetention')]",
-            "geoRedundantBackup": "Disabled"
+            "geoRedundantBackup": "[parameters('geoRedundantBackup')]"
           },
           "availabilityZone": "[parameters('availabilityZone')]",
           "sslEnforcement": "Enabled",
@@ -114,7 +118,7 @@
       },
       {
         "type": "Microsoft.DBforPostgreSQL/flexibleServers/firewallRules",
-        "apiVersion": "2022-01-20-preview",
+        "apiVersion": "2022-12-01",
         "name": "[concat(parameters('postgresServerName'), '/AllowAllWindowsAzureIps')]",
         "dependsOn": [
             "[parameters('postgresServerName')]"
@@ -126,7 +130,7 @@
     },
     {
         "type": "Microsoft.DBforPostgreSQL/flexibleServers/firewallRules",
-        "apiVersion": "2022-01-20-preview",
+        "apiVersion": "2022-12-01",
         "name": "[concat(parameters('postgresServerName'), '/Equinor-Bergen')]",
         "dependsOn": [
             "[parameters('postgresServerName')]"
@@ -138,7 +142,7 @@
     },
     {
         "type": "Microsoft.DBforPostgreSQL/flexibleServers/firewallRules",
-        "apiVersion": "2022-01-20-preview",
+        "apiVersion": "2022-12-01",
         "name": "[concat(parameters('postgresServerName'), '/Equinor-Statoil-Approved')]",
         "dependsOn": [
             "[parameters('postgresServerName')]"
