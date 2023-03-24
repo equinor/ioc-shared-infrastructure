@@ -8,10 +8,15 @@ Provisions a managed postgresql database. Parameters:
 | tags                       | object       | yes      | The tags associated with the resources              |
 | adminstratorLogin          | string       | yes      | The username of the postgresql administrator        |
 | adminstratorLoginPassword  | securestring | yes      | The administrator password                          |
+| tenantId                   | string       | no       | Defaults to Equinor tenant                          |
+| passwordAuthConfig         | string       | no       | Disabled/Enabled. Defaults to Enabled               |
+| activeDirectoryAuthConfig  | string       | no       | Disabled/Enabled. Defaults to Enabled               |
 | location                   | string       | no       | Location(use the default)                           |
 | postgresVersion            | string       | no       | The postgres version [11, 12, 13, 14]               |
 | sku                        | object       | no       | Postgresql [SKU][sku]                               |
 | skuSizeGB                  | int          | no       | The db storage size                                 |
+| backupRetention            | int          | no       | Backup retention in days. Defaults to 30            |
+| geoRedundantBackup         | string       | no       | Whether to use georedundancy on backups.            |
 | haMode                     | string       | no       | high availability mode [Disabled, ZoneRedundant]    |
 | availabilityZone           | string       | no       | how many zones in which resource is available       |
 | virtualNetworkExternalId   | string       | no       | If virtual network (defaults to publicNetworkAccess)|
