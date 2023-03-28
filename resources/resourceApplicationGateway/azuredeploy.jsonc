@@ -613,7 +613,6 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
       "properties": {
         "customRules": [
           {
-            "condition":"[not(empty(parameters('allowIpList')))]",
             "name": "AllowIpAddresses",
             "priority": 10,
             "ruleType": "MatchRule",
