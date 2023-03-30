@@ -1,9 +1,11 @@
 # Postgresql server
 
+IMPORTANT!!! Please move to [Flexible server](../resourcePostgresqlFlexibleServer/) as soon as possible.
+See [SRA](https://docs.omnia.equinor.com/governance/security/components/v4/postgresql/) for more information.
 Provisions a managed postgresql database. Parameters:
 
 | Parameter                 | Type         | Required | Meaning                                             |
-|---------------------------|--------------|----------|-----------------------------------------------------|
+| ------------------------- | ------------ | -------- | --------------------------------------------------- |
 | postgresServerName        | string       | yes      | The name of the postgres database server            |
 | tags                      | object       | yes      | The tags associated with the resources              |
 | location                  | string       | no       | Location(use the default)                           |
@@ -16,37 +18,37 @@ This is an example parameter file
 
 ```json
 {
-    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-    "contentVersion": "1.0.0.0",
-    "parameters": {
-        "postgresServerName": {
-            "value": "<Server name>"
-        },
-        "tags": {
-            "value": {
-                "Environment": "<Environment>]"
-            }
-        },
-        "administratorLogin": {
-            "value": "<Admin username>"
-        },
-        "administratorLoginPassword": {
-            "value": "<Admin password>"
-        },
-        "sku": {
-            "value": {
-                "name": "GP_Gen5_2",
-                "tier": "GeneralPurpose",
-                "family": "Gen5",
-                "capacity": 2
-            }
-        }
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "postgresServerName": {
+      "value": "<Server name>"
+    },
+    "tags": {
+      "value": {
+        "Environment": "<Environment>]"
+      }
+    },
+    "administratorLogin": {
+      "value": "<Admin username>"
+    },
+    "administratorLoginPassword": {
+      "value": "<Admin password>"
+    },
+    "sku": {
+      "value": {
+        "name": "GP_Gen5_2",
+        "tier": "GeneralPurpose",
+        "family": "Gen5",
+        "capacity": 2
+      }
     }
+  }
 }
 ```
 
 ## Creating databases
 
-When creating a database server with this template, use its [sibling template][../resourcePostgresqlDatabases/README.md] to create databases:
+When creating a database server with this template, use its [sibling template][../resourcepostgresqldatabases/readme.md] to create databases:
 
 [sku]: https://docs.microsoft.com/en-us/azure/templates/microsoft.dbforpostgresql/2017-12-01/servers#sku-object "SKU"
