@@ -19,6 +19,10 @@
     "accessPolicies": {
       "type": "array"
     },
+    "publicNetworkAccess": {
+      "type": "string",
+      "defaultValue": "disabled"
+    },
     "tags": {
       "type": "object"
     },
@@ -55,7 +59,8 @@
         "networkAcls": {
           "defaultAction": "Allow",
           "bypass": "AzureServices"
-        }
+        },
+        "publicNetworkAccess": "[parameters('publicNetworkAccess')]"
       }
     }
   ]
