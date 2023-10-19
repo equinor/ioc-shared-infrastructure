@@ -23,7 +23,7 @@
   "resources": [
     {
       "type": "Microsoft.ContainerRegistry/registries",
-      "apiVersion": "2021-09-01",
+      "apiVersion": "2023-07-01",
       "name": "[parameters('registryName')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
