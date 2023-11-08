@@ -4,7 +4,7 @@ If you discover a security vulnerability in this project, please follow the step
 
 ### For "non-critical" issues
 
-Contact IOCT Agile Teams—Cross Team. Ask #ioc-solutions channel if you're not sure how to reach us.
+Contact IOCT Agile Teams—Cross Team. Ask on Slack #ioc-solutions channel if you're not sure how to reach us.
 
 The following information will help us triage your report more quickly:
 
