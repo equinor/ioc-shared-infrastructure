@@ -39,6 +39,10 @@
       "type": "array",
       "defaultValue": "[json(' [ ] ')]"
     },
+    "supportCredentials": {
+      "type": "bool",
+      "defaultValue": false
+    },
     "acrResourceGroup": {
       "type": "string",
       "defaultValue": "[resourceGroup().name]"
@@ -125,7 +129,7 @@
             "alwaysOn": true,
             "cors": {
               "allowedOrigins": "[parameters('allowedCorsOrigins')]",
-              "supportCredentials": false
+              "supportCredentials": "[parameters('supportCredentials')]"
             },
             "http20Enabled": false,
             "minTlsVersion": "1.2",
