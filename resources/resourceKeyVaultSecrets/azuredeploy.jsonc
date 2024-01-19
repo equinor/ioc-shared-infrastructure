@@ -13,6 +13,14 @@
       "metadata": {
         "description": "The secrets to create in the key vault."
       }
+    },
+    "activationTime": {
+        "type": "int",
+        "defaultValue": 0
+    },
+    "expiryTime": {
+        "type": "int",
+        "defaultValue": 0
     }
   },
   "resources": [
@@ -24,7 +32,9 @@
         "value": "[parameters('keyVaultSecrets').secrets[copyIndex()].value]",
         "contentType": "[parameters('keyVaultSecrets').secrets[copyIndex()].contentType]",
         "attributes": {
-          "enabled": "true"
+          "enabled": true,
+          "exp": "[if(equals(parameters('expiryTime'),0), json('null'), parameters('expiryTime'))]",
+          "nbf": "[if(equals(parameters('activationTime'),0), json('null'), parameters('activationTime'))]"
         }
       },
       "copy": {
