@@ -68,6 +68,13 @@
       "defaultValue": "[resourceGroup().location]",
       "type": "string"
     },
+    "workspaceResourceId": {
+      "type": "string"
+    },
+    "ingestionMode": {
+      "defaultValue": "LogAnalytics",
+      "type": "string"
+    },
     "tags": {
       "type": "object"
     },
@@ -115,7 +122,7 @@
   ],
   "variables": {
     "storageAccountId": "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]",
-    "appinsightsName": "[replace(parameters('functionappName'), '-func-', '-appi-')]"
+    "appinsightsName": "[replace(parameters('functionAppName'), '-func-', '-appi-')]"
   },
   "resources": [
     {
@@ -128,9 +135,12 @@
       "properties": {
         "Application_Type": "web",
         "Request_Source": "rest",
+        "RetentionInDays": 90,
         "ImmediatePurgeDataOn30Days": true,
+        "IngestionMode": "[parameters('ingestionMode')]",
         "publicNetworkAccessForIngestion": "Enabled",
-        "publicNetworkAccessForQuery": "Enabled"
+        "publicNetworkAccessForQuery": "Enabled",
+        "WorkspaceResourceId": "[parameters('workspaceResourceId')]"
       }
     },
     {
@@ -181,7 +191,7 @@
     {
       "type": "Microsoft.Web/sites",
       "apiVersion": "2019-08-01",
-      "name": "[parameters('functionappName')]",
+      "name": "[parameters('functionAppName')]",
       "kind": "functionapp,linux",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -229,11 +239,11 @@
   "outputs": {
     "objectId": {
       "type": "string",
-      "value": "[resourceId('Microsoft.Web/sites', parameters('functionappName'))]"
+      "value": "[resourceId('Microsoft.Web/sites', parameters('functionAppName'))]"
     },
     "identityObjectId": {
       "type": "string",
-      "value": "[reference(resourceId('Microsoft.Web/sites', parameters('functionappName')),'2019-08-01', 'full').identity.principalId]"
+      "value": "[reference(resourceId('Microsoft.Web/sites', parameters('functionAppName')),'2019-08-01', 'full').identity.principalId]"
     },
     "appInsightsName": {
       "type": "string",
