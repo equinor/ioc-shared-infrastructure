@@ -1,17 +1,19 @@
 param appConfigName string
 param tagComponent string
 param tagEnvironment string
+param location string = resourceGroup().location
 param keyValuePairs array = []
 param featureFlags array = []
 param keyVaultReferences array = []
+param disableLocalAuth bool = false
+param publicNetworkAccess string = 'Enabled'
+param sku string = 'standard'
 
-var rgScope = resourceGroup()
-
-resource appConfig 'Microsoft.AppConfiguration/configurationStores@2021-03-01-preview' = {
+resource appConfig 'Microsoft.AppConfiguration/configurationStores@2023-03-01' = {
   name: appConfigName
-  location: rgScope.location
+  location: location
   sku: {
-    name: 'standard'
+    name: sku
   }
   identity: {
     type: 'SystemAssigned'
@@ -21,11 +23,11 @@ resource appConfig 'Microsoft.AppConfiguration/configurationStores@2021-03-01-pr
     Environment: tagEnvironment
   }
   properties: {
-    disableLocalAuth: false
-    publicNetworkAccess: 'Enabled'
+    disableLocalAuth: disableLocalAuth
+    publicNetworkAccess: publicNetworkAccess
   }
 
-  resource keyValues 'keyValues@2021-03-01-preview' = [for kvp in keyValuePairs: {
+  resource keyValues 'keyValues@2023-03-01' = [for kvp in keyValuePairs: {
     name: '${kvp.name}'
     properties: {
       contentType: 'string'
@@ -33,7 +35,7 @@ resource appConfig 'Microsoft.AppConfiguration/configurationStores@2021-03-01-pr
     }
   }]
 
-  resource featureValues 'keyValues@2021-03-01-preview' = [for feature in featureFlags: {
+  resource featureValues 'keyValues@2023-03-01' = [for feature in featureFlags: {
     name: feature.name
     properties: {
       contentType: 'application/vnd.microsoft.appconfig.ff+json;charset=utf-8'
@@ -41,7 +43,7 @@ resource appConfig 'Microsoft.AppConfiguration/configurationStores@2021-03-01-pr
     }
   }]
 
-  resource keyVaultRefs 'keyValues@2021-03-01-preview' = [for ref in keyVaultReferences: {
+  resource keyVaultRefs 'keyValues@2023-03-01' = [for ref in keyVaultReferences: {
     name: '${ref.name}'
     properties: {
       contentType: 'application/vnd.microsoft.appconfig.keyvaultref+json;charset=utf-8'
