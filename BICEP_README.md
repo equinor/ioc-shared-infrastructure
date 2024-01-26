@@ -1,6 +1,10 @@
 # Bicep resources
 We are in a process of rewriting our ARM-templates to Bicep.
 
+Bicep offers a much cleaner and simpler interface to Azure Resource Management then raw ARM-templates.
+
+By employing a shared container registry deployment and versioning strategy we gain flexibility and transparency compared to the shared repository-strategy (but with great flexibility comes great responsibility. So `ask` before you `do` in cases of uncertainty).
+
 Here follows some guidelines of how to use the Bicep resources and how to contribute.
 
 ## Prerequisites
@@ -78,3 +82,7 @@ ex. publishing the `appconfiguration` resource
 If `appconfiguration:v1.0` already exists you will get an error, in which case you will use `appconfiguration:v1.1` instead.
 If you're simply testing and want to overwrite a version you've just added you can apply the `--force` flag, which requires `az cli @v2.49.0` or later.
 
+## Who to Ask
+If you get stuck or simply wonder how to get started, use slack to get in contact with anyone in the
+#### infrastructure team in IOC:
+    @Maryonsin @inghel @meganthorsen @franktore
