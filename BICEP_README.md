@@ -42,7 +42,7 @@ var keyValuePairs = []
 var keyVaultReferences = []
 var featureFlags = []
 
-module appConfigModule 'br/CoreModules:appconfiguration:v1.0' = {
+module appConfigModule 'br/CoreModulesPROD:appconfiguration:v1.0' = {
   name: 'appConfigDeploy'
   scope: resourceGroup()
   params: {
@@ -68,19 +68,43 @@ az deployment group create \
 ```
 The appconfiguration resource v1.3 will then be downloaded from the container registry and used during deployment.
 
+#### Usage summary
+* Create a branch in ioc-shared-infrastructure repo in github
+* Create the bicep resource in the shared-infrastructure branch
+* Get Code Review
+* Publish to bicep registry with desired version number
+* Download to your project during deploy via `main.bicep`
+
+#### Local Module Cache
+When your Bicep file uses modules that are published to a registry, the restore command gets copies of all the required modules from the registry. It stores those copies in a local cache. A Bicep file can only be built when the external files are available in the local cache. Normally, running restore isn't necessary as it's automatically triggered by the build process.
+To manually restore the external modules for a file, use:
+
+`az bicep restore --file <bicep-file> [--force]`
+
+The Bicep file you provide is the file you wish to deploy. It must contain a module that links to a registry.
+The local cache is found
+
+* %USERPROFILE%\.bicep\br\<registry-name>.azurecr.io\<module-path\<tag> (WINDOWS)
+* /home/<username>/.bicep (LINUX)
+* ~/.bicep (MAC)
+
+The restore command doesn't refresh the cache if a module is already cached. To fresh the cache, you can either delete the module path from the cache or use the --force switch with the restore command.
+
 ## Contributing
 After adding or modifying a bicep resource you simply run the command
 
-`az bicep publish --file /path/to/{mymodule}.bicep --target br/CoreModules:{mymodule}:{version}`
+`az bicep publish --file /path/to/{mymodule}.bicep --target br/CoreModulesPROD:{mymodule}:{version}`
 
-This will effectivly push the resource to the container registry with the specified version number. The `CoreModules` is specified in the `bicepconfig.json` and links to `s039iocsharedbrprod.azurecr.io/bicep/modules`. The acronym `br` simply stands for `Bicep Registry`.
+This will effectivly push the resource to the container registry with the specified version number. The `CoreModulesPROD` is specified in the `bicepconfig.json` and links to `s039iocsharedbrprod.azurecr.io/bicep/modules`. The acronym `br` simply stands for `Bicep Registry`. For development or testing one may use `CoreModulesDEV` which links to an equivalent registry found here `s039iocsharedbrdev.azurecr.io/bicep/modules`.
 
-ex. publishing the `appconfiguration` resource
+NB! Version numbers should use the following format `v1.0` etc.
 
-`az bicep publish --file ./resources/resourceAppConfiguration/appConfiguration.bicep --target br/CoreModules:appconfiguration:1.0`
+ex. publishing the `appconfiguration` resource to `prod`
+
+`az bicep publish --file ./resources/resourceAppConfiguration/appConfiguration.bicep --target br/CoreModulesPROD:appconfiguration:1.0`
 
 If `appconfiguration:v1.0` already exists you will get an error, in which case you will use `appconfiguration:v1.1` instead.
-If you're simply testing and want to overwrite a version you've just added you can apply the `--force` flag, which requires `az cli @v2.49.0` or later.
+If you have! to overwrite a version you've just added you can apply the `--force` flag, which requires `az cli @v2.49.0` or later.
 
 ## Who to Ask
 If you get stuck or simply wonder how to get started, use slack to get in contact with anyone in the
