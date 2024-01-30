@@ -99,7 +99,7 @@
   "resources": [
     {
       "type": "microsoft.insights/components",
-      "apiVersion": "2020-02-02-preview",
+      "apiVersion": "2020-02-02",
       "name": "[variables('appinsightsName')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -108,7 +108,6 @@
         "Application_Type": "web",
         "Request_Source": "rest",
         "RetentionInDays": 90,
-        "ImmediatePurgeDataOn30Days": true,
         "IngestionMode": "[parameters('ingestionMode')]",
         "publicNetworkAccessForIngestion": "Enabled",
         "publicNetworkAccessForQuery": "Enabled",
