@@ -11,6 +11,9 @@
         "applicationEnvironment": {
             "value": "dev" 
         },
+        "location": {
+            "value": "[resourceGroup().location]"
+        },
         "principalId": {
             "value": "Add guid"
         }
