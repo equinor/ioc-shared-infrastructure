@@ -11,7 +11,7 @@
         "applicationEnvironment": {
             "value": "dev" 
         },
-        "loction": {
+        "location": {
             "value": "[resourceGroup().location]"
         },
         "principalId": {
