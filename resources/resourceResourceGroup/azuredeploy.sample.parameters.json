@@ -12,7 +12,7 @@
             "value": "dev" 
         },
         "loction": {
-            "value": "northeurope" 
+            "value": "[resourceGroup().location]"
         },
         "principalId": {
             "value": "Add guid"
