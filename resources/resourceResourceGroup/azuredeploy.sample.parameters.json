@@ -11,6 +11,9 @@
         "applicationEnvironment": {
             "value": "dev" 
         },
+        "loction": {
+            "value": "northeurope" 
+        },
         "principalId": {
             "value": "Add guid"
         }
