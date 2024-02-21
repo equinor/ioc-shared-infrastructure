@@ -1,21 +1,24 @@
 {
-    "moduleAliases": {
-      "br": {
-        "IocRegistryDEV": {
-          "registry": "s039iocsharedbrdev.azurecr.io"
+  "experimentalFeaturesEnabled": {
+    "userDefinedFunctions": true
+  },
+  "moduleAliases": {
+    "br": {
+      "IocRegistryDEV": {
+        "registry": "s039iocsharedbrdev.azurecr.io"
+      },
+      "CoreModulesDEV": {
+        "registry": "s039iocsharedbrdev.azurecr.io",
+        "modulePath": "bicep/modules"
+      },
+      "IocRegistryPROD": {
+          "registry": "s039iocsharedbrprod.azurecr.io"
         },
-        "CoreModulesDEV": {
-          "registry": "s039iocsharedbrdev.azurecr.io",
+        "CoreModulesPROD": {
+          "registry": "s039iocsharedbrprod.azurecr.io",
           "modulePath": "bicep/modules"
-        },
-        "IocRegistryPROD": {
-            "registry": "s039iocsharedbrprod.azurecr.io"
-          },
-          "CoreModulesPROD": {
-            "registry": "s039iocsharedbrprod.azurecr.io",
-            "modulePath": "bicep/modules"
-          }
-      }
+        }
+    }
   },
   "analyzers": {
     "core": {

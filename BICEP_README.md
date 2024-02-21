@@ -10,7 +10,11 @@ Here follows some guidelines of how to use the Bicep resources and how to contri
 ## Prerequisites
 You'll need the following tools installed
 
-* `az cli`
+* `az cli` >= 2.20.0
+* vscode  (recommended)
+* vscode extensions: (recommended)
+    * Bicep
+    * Azure Resource Manager (ARM) Tools
 
 When you use Azure CLI with Bicep, you have everything you need to deploy and decompile Bicep files. Azure CLI automatically installs the Bicep CLI when a command is executed that needs it.
 
@@ -27,10 +31,8 @@ Whereas the ARM-template resources are downloaded via github at deploy-time, the
 To start using it you need a configuration file which can be copied into your project infrastructure-folder from here `./bicepconfig.json`.
 This configuration contains the required registry uri's and some select linter rules to get you started.
 
-You'll need a main bicep file to deploy your project. Lets call this `main.bicep`
-
 The following example shows a deployment of an ApplicationConfiguration resource
-```
+``` main.bicep
 param env string
 param tagComponent string
 param tagEnvironment string
@@ -66,7 +68,7 @@ az deployment group create \
     --resource-group RESOURCE_GROUP_DEV \
     --parameters @./azuredeploy.parameters.dev.json
 ```
-The appconfiguration resource v1.3 will then be downloaded from the container registry and used during deployment.
+The appconfiguration resource v1.0 will then be downloaded from the container registry and used during deployment.
 
 #### Usage summary
 * Create a branch in ioc-shared-infrastructure repo in github
@@ -91,6 +93,12 @@ The local cache is found
 The restore command doesn't refresh the cache if a module is already cached. To fresh the cache, you can either delete the module path from the cache or use the --force switch with the restore command.
 
 ## Contributing
+If you already have an ARM-template you can get a good start creating a bicep-file by decompiling the ARM-template to Bicep, use:
+
+`az bicep decompile --file azuredeploy.json`
+
+This will create `azuredeploy.bicep`, which you have to manually verify and rename to something meaningful, e.g. `appconfiguration.bicep`.
+
 After adding or modifying a bicep resource you simply run the command
 
 `az bicep publish --file /path/to/{mymodule}.bicep --target br/CoreModulesPROD:{mymodule}:{version}`
@@ -105,6 +113,13 @@ ex. publishing the `appconfiguration` resource to `prod`
 
 If `appconfiguration:v1.0` already exists you will get an error, in which case you will use `appconfiguration:v1.1` instead.
 If you have! to overwrite a version you've just added you can apply the `--force` flag, which requires `az cli @v2.49.0` or later.
+
+To simplify publishing you can use the `Makefile`.
+e.g. calling
+
+`make publish.dev BICEP_FILE='resources/resourceKeyVault/keyvault.bicep' MODULE_NAME='keyvault' VERSION=1.0`
+
+would publish the keyvault.bicep resource as module `keyvault:1.0` to the dev registry.
 
 ## Who to Ask
 If you get stuck or simply wonder how to get started, use slack to get in contact with anyone in the
