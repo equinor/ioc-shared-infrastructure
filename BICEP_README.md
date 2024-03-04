@@ -124,4 +124,5 @@ would publish the keyvault.bicep resource as module `keyvault:1.0` to the dev re
 ## Who to Ask
 If you get stuck or simply wonder how to get started, use slack to get in contact with anyone in the
 #### infrastructure team in IOC:
-    @Maryonsin @inghel @meganthorsen @franktore
+
+    [List of CODEOWNERS](./CODEOWNERS)
