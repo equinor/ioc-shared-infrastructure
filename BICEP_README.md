@@ -37,8 +37,9 @@ param env string
 param tagComponent string
 param tagEnvironment string
 param appConfigSku string
+param subscriptionPrefix string = 'S039'
 
-var appConfigName = 's039-ioc-{myspace}-appconf-${env}'
+var appConfigName = '${subscriptionPrefix}-ioc-{myspace}-appconf-${env}'
 
 var keyValuePairs = []
 var keyVaultReferences = []
@@ -123,6 +124,5 @@ would publish the keyvault.bicep resource as module `keyvault:1.0` to the dev re
 
 ## Who to Ask
 If you get stuck or simply wonder how to get started, use slack to get in contact with anyone in the
-#### infrastructure team in IOC:
 
-    [List of CODEOWNERS](./CODEOWNERS)
+#### [infrastructure team in IOC](./CODEOWNERS)
