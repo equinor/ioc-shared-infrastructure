@@ -683,11 +683,11 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
           "managedRuleSets": [
             {
               "ruleSetType": "OWASP",
-              "ruleSetVersion": "3.1"
+              "ruleSetVersion": "3.2"
             },
             {
               "ruleSetType": "Microsoft_BotManagerRuleSet",
-              "ruleSetVersion": "0.1"
+              "ruleSetVersion": "1.0"
             }
           ],
           "exclusions": "[parameters('firewallExclusionList')]"
