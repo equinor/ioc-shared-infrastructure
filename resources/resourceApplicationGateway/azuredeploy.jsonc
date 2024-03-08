@@ -67,14 +67,15 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
     "applications": {
       "type": "array",
       "metadata": {
-        "description": "List of applications to configure in the application gateway. Array of objects. Format: { \"name\": \"testapp01\", \"fqdn\": \"testapp01.azurewebsites.net\", \"rootpath\": \"/\", \"paths\": [\"/testapp01\"]},"
+        "description": "List of applications to configure in the application gateway. Array of objects. Format: { \"name\": \"testapp01\", \"fqdn\": \"testapp01.azurewebsites.net\", \"rootpath\": \"/\", \"paths\": [\"/testapp01\"], \"requesttimeout\": \"300\"},"
         /*
           {
             "name": "testapp01", // Friendly name of the app (lowercase, no spaces)
             "fqdn": "testapp01.azurewebsites.net", // FQDN of the application load balancer (App service)
-            "rootpath": "/", // Where on the backend host the app is located. Set typically to / for the app service 
+            "rootpath": "/", // Where on the backend host the app is located. Set typically to / for the app service
+            "requesttimeout": "300", // Request timeout for the backend in seconds (how long app gateway will wait for backend to respond before timing out the request)
             "paths": [ // List of paths in the root domain to redirect to the configured application
-              "/testapp01" 
+              "/testapp01"
             ]
           },
         */
@@ -133,7 +134,21 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
       "metadata": {
         "description": "List ciphers used by ssl policy"
       }
-    }
+    },
+    "owaspRuleSet": {
+      "type": "string",
+      "defaultValue": "3.2",
+      "metadata": {
+        "description": "The owasp ruleset version to apply"
+      }
+    },
+    "botManagerRuleSet": {
+      "type": "string",
+      "defaultValue": "1.0",
+      "metadata": {
+        "description": "The Microsoft_BotManagerRuleSet version to apply"
+      }
+    },
   },
   "variables": {
     "application-gateway-name": "[concat(parameters('applicationName'), '-agw-', parameters('applicationEnvironment'))]",
@@ -594,7 +609,7 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
                 "protocol": "Https",
                 "cookieBasedAffinity": "Disabled",
                 "pickHostNameFromBackendAddress": true,
-                "requestTimeout": 300,
+                "requestTimeout": "[parameters('applications')[copyIndex('backendHttpSettingsCollection')].requesttimeout]",
                 "probe": {
                   "id": "[resourceId('Microsoft.Network/applicationGateways/probes', variables('application-gateway-name'), concat(parameters('applications')[copyIndex('backendHttpSettingsCollection')].name, '-probe'))]"
                 }
@@ -683,11 +698,11 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
           "managedRuleSets": [
             {
               "ruleSetType": "OWASP",
-              "ruleSetVersion": "3.1"
+              "ruleSetVersion": "[parameters('owaspRuleSet')]"
             },
             {
               "ruleSetType": "Microsoft_BotManagerRuleSet",
-              "ruleSetVersion": "0.1"
+              "ruleSetVersion": "[parameters('botManagerRuleSet')]"
             }
           ],
           "exclusions": "[parameters('firewallExclusionList')]"
