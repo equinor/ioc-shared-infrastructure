@@ -8,7 +8,6 @@ param sku object = {}
 param softDeleteRetentionInDays int = 30
 
 var rgScope = resourceGroup()
-var vaultUri = 'https://${keyvaultName}.vault.${environment().suffixes.keyvaultDns}/'
 
 resource keyvaultResource 'Microsoft.KeyVault/vaults@2023-07-01' = {
   name: keyvaultName
@@ -29,6 +28,5 @@ resource keyvaultResource 'Microsoft.KeyVault/vaults@2023-07-01' = {
     sku: sku
     softDeleteRetentionInDays: softDeleteRetentionInDays
     tenantId: tenantId
-    vaultUri: vaultUri
   }
 }
