@@ -15,6 +15,7 @@ param azureStorageAccounts object = {}
 param healthCheckPath string = ''
 param http20Enabled bool = true
 param numberOfWorkers int = 1
+param webSitesPort int = 8080
 
 func createSettingsObject (key string, value string) array => [
   {
@@ -31,6 +32,10 @@ var globalAppSettings = [
   {
     name: 'DOCKER_ENABLE_CI'
     value: 'true'
+  }
+  {
+    name: 'WEBSITES_PORT'
+    value: webSitesPort
   }
 ]
 
