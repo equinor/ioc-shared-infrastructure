@@ -1,5 +1,5 @@
 param tenantId string
-param vaultUri string
+param keyvaultName string
 param accessPolicies array = []
 param tags object = {}
 param networkAcls object = {}
@@ -10,7 +10,7 @@ param softDeleteRetentionInDays int = 30
 var rgScope = resourceGroup()
 
 resource keyvaultResource 'Microsoft.KeyVault/vaults@2023-07-01' = {
-  name: 'string'
+  name: keyvaultName
   location: rgScope.location
   tags: tags
   properties: {
@@ -28,6 +28,5 @@ resource keyvaultResource 'Microsoft.KeyVault/vaults@2023-07-01' = {
     sku: sku
     softDeleteRetentionInDays: softDeleteRetentionInDays
     tenantId: tenantId
-    vaultUri: vaultUri
   }
 }
