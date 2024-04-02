@@ -32,9 +32,26 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Temporary step - display files in resourceKeyVault directory 1
-        run: |
-          ls ./resources/resourceKeyVault
+      - name: Build bicep - web app
+        continue-on-error: true
+        uses: Azure/bicep-build-action@v1.0.1
+        with: 
+          bicepFilePath: ./resources/resourceApp/webApp.json
+          outputFilePath: ./resources/resourceApp/webApp-temp.json
+
+      - name: Build bicep - app config
+        continue-on-error: true
+        uses: Azure/bicep-build-action@v1.0.1
+        with: 
+          bicepFilePath: ./resources/resourceAppConfiguration/appConfiguration.json
+          outputFilePath: ./resources/resourceAppConfiguration/appConfiguration-temp.json
+
+      - name: Build bicep - container registry
+        continue-on-error: true
+        uses: Azure/bicep-build-action@v1.0.1
+        with: 
+          bicepFilePath: ./resources/resourceContainerRegistry/containerregistry.json
+          outputFilePath: ./resources/resourceContainerRegistry/containerregistry-temp.json
 
       - name: Build bicep - key vault
         continue-on-error: true
@@ -43,9 +60,12 @@ jobs:
           bicepFilePath: ./resources/resourceKeyVault/keyvault.bicep
           outputFilePath: ./resources/resourceKeyVault/keyvault-temp.json
 
-      - name: Temporary step - display files in resourceKeyVault directory 2
-        run: |
-          ls ./resources/resourceKeyVault
+      - name: Build bicep - key vault
+        continue-on-error: true
+        uses: Azure/bicep-build-action@v1.0.1
+        with: 
+          bicepFilePath: ./resources/resourceKeyVaultAccess/keyvaultAccessPolicies.json
+          outputFilePath: ./resources/resourceKeyVaultAccess/keyvaultAccessPolicies-temp.json
 
       - name: Run Snyk to check configuration files for security issues
         # Snyk can be used to break the build when it detects security issues.
