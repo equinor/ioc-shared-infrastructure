@@ -26,7 +26,7 @@ resource keyvaultResource 'Microsoft.KeyVault/vaults@2023-07-01' = {
     provisioningState: 'Succeeded'
     publicNetworkAccess: publicNetworkAccess
     sku: sku
-    softDeleteRetentionInDays: softDeleteRetentionInDays
+    softDeleteRetentionInDays: 90
     tenantId: tenantId
     vaultUri: vaultUri
   }
