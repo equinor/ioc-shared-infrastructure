@@ -5,7 +5,7 @@ param tags object = {}
 param networkAcls object = {}
 param publicNetworkAccess string = 'Enabled'
 param sku object = {}
-param softDeleteRetentionInDays int = 30
+param softDeleteRetentionInDays int = 90
 
 var rgScope = resourceGroup()
 
