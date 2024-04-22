@@ -5,7 +5,7 @@ param tags object = {}
 param networkAcls object = {}
 param publicNetworkAccess string = 'Enabled'
 param sku object = {}
-param softDeleteRetentionInDays int = 30
+param softDeleteRetentionInDays int = 90
 
 var rgScope = resourceGroup()
 
@@ -26,7 +26,7 @@ resource keyvaultResource 'Microsoft.KeyVault/vaults@2023-07-01' = {
     provisioningState: 'Succeeded'
     publicNetworkAccess: publicNetworkAccess
     sku: sku
-    softDeleteRetentionInDays: softDeleteRetentionInDays
+    softDeleteRetentionInDays: 90
     tenantId: tenantId
     vaultUri: vaultUri
   }
