@@ -98,11 +98,11 @@ If you already have an ARM-template you can get a good start creating a bicep-fi
 
 `az bicep decompile --file azuredeploy.json`
 
-This will create `azuredeploy.bicep`, which you have to manually verify and rename to something meaningful, e.g. `appconfiguration.bicep`.
+This will create `azuredeploy.bicep`, which you have to manually verify (renaming this file is optional.)
 
 After adding or modifying a bicep resource you simply run the command
 
-`az bicep publish --file /path/to/{mymodule}.bicep --target br/CoreModulesPROD:{mymodule}:{version}`
+`az bicep publish --file /path/to/azuredeploy.bicep --target br/CoreModulesPROD:{mymodule}:{version}`
 
 This will effectivly push the resource to the container registry with the specified version number. The `CoreModulesPROD` is specified in the `bicepconfig.json` and links to `s039iocsharedbrprod.azurecr.io/bicep/modules`. The acronym `br` simply stands for `Bicep Registry`. For development or testing one may use `CoreModulesDEV` which links to an equivalent registry found here `s039iocsharedbrdev.azurecr.io/bicep/modules`.
 
@@ -110,15 +110,18 @@ NB! Version numbers should use the following format `v1.0` etc.
 
 ex. publishing the `appconfiguration` resource to `prod`
 
-`az bicep publish --file ./resources/resourceAppConfiguration/appConfiguration.bicep --target br/CoreModulesPROD:appconfiguration:1.0`
+`az bicep publish --file ./resources/resourceAppConfiguration/azuredeploy.bicep --target br/CoreModulesPROD:appconfiguration:1.0`
 
 If `appconfiguration:v1.0` already exists you will get an error, in which case you will use `appconfiguration:v1.1` instead.
 If you have! to overwrite a version you've just added you can apply the `--force` flag, which requires `az cli @v2.49.0` or later.
 
-To simplify publishing you can use the `Makefile`.
-e.g. calling
+NB! Recommended to publish via the `Makefile`. This will automatically handle the file versioning.
 
-`make publish.dev BICEP_FILE='resources/resourceKeyVault/keyvault.bicep' MODULE_NAME='keyvault' VERSION=1.0`
+e.g.
+
+<div style="background-color:rgba(200, 200, 20, 0.5); text-align:center; vertical-align:middle;padding: 5px 0;">
+<b>make publish.dev BICEP_FILE='resources/resourceKeyVault/azuredeploy.bicep' MODULE_NAME='keyvault' VERSION=1.0</b>
+</div>
 
 would publish the keyvault.bicep resource as module `keyvault:1.0` to the dev registry.
 

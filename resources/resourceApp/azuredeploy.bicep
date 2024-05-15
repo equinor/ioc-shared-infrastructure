@@ -1,3 +1,4 @@
+// Version 1.0
 param webAppName string
 param location string = resourceGroup().location
 param tags object
@@ -31,7 +32,7 @@ var globalAppSettings = [
   }
 ]
 
-resource webApp 'Microsoft.Web/sites@2022-03-01' = {
+resource webApp 'Microsoft.Web/sites@2023-12-01' = {
   name: webAppName
   location: location
   tags: tags
@@ -51,7 +52,7 @@ resource webApp 'Microsoft.Web/sites@2022-03-01' = {
   }
 }
 
-resource webAppName_web 'Microsoft.Web/sites/config@2022-03-01' = {
+resource webAppName_web 'Microsoft.Web/sites/config@2023-12-01' = {
   parent: webApp
   name: 'web'
   properties: {

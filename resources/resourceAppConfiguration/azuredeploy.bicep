@@ -1,3 +1,4 @@
+// Version 1.0
 param appConfigName string
 param tagComponent string
 param tagEnvironment string

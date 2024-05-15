@@ -1,3 +1,4 @@
+// Version 1.0
 param server string
 param databases array
 

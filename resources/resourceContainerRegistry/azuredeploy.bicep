@@ -1,3 +1,4 @@
+// Version 1.0
 @minLength(5)
 @maxLength(50)
 @description('Provide a globally unique name of your Azure Container Registry')
