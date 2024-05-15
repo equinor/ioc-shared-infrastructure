@@ -13,6 +13,10 @@ param allowedCorsOrigins array = json(' [ ] ')
 param supportCredentials bool = false
 param acrResourceGroup string = resourceGroup().name
 param azureStorageAccounts object = {}
+param healthCheckPath string = ''
+param http20Enabled bool = true
+param numberOfWorkers int = 1
+param webSitesPort int = 8080
 
 func createSettingsObject (key string, value string) array => [
   {
@@ -29,6 +33,10 @@ var globalAppSettings = [
   {
     name: 'DOCKER_ENABLE_CI'
     value: 'true'
+  }
+  {
+    name: 'WEBSITES_PORT'
+    value: webSitesPort
   }
 ]
 
@@ -56,15 +64,16 @@ resource webAppName_web 'Microsoft.Web/sites/config@2023-12-01' = {
   parent: webApp
   name: 'web'
   properties: {
-    numberOfWorkers: 1
+    numberOfWorkers: numberOfWorkers
     alwaysOn: true
     cors: {
       allowedOrigins: allowedCorsOrigins
       supportCredentials: supportCredentials
     }
-    http20Enabled: false
+    http20Enabled: http20Enabled
     minTlsVersion: '1.2'
     ftpsState: 'Disabled'
+    healthCheckPath: healthCheckPath
     ipSecurityRestrictions: [
       {
         ipAddress: appGatewayIp
