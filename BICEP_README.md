@@ -125,6 +125,10 @@ e.g.
 
 would publish the keyvault.bicep resource as module `keyvault:1.0` to the dev registry.
 
+<div style="background-color:rgba(200, 00, 0, 0.5); text-align:center; vertical-align:middle;padding: 5px 0;">
+NB! If version-header in the bicep-file was not correctly set the `make publish` command will have added the correct file-header. You should remember to push the changes to the github repo before merging any pull requests.
+</div>
+
 ## Who to Ask
 If you get stuck or simply wonder how to get started, use slack to get in contact with anyone in the
 
