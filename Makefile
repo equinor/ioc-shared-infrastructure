@@ -34,4 +34,4 @@ publish.dev: setversion
 	@echo "publishing Bicep to DEV bicep registry"
 	az bicep publish \
 	--file $(BICEP_FILE) \
-	--target br/CoreModulesDEV:$(MODULE_NAME):$(VERSION)
+	--target br/CoreModulesDEV:$(MODULE_NAME):$(VERSION) 

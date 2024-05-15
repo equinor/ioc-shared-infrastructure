@@ -13,20 +13,24 @@ param appServicePlanName string
   'PC3'
 ])
 param appServicePlanSku string = 'P1V2'
+@description('The number of instances assigned to this resource')
+param skuCapacity int = 1
+
 param location string = resourceGroup().location
 param tags object
 
-resource appServicePlan 'Microsoft.Web/serverfarms@2023-12-01' = {
+resource appServicePlan 'Microsoft.Web/serverfarms@2022-09-01' = {
   name: appServicePlanName
   location: location
   tags: tags
   sku: {
     name: appServicePlanSku
+    size: appServicePlanSku
+    capacity: skuCapacity
   }
   kind: 'linux'
   properties: {
     perSiteScaling: false
-    maximumElasticWorkerCount: 1
     reserved: true
   }
 }
