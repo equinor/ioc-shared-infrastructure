@@ -1,3 +1,4 @@
+// Version 1.0
 @minLength(5)
 @maxLength(50)
 @description('Provide a globally unique name of your Azure Container Registry')
@@ -7,7 +8,7 @@ param location string = resourceGroup().location
 @description('Provide a tier of your Azure Container Registry.')
 param sku string = 'Basic'
 @description('Enable admin user for the registry.')
-param adminUserEnabled bool = false
+param adminUserEnabled bool = true
 @description('Dictionary of tag names and values.')
 param tags object = {}
 

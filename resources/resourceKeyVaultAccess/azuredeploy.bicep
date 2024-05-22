@@ -1,3 +1,4 @@
+// Version 1.0
 @description('Specifies the name of the key vault.')
 param keyVaultName string
 

@@ -1,10 +1,14 @@
+// Version 1.0
 param tenantId string
 param keyvaultName string
 param accessPolicies array = []
 param tags object = {}
-param networkAcls object = {}
+param networkAcls object = {
+  defaultAction: 'Allow'
+  bypass: 'AzureServices'
+}
 param publicNetworkAccess string = 'Enabled'
-param sku object = {}
+param sku object
 param softDeleteRetentionInDays int = 90
 
 var rgScope = resourceGroup()
@@ -26,7 +30,7 @@ resource keyvaultResource 'Microsoft.KeyVault/vaults@2023-07-01' = {
     provisioningState: 'Succeeded'
     publicNetworkAccess: publicNetworkAccess
     sku: sku
-    softDeleteRetentionInDays: 90
+    softDeleteRetentionInDays: softDeleteRetentionInDays
     tenantId: tenantId
   }
 }
