@@ -3,9 +3,12 @@ param tenantId string
 param keyvaultName string
 param accessPolicies array = []
 param tags object = {}
-param networkAcls object = {}
+param networkAcls object = {
+  defaultAction: 'Allow'
+  bypass: 'AzureServices'
+}
 param publicNetworkAccess string = 'Enabled'
-param sku object = {}
+param sku object
 param softDeleteRetentionInDays int = 90
 
 var rgScope = resourceGroup()

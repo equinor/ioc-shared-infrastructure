@@ -96,7 +96,7 @@ The restore command doesn't refresh the cache if a module is already cached. To 
 ## Contributing
 If you already have an ARM-template you can get a good start creating a bicep-file by decompiling the ARM-template to Bicep, use:
 
-`az bicep decompile --file azuredeploy.json`
+`az bicep decompile --file azuredeploy.jsonc`
 
 This will create `azuredeploy.bicep`, which you have to manually verify (renaming this file is optional.)
 

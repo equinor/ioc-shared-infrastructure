@@ -1,7 +1,7 @@
 // Version 1.0
 param workspaceName string
 param location string = resourceGroup().location
-param sku string = 'Standard'
+param sku string = 'Standalone'
 param enableDataExport bool = true
 param disableLocalAuth bool = false
 param retentionInDays int = 30
