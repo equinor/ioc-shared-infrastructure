@@ -5,10 +5,6 @@ VERSION :=
 
 RUNID := $(shell date +%F.%H-%M-%S)
 
-ifeq ($(MODULE_NAME),)
-$(error MODULE_NAME is not set)
-endif
-
 ifeq ($(VERSION),)
 $(error VERSION is not set)
 endif
@@ -21,16 +17,22 @@ endif
 
 setversion:
 	@echo "Setting version to $(VERSION)"
-	@sed -i '/^\/\/ V.*/d' $(BICEP_FILE)
+	@sed -i '/^\/\/ Ver.*/d' $(BICEP_FILE)
 	@sed -i '1 i\// Version $(VERSION)' $(BICEP_FILE)
 
 publish.prod: setversion
+	ifeq ($(MODULE_NAME),)
+	$(error MODULE_NAME is not set)
+	endif
 	@echo "publishing Bicep to PROD bicep registry"
 	az bicep publish \
 	--file $(BICEP_FILE) \
 	--target br/CoreModulesPROD:$(MODULE_NAME):$(VERSION)
 
 publish.dev: setversion
+	ifeq ($(MODULE_NAME),)
+	$(error MODULE_NAME is not set)
+	endif
 	@echo "publishing Bicep to DEV bicep registry"
 	az bicep publish \
 	--file $(BICEP_FILE) \
