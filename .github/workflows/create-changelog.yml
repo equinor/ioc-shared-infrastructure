@@ -1,0 +1,36 @@
+name: run-script
+on:
+  pull_request:
+    types:
+      - closed
+
+jobs:
+  if_merged:
+    if: github.event.pull_request.merged == true
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v3
+          with:
+            fetch-depth: 2
+  
+        - name: create-changelog
+          run:  bash scripts/bicep_changelog.sh
+  
+        - name: show changes
+          run: |
+            git status
+  
+        - name: Commit files
+          run: |
+            git config --local user.email "action@github.com"
+            git config --local user.name "GitHub Action"
+            git add .
+            if ! git diff-index --quiet HEAD; then
+              git commit -m "Create BICEP-CHANGELOG"
+            fi
+  
+        - name: Push changes
+          uses: ad-m/github-push-action@master
+          with:
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+            branch: ${{ github.ref }}
