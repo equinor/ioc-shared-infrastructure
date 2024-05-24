@@ -1,15 +1,17 @@
 #!/bin/bash
 
-prefix="../resources/"
-if [ -f ../BICEP_CHANGELOG.md ]; then
-    rm ../BICEP_CHANGELOG.md
+rootPath=$1
+
+prefix="$rootPath/resources/"
+if [ -f $rootPath/BICEP_CHANGELOG.md ]; then
+    rm $rootPath/BICEP_CHANGELOG.md
 fi
 
 now=$(date '+%Y-%m-%d %H:%M:%S')
 
-touch ../BICEP_CHANGELOG.md
-echo "# Bicep Change Log $now" >> ../BICEP_CHANGELOG.md
-for dir in ../resources/*
+touch $rootPath/BICEP_CHANGELOG.md
+echo "# Bicep Change Log $now" >> $rootPath/BICEP_CHANGELOG.md
+for dir in $rootPath/resources/*
 do
     test -d $dir || continue
     file=($dir/azuredeploy.bicep)
@@ -19,5 +21,5 @@ do
         line="Version not found in file"
     fi
     file=${file#"$prefix"}
-    printf "%-60s $line\n" $file  >> ../BICEP_CHANGELOG.md
+    printf "%-60s $line\n" $file  >> $rootPath/BICEP_CHANGELOG.md
 done
