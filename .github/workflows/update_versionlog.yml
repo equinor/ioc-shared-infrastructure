@@ -1,0 +1,35 @@
+name: Generate Bicep Versionlog
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+
+jobs:
+  update_and_commit:
+    runs-on: ubuntu-latest
+
+    permissions:
+      # Give the default GITHUB_TOKEN write permission to commit and push the
+      # added or changed files to the repository.
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: generate bicep version-log
+        run:  scripts/bicep_versions.sh ${GITHUB_WORKSPACE}
+        shell: bash
+
+      - name: show changes
+        run: |
+          git status
+
+      - name: Commit updated bicep version-log
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          branch: ${{ github.event.pull_request.head.ref }}
+          commit_message: Update BICEP Versionlog
+          file_pattern: BICEP_RESOURCE_VERSIONS.md
