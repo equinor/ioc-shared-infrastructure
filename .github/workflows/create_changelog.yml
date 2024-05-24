@@ -22,7 +22,7 @@ jobs:
       - name: generate bicep changelog
         run:  |
           cd scripts/
-          ./scripts/bicep_changelog.sh
+          ./bicep_changelog.sh
         shell: bash
 
       - name: show changes
