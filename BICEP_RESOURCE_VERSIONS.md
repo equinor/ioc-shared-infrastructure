@@ -1,4 +1,4 @@
-# Bicep Version Log 2024-05-24 15:05:53
+# Bicep Version Log 2024-05-24 13:08:30
 | Resource | Version |
 |----------|----------|
 | resourceApp/azuredeploy.bicep                                          |  1.0 |
