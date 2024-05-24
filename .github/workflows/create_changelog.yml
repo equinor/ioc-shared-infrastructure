@@ -21,7 +21,7 @@ jobs:
 
       - name: generate bicep changelog
         run:  |
-          pwd
+          cd scripts/
           ./scripts/bicep_changelog.sh
         shell: bash
 
