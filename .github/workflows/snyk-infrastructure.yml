@@ -36,36 +36,78 @@ jobs:
         continue-on-error: true
         uses: Azure/bicep-build-action@v1.0.1
         with: 
-          bicepFilePath: ./resources/resourceApp/webApp.bicep
-          outputFilePath: ./resources/resourceApp/webApp-temp.json
+          bicepFilePath: ./resources/resourceApp/azuredeploy.bicep
+          outputFilePath: ./resources/resourceApp/azuredeploy-temp.json
 
       - name: Build bicep - app config
         continue-on-error: true
         uses: Azure/bicep-build-action@v1.0.1
         with: 
-          bicepFilePath: ./resources/resourceAppConfiguration/appConfiguration.bicep
-          outputFilePath: ./resources/resourceAppConfiguration/appConfiguration-temp.json
+          bicepFilePath: ./resources/resourceAppConfiguration/azuredeploy.bicep
+          outputFilePath: ./resources/resourceAppConfiguration/azuredeploy-temp.json
+
+      - name: Build bicep - app insights
+        continue-on-error: true
+        uses: Azure/bicep-build-action@v1.0.1
+        with: 
+          bicepFilePath: ./resources/resourceAppInsights/azuredeploy.bicep
+          outputFilePath: ./resources/resourceAppInsights/azuredeploy-temp.json
+
+      - name: Build bicep - app service plan
+        continue-on-error: true
+        uses: Azure/bicep-build-action@v1.0.1
+        with: 
+          bicepFilePath: ./resources/resourceAppServicePlan/azuredeploy.bicep
+          outputFilePath: ./resources/resourceAppServicePlan/azuredeploy-temp.json
 
       - name: Build bicep - container registry
         continue-on-error: true
         uses: Azure/bicep-build-action@v1.0.1
         with: 
-          bicepFilePath: ./resources/resourceContainerRegistry/containerregistry.bicep
-          outputFilePath: ./resources/resourceContainerRegistry/containerregistry-temp.json
+          bicepFilePath: ./resources/resourceContainerRegistry/azuredeploy.bicep
+          outputFilePath: ./resources/resourceContainerRegistry/azuredeploy-temp.json
 
       - name: Build bicep - key vault
         continue-on-error: true
         uses: Azure/bicep-build-action@v1.0.1
         with: 
-          bicepFilePath: ./resources/resourceKeyVault/keyvault.bicep
-          outputFilePath: ./resources/resourceKeyVault/keyvault-temp.json
+          bicepFilePath: ./resources/resourceKeyVault/azuredeploy.bicep
+          outputFilePath: ./resources/resourceKeyVault/azuredeploy-temp.json
 
-      - name: Build bicep - key vault
+      - name: Build bicep - key vault access
         continue-on-error: true
         uses: Azure/bicep-build-action@v1.0.1
         with: 
-          bicepFilePath: ./resources/resourceKeyVaultAccess/keyvaultAccessPolicies.bicep
-          outputFilePath: ./resources/resourceKeyVaultAccess/keyvaultAccessPolicies-temp.json
+          bicepFilePath: ./resources/resourceKeyVaultAccess/azuredeploy.bicep
+          outputFilePath: ./resources/resourceKeyVaultAccess/azuredeploy-temp.json
+
+      - name: Build bicep - key vault secrets
+        continue-on-error: true
+        uses: Azure/bicep-build-action@v1.0.1
+        with: 
+          bicepFilePath: ./resources/resourceKeyVaultSecrets/azuredeploy.bicep
+          outputFilePath: ./resources/resourceKeyVaultSecrets/azuredeploy-temp.json
+
+      - name: Build bicep - log analytics workspace
+        continue-on-error: true
+        uses: Azure/bicep-build-action@v1.0.1
+        with: 
+          bicepFilePath: ./resources/resourceLogAnalyticsWorkspace/azuredeploy.bicep
+          outputFilePath: ./resources/resourceLogAnalyticsWorkspace/azuredeploy-temp.json
+
+      - name: Build bicep - postgresql flexible databases
+        continue-on-error: true
+        uses: Azure/bicep-build-action@v1.0.1
+        with: 
+          bicepFilePath: ./resources/resourcePostgresqlFlexibleDatabases/azuredeploy.bicep
+          outputFilePath: ./resources/resourcePostgresqlFlexibleDatabases/azuredeploy-temp.json          
+
+      - name: Build bicep - postgresql flexible server
+        continue-on-error: true
+        uses: Azure/bicep-build-action@v1.0.1
+        with: 
+          bicepFilePath: ./resources/resourcePostgresqlFlexibleServer/azuredeploy.bicep
+          outputFilePath: ./resources/resourcePostgresqlFlexibleServer/azuredeploy-temp.json
 
       - name: Run Snyk to check configuration files for security issues
         # Snyk can be used to break the build when it detects security issues.

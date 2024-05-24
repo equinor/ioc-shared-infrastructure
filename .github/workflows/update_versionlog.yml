@@ -1,4 +1,4 @@
-name: Generate Bicep Changelog
+name: Generate Bicep Versionlog
 on:
   pull_request:
     types:
@@ -19,17 +19,17 @@ jobs:
         with:
           ref: ${{ github.head_ref }}
 
-      - name: generate bicep changelog
-        run:  scripts/bicep_changelog.sh ${GITHUB_WORKSPACE}
+      - name: generate bicep version-log
+        run:  scripts/bicep_versions.sh ${GITHUB_WORKSPACE}
         shell: bash
 
       - name: show changes
         run: |
           git status
 
-      - name: Commit updated CHANGELOG
+      - name: Commit updated bicep version-log
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           branch: ${{ github.event.pull_request.head.ref }}
-          commit_message: Update BICEP CHANGELOG
-          file_pattern: BICEP_CHANGELOG.md
+          commit_message: Update BICEP Versionlog
+          file_pattern: BICEP_RESOURCE_VERSIONS.md
