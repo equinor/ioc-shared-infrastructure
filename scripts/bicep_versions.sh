@@ -10,7 +10,10 @@ fi
 now=$(date '+%Y-%m-%d %H:%M:%S')
 
 touch $rootPath/BICEP_RESOURCE_VERSIONS.md
-echo "# Bicep Change Log $now" >> $rootPath/BICEP_RESOURCE_VERSIONS.md
+
+printf "# Bicep Version Log $now\n" >> $rootPath/BICEP_RESOURCE_VERSIONS.md
+printf "| Resource | Version |\n" >> $rootPath/BICEP_RESOURCE_VERSIONS.md
+printf "|----------|----------|\n" >> $rootPath/BICEP_RESOURCE_VERSIONS.md
 for dir in $rootPath/resources/*
 do
     test -d $dir || continue
@@ -21,5 +24,7 @@ do
         line="Version not found in file"
     fi
     file=${file#"$prefix"}
-    printf "%-60s $line\n" $file  >> $rootPath/BICEP_RESOURCE_VERSIONS.md
+    line=${line#"// "}
+    line=${line#"Version"}
+    printf "| %-70s | $line |\n" $file  >> $rootPath/BICEP_RESOURCE_VERSIONS.md
 done
