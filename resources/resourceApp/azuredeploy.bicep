@@ -1,4 +1,4 @@
-// Version 1.1
+// Version 1.0
 param webAppName string
 param location string = resourceGroup().location
 param tags object
