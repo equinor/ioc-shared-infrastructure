@@ -20,7 +20,9 @@ jobs:
           ref: ${{ github.head_ref }}
 
       - name: generate bicep changelog
-        run:  ${GITHUB_WORKSPACE}/scripts/bicep_changelog.sh
+        run:  |
+          pwd
+          ./scripts/bicep_changelog.sh
         shell: bash
 
       - name: show changes
