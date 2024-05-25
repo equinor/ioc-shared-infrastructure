@@ -45,7 +45,7 @@ var keyValuePairs = []
 var keyVaultReferences = []
 var featureFlags = []
 
-module appConfigModule 'br/CoreModulesPROD:appconfiguration:v1.0' = {
+module appConfigModule 'br/CoreModulesDEV:appconfiguration:v1.0' = {
   name: 'appConfigDeploy'
   scope: resourceGroup()
   params: {
@@ -114,8 +114,12 @@ If you have! to overwrite a version you've just added you can apply the `FORCE=1
 NB! Version numbers should use the following format `1.0`, `1.1`, etc.
 
 <div style="background-color:rgba(200, 00, 0, 0.5); text-align:center; vertical-align:middle;padding: 5px 0;">
-NB! If version-header in the bicep-file was not correctly set the `make publish` command will have added the correct file-header. You should remember to push the changes to the github repo before merging any pull requests.
+NB! If version-header in the bicep-file was not correctly set the `make publish` command will have added the file-header to the resource-file. You should then remember to push those changes to the github repo before merging the pull request.
 </div>
+
+If you added a new bicep resource remember to include it in the `.github/workflows/snyk-infrastructure.yml` action-script so that it is properly scanned when opening a pull-request. 
+
+The `BICEP_RESOURCE_VERSIONS.md` file is automatically updated by a separate github-action when a pull-request is opened or synchronized.
 
 ## Who to Ask
 If you get stuck or simply wonder how to get started, use slack to get in contact with anyone in the
