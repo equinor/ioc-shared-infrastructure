@@ -7,11 +7,10 @@ if [ -f $rootPath/BICEP_RESOURCE_VERSIONS.md ]; then
     rm $rootPath/BICEP_RESOURCE_VERSIONS.md
 fi
 
-now=$(date '+%Y-%m-%d %H:%M:%S')
-
 touch $rootPath/BICEP_RESOURCE_VERSIONS.md
 
-printf "# Bicep Version Log $now\n" >> $rootPath/BICEP_RESOURCE_VERSIONS.md
+printf "[Auto-generated version-log]\n\n" >> $rootPath/BICEP_RESOURCE_VERSIONS.md
+printf "# Bicep Versions\n" >> $rootPath/BICEP_RESOURCE_VERSIONS.md
 printf "| Resource | Version |\n" >> $rootPath/BICEP_RESOURCE_VERSIONS.md
 printf "|----------|----------|\n" >> $rootPath/BICEP_RESOURCE_VERSIONS.md
 for dir in $rootPath/resources/*
