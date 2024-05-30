@@ -27,8 +27,9 @@ endif
 
 setversion:
 	@echo "Setting version to $(VERSION)"
-	@sed -i '/^\/\/ Ver.*/d' $(BICEP_FILE)
-	@sed -i '1 i\// Version $(VERSION)' $(BICEP_FILE)
+	@echo "// Version $(VERSION)" > temp_file
+	@cat $(BICEP_FILE) >> temp_file
+	@mv temp_file $(BICEP_FILE)
 
 publish.prod: setversion
 	@echo "publishing Bicep to PROD bicep registry"
