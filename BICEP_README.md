@@ -25,7 +25,7 @@ You must have Azure CLI version 2.20.0 or later installed. To install or update 
 * https://learn.microsoft.com/en-us/cli/azure/install-azure-cli-macos
 
 ## Usage
-Bicep files will  be stored together with their equivalent ARM-template resource, i.e. `containerregistry.bicep` should be found alongside `azuredeploy.jsonc` in the `./resources/resourceContainerRegsitry/` folder.
+Bicep files will  be stored together with their equivalent ARM-template resource, i.e. `containerregistry.bicep` should be found alongside `azuredeploy.jsonc` in the `./resources/resourceContainerRegistry/` folder.
 
 Whereas the ARM-template resources are downloaded via github at deploy-time, the Bicep resources are downloaded from a Bicep Container Registry residing in `ioc-shared-rg-prod`.
 To start using it you need a configuration file which can be copied into your project infrastructure-folder from here `./bicepconfig.json`.
