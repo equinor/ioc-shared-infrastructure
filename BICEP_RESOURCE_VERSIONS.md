@@ -12,5 +12,8 @@
 | resourceKeyVaultAccess/azuredeploy.bicep                               |  1.0 |
 | resourceKeyVaultSecrets/azuredeploy.bicep                              |  1.0 |
 | resourceLogAnalyticsWorkspace/azuredeploy.bicep                        |  1.0 |
+| resourceNatGateway/azuredeploy.bicep                                   |  1.0 |
 | resourcePostgresqlFlexibleDatabases/azuredeploy.bicep                  |  1.0 |
 | resourcePostgresqlFlexibleServer/azuredeploy.bicep                     |  1.0 |
+| resourcePublicIp/azuredeploy.bicep                                     |  1.0 |
+| resourceVnet/azuredeploy.bicep                                         |  1.0 |
