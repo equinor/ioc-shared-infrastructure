@@ -166,7 +166,7 @@
           "type": "virtualNetworkConnections",
           "apiVersion": "2019-10-01",
           "name": "[parameters('vnetConnectionName')]",
-          "location": "[resourceGroup().location]",
+          "location": "[parameters('location')]",
           "dependsOn": [
               "[parameters('webAppName')]"
           ],
