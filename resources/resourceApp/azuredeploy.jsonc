@@ -160,7 +160,7 @@
         {
           "condition": "[parameters('addVnetConnection')]",
           "type": "virtualNetworkConnections",
-          "apiVersion": "2019-10-01",
+          "apiVersion": "2020-12-01",
           "name": "[parameters('vnetConnectionName')]",
           "location": "[parameters('location')]",
           "dependsOn": [
