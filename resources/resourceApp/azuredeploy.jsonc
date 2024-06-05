@@ -62,6 +62,10 @@
     "vnetName": {
       "type": "string",
       "defaultValue": "my-vnet"
+    },
+    "subnetName": {
+      "type": "string",
+      "defaultValue": "default"
     }
   },
   "functions": [
@@ -164,10 +168,10 @@
           "name": "[parameters('vnetConnectionName')]",
           "location": "[parameters('location')]",
           "dependsOn": [
-              "[parameters('webAppName')]"
+            "[resourceId('Microsoft.Web/sites/', parameters('webAppName'))]"
           ],
           "properties": {
-              "vnetResourceId": "[resourceId('Microsoft.Network/virtualNetworks',parameters('vnetName'))]",
+              "vnetResourceId": "[resourceId('Microsoft.Network/virtualNetworks/subnets',parameters('vnetName'),parameters('subnetName'))]",
               "isSwift": true
           }
         }
