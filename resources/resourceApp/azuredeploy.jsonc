@@ -164,14 +164,14 @@
         {
           "condition": "[parameters('addVnetConnection')]",
           "type": "virtualNetworkConnections",
-          "apiVersion": "2020-12-01",
+          "apiVersion": "2022-09-01",
           "name": "[parameters('vnetConnectionName')]",
           "location": "[parameters('location')]",
           "dependsOn": [
             "[resourceId('Microsoft.Web/sites/', parameters('webAppName'))]"
           ],
           "properties": {
-              "vnetResourceId": "[resourceId('Microsoft.Network/virtualNetworks/subnets',parameters('vnetName'),parameters('subnetName'))]",
+              "subResourceId": "[resourceId('Microsoft.Network/virtualNetworks/subnets',parameters('vnetName'),parameters('subnetName'))]",
               "isSwift": true
           }
         }
