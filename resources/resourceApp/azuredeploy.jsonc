@@ -62,10 +62,6 @@
     "vnetName": {
       "type": "string",
       "defaultValue": "my-vnet"
-    },
-    "subnetName": {
-      "type": "string",
-      "defaultValue": "default"
     }
   },
   "functions": [
