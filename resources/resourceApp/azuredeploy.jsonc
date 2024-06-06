@@ -65,7 +65,7 @@
     },
     "virtualNetworkSubnetId": {
       "type": "string",
-      "defaultValue": ""
+      "defaultValue": null
     }
   },
   "functions": [
