@@ -65,7 +65,7 @@
     },
     "virtualNetworkSubnetId": {
       "type": "string",
-      "defaultValue": {}
+      "defaultValue": ""
     }
   },
   "functions": [
@@ -107,7 +107,31 @@
         "name": "DOCKER_ENABLE_CI",
         "value": "true"
       }
-    ]
+    ],
+    "webSitesPropertiesNoVnet": {
+      "enabled": true,
+      "serverFarmId": "[parameters('appserviceResourceId')]",
+      "clientAffinityEnabled": false,
+      "siteConfig": {
+        "linuxFxVersion": "[concat('DOCKER|', parameters('containerRegistryName'), '.azurecr.io/', toLower(parameters('containerImageName')), ':', parameters('containerImageTag'))]",
+        "appSettings": "[union(variables('globalAppSettings'), parameters('environmentVariables'), equinor.createSettingsObject('DOCKER_REGISTRY_SERVER_URL', reference(resourceId(parameters('acrResourceGroup'), 'Microsoft.ContainerRegistry/registries/', parameters('containerRegistryName')), '2019-05-01').loginServer), equinor.createSettingsObject('DOCKER_REGISTRY_SERVER_USERNAME', listCredentials(resourceId(parameters('acrResourceGroup'), 'Microsoft.ContainerRegistry/registries/', parameters('containerRegistryName')), '2019-05-01').username), equinor.createSettingsObject('DOCKER_REGISTRY_SERVER_PASSWORD', listCredentials(resourceId(parameters('acrResourceGroup'), 'Microsoft.ContainerRegistry/registries/', parameters('containerRegistryName')), '2019-05-01').passwords[0].value))]",
+        "appCommandLine": "[parameters('appCommandLine')]"
+      },
+      "httpsOnly": true
+    },
+    "webSitesPropertiesYesVnet": {
+      "enabled": true,
+      "serverFarmId": "[parameters('appserviceResourceId')]",
+      "clientAffinityEnabled": false,
+      "siteConfig": {
+        "linuxFxVersion": "[concat('DOCKER|', parameters('containerRegistryName'), '.azurecr.io/', toLower(parameters('containerImageName')), ':', parameters('containerImageTag'))]",
+        "appSettings": "[union(variables('globalAppSettings'), parameters('environmentVariables'), equinor.createSettingsObject('DOCKER_REGISTRY_SERVER_URL', reference(resourceId(parameters('acrResourceGroup'), 'Microsoft.ContainerRegistry/registries/', parameters('containerRegistryName')), '2019-05-01').loginServer), equinor.createSettingsObject('DOCKER_REGISTRY_SERVER_USERNAME', listCredentials(resourceId(parameters('acrResourceGroup'), 'Microsoft.ContainerRegistry/registries/', parameters('containerRegistryName')), '2019-05-01').username), equinor.createSettingsObject('DOCKER_REGISTRY_SERVER_PASSWORD', listCredentials(resourceId(parameters('acrResourceGroup'), 'Microsoft.ContainerRegistry/registries/', parameters('containerRegistryName')), '2019-05-01').passwords[0].value))]",
+        "appCommandLine": "[parameters('appCommandLine')]"
+      },
+      "httpsOnly": true,
+      "virtualNetworkSubnetId": "[parameters('virtualNetworkSubnetId')]"
+    },
+    "webSitesProperties": "[if(not(empty(parameters('virtualNetworkSubnetId'))), variables('webSitesPropertiesYesVnet'), variables('webSitesPropertiesNoVnet'))]"
   },
   "resources": [
     {
@@ -119,18 +143,7 @@
       "identity": {
         "type": "SystemAssigned"
       },
-      "properties": {
-        "enabled": true,
-        "serverFarmId": "[parameters('appserviceResourceId')]",
-        "clientAffinityEnabled": false,
-        "siteConfig": {
-          "linuxFxVersion": "[concat('DOCKER|', parameters('containerRegistryName'), '.azurecr.io/', toLower(parameters('containerImageName')), ':', parameters('containerImageTag'))]",
-          "appSettings": "[union(variables('globalAppSettings'), parameters('environmentVariables'), equinor.createSettingsObject('DOCKER_REGISTRY_SERVER_URL', reference(resourceId(parameters('acrResourceGroup'), 'Microsoft.ContainerRegistry/registries/', parameters('containerRegistryName')), '2019-05-01').loginServer), equinor.createSettingsObject('DOCKER_REGISTRY_SERVER_USERNAME', listCredentials(resourceId(parameters('acrResourceGroup'), 'Microsoft.ContainerRegistry/registries/', parameters('containerRegistryName')), '2019-05-01').username), equinor.createSettingsObject('DOCKER_REGISTRY_SERVER_PASSWORD', listCredentials(resourceId(parameters('acrResourceGroup'), 'Microsoft.ContainerRegistry/registries/', parameters('containerRegistryName')), '2019-05-01').passwords[0].value))]",
-          "appCommandLine": "[parameters('appCommandLine')]"
-        },
-        "httpsOnly": true,
-        "virtualNetworkSubnetId": "[parameters('virtualNetworkSubnetId')]"
-      },
+      "properties": "[variables('webSitesProperties')]",
       "resources": [
         {
           "type": "config",
