@@ -62,6 +62,10 @@
     "subnetName": {
       "type": "string",
       "defaultValue": "default"
+    },
+    "virtualNetworkSubnetId": {
+      "type": "string",
+      "defaultValue": ""
     }
   },
   "functions": [
@@ -124,7 +128,8 @@
           "appSettings": "[union(variables('globalAppSettings'), parameters('environmentVariables'), equinor.createSettingsObject('DOCKER_REGISTRY_SERVER_URL', reference(resourceId(parameters('acrResourceGroup'), 'Microsoft.ContainerRegistry/registries/', parameters('containerRegistryName')), '2019-05-01').loginServer), equinor.createSettingsObject('DOCKER_REGISTRY_SERVER_USERNAME', listCredentials(resourceId(parameters('acrResourceGroup'), 'Microsoft.ContainerRegistry/registries/', parameters('containerRegistryName')), '2019-05-01').username), equinor.createSettingsObject('DOCKER_REGISTRY_SERVER_PASSWORD', listCredentials(resourceId(parameters('acrResourceGroup'), 'Microsoft.ContainerRegistry/registries/', parameters('containerRegistryName')), '2019-05-01').passwords[0].value))]",
           "appCommandLine": "[parameters('appCommandLine')]"
         },
-        "httpsOnly": true
+        "httpsOnly": true,
+        "virtualNetworkSubnetId": "[parameters('virtualNetworkSubnetId')]"
       },
       "resources": [
         {
@@ -161,14 +166,14 @@
         {
           "condition": "[not(empty(parameters('vnetName')))]",
           "type": "virtualNetworkConnections",
-          "apiVersion": "2022-09-01",
+          "apiVersion": "2023-12-01",
           "name": "[parameters('vnetConnectionName')]",
           "location": "[parameters('location')]",
           "dependsOn": [
             "[resourceId('Microsoft.Web/sites/', parameters('webAppName'))]"
           ],
           "properties": {
-              "subResourceId": "[resourceId('Microsoft.Network/virtualNetworks/subnets',parameters('vnetName'),parameters('subnetName'))]",
+              "vnetResourceId": "[resourceId('Microsoft.Network/virtualNetworks/subnets',parameters('vnetName'),parameters('subnetName'))]",
               "isSwift": true
           }
         }
