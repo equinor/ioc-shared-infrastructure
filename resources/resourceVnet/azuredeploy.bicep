@@ -1,4 +1,5 @@
 // Version 1.0
+// Version 1.0
 param vnetName string
 param subnetName string = 'default'
 param natGatewayName string
@@ -26,6 +27,14 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-11-01' = {
         name: subnetName
         properties: {
           addressPrefix: addressPrefix
+          delegations: [
+            {
+              name: 'delegation'
+              properties: {
+                serviceName: 'Microsoft.Web/serverFarms'
+              }
+            }
+          ]
           natGateway: {
             id: natGateway.id
           }
