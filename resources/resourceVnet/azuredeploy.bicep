@@ -1,5 +1,4 @@
 // Version 1.0
-// Version 1.0
 param vnetName string
 param subnetName string = 'default'
 param natGatewayName string
