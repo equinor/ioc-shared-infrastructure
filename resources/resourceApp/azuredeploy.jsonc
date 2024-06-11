@@ -50,22 +50,6 @@
     "azureStorageAccounts": {
       "type": "object",
       "defaultValue": {}
-    },
-    "vnetConnectionName": {
-      "type": "string",
-      "defaultValue": "vnet-connection"
-    },
-    "vnetName": {
-      "type": "string",
-      "defaultValue": ""
-    },
-    "subnetName": {
-      "type": "string",
-      "defaultValue": "default"
-    },
-    "virtualNetworkSubnetId": {
-      "type": "string",
-      "defaultValue": ""
     }
   },
   "functions": [
@@ -159,21 +143,6 @@
               }
             ],
             "azureStorageAccounts": "[parameters('azureStorageAccounts')]",
-            "vnetName": "[parameters('vnetName')]"
-          }
-        },
-        {
-          "condition": "[not(empty(parameters('vnetName')))]",
-          "type": "virtualNetworkConnections",
-          "apiVersion": "2023-12-01",
-          "name": "[parameters('vnetConnectionName')]",
-          "location": "[parameters('location')]",
-          "dependsOn": [
-            "[resourceId('Microsoft.Web/sites/', parameters('webAppName'))]"
-          ],
-          "properties": {
-              "vnetResourceId": "[resourceId('Microsoft.Network/virtualNetworks/subnets',parameters('vnetName'),parameters('subnetName'))]",
-              "isSwift": true
           }
         }
       ]
