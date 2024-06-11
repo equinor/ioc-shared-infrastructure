@@ -3,7 +3,7 @@
 # Bicep Versions
 | Resource | Version |
 |----------|----------|
-| resourceApp/azuredeploy.bicep                                          |  1.0 |
+| resourceApp/azuredeploy.bicep                                          |  1.1 |
 | resourceAppConfiguration/azuredeploy.bicep                             |  1.0 |
 | resourceAppInsights/azuredeploy.bicep                                  |  1.0 |
 | resourceAppServicePlan/azuredeploy.bicep                               |  1.0 |
