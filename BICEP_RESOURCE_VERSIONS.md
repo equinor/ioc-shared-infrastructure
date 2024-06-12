@@ -14,6 +14,7 @@
 | resourceLogAnalyticsWorkspace/azuredeploy.bicep                        |  1.0 |
 | resourceNatGateway/azuredeploy.bicep                                   |  1.0 |
 | resourcePostgresql/azuredeploy.bicep                                   |  1.0 |
+| resourcePostgresqlDatabases/azuredeploy.bicep                          |  1.0 |
 | resourcePostgresqlFlexibleDatabases/azuredeploy.bicep                  |  1.0 |
 | resourcePostgresqlFlexibleServer/azuredeploy.bicep                     |  1.0 |
 | resourcePublicIp/azuredeploy.bicep                                     |  1.0 |
