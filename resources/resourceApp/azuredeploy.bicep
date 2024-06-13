@@ -47,6 +47,10 @@ var virtualNetworkSubnetIdProperty = (virtualNetworkSubnetId != '') ? {
   virtualNetworkSubnetId: virtualNetworkSubnetId
 } : {}
 
+var vnetNameProperty = (vnetName != '') ? {
+  virtualNetworkSubnetId: vnetName
+} : {}
+
 resource webApp 'Microsoft.Web/sites@2023-12-01' = {
   name: webAppName
   location: location
@@ -91,11 +95,11 @@ resource webAppName_web 'Microsoft.Web/sites/config@2023-12-01' = {
       }
     ]
     azureStorageAccounts: azureStorageAccounts
-    vnetName: vnetName
+    ...vnetNameProperty
   }
 }
 
-resource webAppName_vnetConnection 'Microsoft.Web/sites/virtualNetworkConnections@2023-12-01' = if (!empty(vnetName)) {
+resource vnetConnection 'Microsoft.Web/sites/virtualNetworkConnections@2023-12-01' = if (!empty(vnetName)) {
   parent: webApp
   name: vnetConnectionName
   properties: {
