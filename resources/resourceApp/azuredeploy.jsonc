@@ -142,7 +142,7 @@
                 "name": "Allow IOC Application Gateway"
               }
             ],
-            "azureStorageAccounts": "[parameters('azureStorageAccounts')]",
+            "azureStorageAccounts": "[parameters('azureStorageAccounts')]"
           }
         }
       ]
