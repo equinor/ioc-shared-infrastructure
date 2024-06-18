@@ -43,8 +43,9 @@ var globalAppSettings = [
     value: webSitesPort
   }
 ]
-var virtualNetworkSubnetIdProperty = (virtualNetworkSubnetId != '') ? {
+var virtualNetworkProperties = (virtualNetworkSubnetId != '') ? {
   virtualNetworkSubnetId: virtualNetworkSubnetId
+  vnetRouteAllEnabled: true
 } : {}
 
 var vnetNameProperty = (vnetName != '') ? {
@@ -68,7 +69,7 @@ resource webApp 'Microsoft.Web/sites@2023-12-01' = {
       appCommandLine: appCommandLine
     }
     httpsOnly: true
-    ...virtualNetworkSubnetIdProperty
+    ...virtualNetworkProperties
   }
 }
 
