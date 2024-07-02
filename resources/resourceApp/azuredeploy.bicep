@@ -1,4 +1,4 @@
-// Version 1.0
+// Version 1.1
 param webAppName string
 param location string = resourceGroup().location
 param tags object
@@ -17,6 +17,10 @@ param healthCheckPath string = ''
 param http20Enabled bool = true
 param numberOfWorkers int = 1
 param webSitesPort int = 8080
+param vnetConnectionName string = 'vnet-connection'
+param vnetName string = ''
+param subnetName string = 'default'
+param virtualNetworkSubnetId string = ''
 
 func createSettingsObject (key string, value string) array => [
   {
@@ -39,6 +43,14 @@ var globalAppSettings = [
     value: webSitesPort
   }
 ]
+var virtualNetworkProperties = (virtualNetworkSubnetId != '') ? {
+  virtualNetworkSubnetId: virtualNetworkSubnetId
+  vnetRouteAllEnabled: true
+} : {}
+
+var vnetNameProperty = (vnetName != '') ? {
+  virtualNetworkSubnetId: vnetName
+} : {}
 
 resource webApp 'Microsoft.Web/sites@2023-12-01' = {
   name: webAppName
@@ -57,6 +69,7 @@ resource webApp 'Microsoft.Web/sites@2023-12-01' = {
       appCommandLine: appCommandLine
     }
     httpsOnly: true
+    ...virtualNetworkProperties
   }
 }
 
@@ -83,6 +96,16 @@ resource webAppName_web 'Microsoft.Web/sites/config@2023-12-01' = {
       }
     ]
     azureStorageAccounts: azureStorageAccounts
+    ...vnetNameProperty
+  }
+}
+
+resource vnetConnection 'Microsoft.Web/sites/virtualNetworkConnections@2023-12-01' = if (!empty(vnetName)) {
+  parent: webApp
+  name: vnetConnectionName
+  properties: {
+    vnetResourceId: resourceId('Microsoft.Network/virtualNetworks/subnets', vnetName, subnetName)
+    isSwift: true
   }
 }
 
