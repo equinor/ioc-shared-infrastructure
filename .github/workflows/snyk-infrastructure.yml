@@ -123,6 +123,13 @@ jobs:
           bicepFilePath: ./resources/resourceEventHub/azuredeploy.bicep
           outputFilePath: ./resources/resourceEventHub/azuredeploy-temp.json  
  
+      - name: Build bicep - storage account
+        continue-on-error: true
+        uses: Azure/bicep-build-action@v1.0.1
+        with: 
+          bicepFilePath: ./resources/resourceStorageAccounts/azuredeploy.bicep
+          outputFilePath: ./resources/resourceStorageAccounts/azuredeploy-temp.json  
+
       - name: Run Snyk to check configuration files for security issues
         # Snyk can be used to break the build when it detects security issues.
         # In this case we want to upload the issues to GitHub Code Scanning
