@@ -1,8 +1,8 @@
 // Version 1.0
-param location string = resourceGroup().location
 param accountName string
+param location string = resourceGroup().location
 param sku object = {
-  name: 'Standard_GRS'
+  name: 'Standard_LRS'
 }
 param kind string = 'BlobStorage'
 param accessTier string = 'Hot'
