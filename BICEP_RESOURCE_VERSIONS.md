@@ -21,4 +21,5 @@
 | resourcePostgresqlFlexibleServer/azuredeploy.bicep                     |  1.0 |
 | resourcePublicIp/azuredeploy.bicep                                     |  1.0 |
 | resourceRedis/azuredeploy.bicep                                        |  1.0 |
+| resourceStorageAccounts/azuredeploy.bicep                              |  1.0 |
 | resourceVnet/azuredeploy.bicep                                         |  1.0 |
