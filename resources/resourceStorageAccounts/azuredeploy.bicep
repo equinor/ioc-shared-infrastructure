@@ -11,6 +11,7 @@ param allowSharedKeyAccess bool = true
 param defaultToOAuthAuthentication bool = false
 param keyExpirationPeriodInDays int = 365
 param largeFileSharesState string = 'Disabled'  // cannot be reverted once set to Enabled
+param publicNetworkAccess string = 'Enabled'
 param networkAcls object = {
   defaultAction: 'Allow'
   bypass: 'AzureServices'
@@ -44,7 +45,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
     largeFileSharesState: largeFileSharesState
     minimumTlsVersion: 'TLS1_2'
     networkAcls: networkAcls
-    publicNetworkAccess: 'string'
+    publicNetworkAccess: publicNetworkAccess
     supportsHttpsTrafficOnly: true
   }
 }
