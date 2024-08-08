@@ -668,10 +668,10 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
             ]
           },
           {
-            "name": "DenyNonApprovedGeoTraffic",
-            "priority": 100,
+            "name": "AllowApprovedGeoTraffic",
+            "priority": 80,
             "ruleType": "MatchRule",
-            "action": "Block",
+            "action": "Allow",
             "matchConditions": [
               {
                 "matchVariables": [
@@ -680,8 +680,28 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
                   }
                 ],
                 "operator": "GeoMatch",
-                "negationConditon": true,
+                "negationConditon": false,
                 "matchValues": "[parameters('allowGeoRegionsList')]",
+                "transforms": "[json(' [ ] ')]"
+              }
+            ]
+          },
+          {
+            "name": "DenyOthers",
+            "priority": 100,
+            "ruleType": "MatchRule",
+            "action": "Block",
+            "matchConditions": [
+              {
+                "matchType": "String",
+                "matchVariables": [
+                  {
+                    "variableName": "RequestUri"
+                  }
+                ],
+                "operator": "BeginsWith",
+                "negationConditon": false,
+                "matchValues": "['/']",
                 "transforms": "[json(' [ ] ')]"
               }
             ]
