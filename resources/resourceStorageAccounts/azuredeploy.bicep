@@ -16,6 +16,9 @@ param networkAcls object = {
   defaultAction: 'Allow'
   bypass: 'AzureServices'
 }
+param deployBlobService bool = false
+param blobServiceName string = ''
+param blobContainerNames array = []
 param tags object = {}
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
@@ -49,3 +52,40 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
     supportsHttpsTrafficOnly: true
   }
 }
+
+resource blobService 'Microsoft.Storage/storageAccounts/blobServices@2023-01-01' = if (deployBlobService) {
+  name: blobServiceName
+  parent: storageAccount
+  properties: {
+    changeFeed: {
+      enabled: true
+      retentionInDays: 7
+    }
+    containerDeleteRetentionPolicy: {
+      allowPermanentDelete: true
+      days: 30
+      enabled: true
+    }
+    deleteRetentionPolicy: {
+      allowPermanentDelete: true
+      days: 30
+      enabled: true
+    }
+    isVersioningEnabled: false
+    restorePolicy: {
+      days: 28
+      enabled: true
+    }
+  }
+}
+
+resource blobContainer 'Microsoft.Storage/storageAccounts/blobServices/containers@2023-01-01' = [for i in range(0, length(blobContainerNames)): {
+  name: blobContainerNames[i]
+  parent: blobService
+  properties: {
+    immutableStorageWithVersioning: {
+      enabled: false
+    }
+    publicAccess: 'Blob'
+  }
+}]
