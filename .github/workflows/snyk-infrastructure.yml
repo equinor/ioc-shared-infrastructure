@@ -67,6 +67,13 @@ jobs:
           bicepFilePath: ./resources/resourceContainerRegistry/azuredeploy.bicep
           outputFilePath: ./resources/resourceContainerRegistry/azuredeploy-temp.json
 
+      - name: Build bicep - containerregistry task
+        continue-on-error: true
+        uses: Azure/bicep-build-action@v1.0.1
+        with: 
+          bicepFilePath: ./resources/resourceContainerRegistryTask/azuredeploy.bicep
+          outputFilePath: ./resources/resourceContainerRegistryTask/azuredeploy-temp.json          
+
       - name: Build bicep - key vault
         continue-on-error: true
         uses: Azure/bicep-build-action@v1.0.1
@@ -108,6 +115,20 @@ jobs:
         with: 
           bicepFilePath: ./resources/resourcePostgresqlFlexibleServer/azuredeploy.bicep
           outputFilePath: ./resources/resourcePostgresqlFlexibleServer/azuredeploy-temp.json
+
+      - name: Build bicep - eventhub
+        continue-on-error: true
+        uses: Azure/bicep-build-action@v1.0.1
+        with: 
+          bicepFilePath: ./resources/resourceEventHub/azuredeploy.bicep
+          outputFilePath: ./resources/resourceEventHub/azuredeploy-temp.json  
+ 
+      - name: Build bicep - storage account
+        continue-on-error: true
+        uses: Azure/bicep-build-action@v1.0.1
+        with: 
+          bicepFilePath: ./resources/resourceStorageAccounts/azuredeploy.bicep
+          outputFilePath: ./resources/resourceStorageAccounts/azuredeploy-temp.json  
 
       - name: Run Snyk to check configuration files for security issues
         # Snyk can be used to break the build when it detects security issues.
