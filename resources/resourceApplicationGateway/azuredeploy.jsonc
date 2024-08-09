@@ -693,7 +693,6 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
             "action": "Block",
             "matchConditions": [
               {
-                "matchType": "String",
                 "matchVariables": [
                   {
                     "variableName": "RequestUri"
