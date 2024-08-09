@@ -167,7 +167,9 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
     "network-security-group-name": "[concat(parameters('applicationName'), '-nsg-', parameters('applicationEnvironment'))]",
 
     "identityName": "[concat(parameters('applicationName'), '-agw-', parameters('applicationEnvironment'), '-identity')]",
-    "identityID": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('identityName'))]"
+    "identityID": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('identityName'))]",
+
+    "denyAllPathsMatchValue": "/"
   },
   "resources": [
     {
@@ -700,7 +702,7 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
                 ],
                 "operator": "BeginsWith",
                 "negationConditon": false,
-                "matchValues": "['/']",
+                "matchValues": "[variables('denyAllPathsMatchValue')]",
                 "transforms": "[json(' [ ] ')]"
               }
             ]
