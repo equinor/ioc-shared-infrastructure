@@ -8,6 +8,8 @@
 | resourceAppInsights/azuredeploy.bicep                                  |  1.0 |
 | resourceAppServicePlan/azuredeploy.bicep                               |  1.0 |
 | resourceContainerRegistry/azuredeploy.bicep                            |  1.0 |
+| resourceContainerRegistryTask/azuredeploy.bicep                        |  1.0 |
+| resourceEventHub/azuredeploy.bicep                                     |  1.0 |
 | resourceKeyVault/azuredeploy.bicep                                     |  1.0 |
 | resourceKeyVaultAccess/azuredeploy.bicep                               |  1.0 |
 | resourceKeyVaultSecrets/azuredeploy.bicep                              |  1.0 |
@@ -19,4 +21,5 @@
 | resourcePostgresqlFlexibleServer/azuredeploy.bicep                     |  1.0 |
 | resourcePublicIp/azuredeploy.bicep                                     |  1.0 |
 | resourceRedis/azuredeploy.bicep                                        |  1.0 |
+| resourceStorageAccounts/azuredeploy.bicep                              |  1.0 |
 | resourceVnet/azuredeploy.bicep                                         |  1.0 |
