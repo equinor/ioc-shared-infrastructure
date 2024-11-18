@@ -4,6 +4,13 @@ param eventhubName string
 param partitionCount int = 1
 param messageRetentionInDays int = 1
 param eventLogRetentionTimeInHours int = 24
+param tombstoneRetentionInHours int = 72
+
+@allowed([
+  'Delete'
+  'Compact'
+])
+param cleanupPolicy string = 'Delete'
 param tags object = {}
 param sku object = {
   capacity: 1
@@ -12,6 +19,15 @@ param sku object = {
 }
 
 var rgScope = resourceGroup()
+
+func setRetentionDescription(policy string, retentionInHours int, tombstoneRetentionInHours int) object => (policy == 'Delete') ? {
+    cleanupPolicy: 'Delete'
+    retentionTimeInHours: retentionInHours
+  } : {
+    cleanupPolicy: 'Compact'
+    retentionTimeInHours: retentionInHours
+    tombstoneRetentionTimeInHours: tombstoneRetentionInHours
+  }
 
 resource eventHubNamespaceResource 'Microsoft.EventHub/namespaces@2024-01-01' = {
   name: namespaceName
@@ -38,10 +54,7 @@ resource eventHubResource 'Microsoft.EventHub/namespaces/eventhubs@2024-01-01' =
   properties: {
     messageRetentionInDays: messageRetentionInDays
     partitionCount: partitionCount
-    retentionDescription: {
-      cleanupPolicy: 'Delete'
-      retentionTimeInHours: eventLogRetentionTimeInHours
-    }
+    retentionDescription: setRetentionDescription(cleanupPolicy, eventLogRetentionTimeInHours, tombstoneRetentionInHours)
     status: 'Active'
   }
 }
