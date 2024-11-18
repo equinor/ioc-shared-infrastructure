@@ -6,3 +6,5 @@ scripts/azuredeploy.json
 
 # Ignore all parameter files in commit
 azuredeploy.parameters*.json*
+
+validate.txt
