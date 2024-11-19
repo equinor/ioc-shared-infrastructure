@@ -27,6 +27,7 @@ param availabilityZone string = '1'
   '13'
   '14'
   '15'
+  '16'
 ])
 param postgresVersion string = '15'
 param virtualNetworkExternalId string = ''
