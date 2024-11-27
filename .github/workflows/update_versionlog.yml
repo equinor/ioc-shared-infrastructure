@@ -20,7 +20,7 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Allow for file ownership conflicts with Docker and GitHub Actions
-        run: git config --global --add safe.directory ${GITHUB_WORKSPACE}   
+        run: git config --system --add safe.directory ${GITHUB_WORKSPACE}   
 
       - name: generate bicep version-log
         run:  scripts/bicep_versions.sh ${GITHUB_WORKSPACE}
