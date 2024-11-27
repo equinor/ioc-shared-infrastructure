@@ -22,11 +22,10 @@ do
     if [[ $line != *Version* ]]; then
         line="Version not found in file"
     fi
-    git log -10 --pretty=oneline -- $file
     changeDate=$(git log -1 --pretty="format:%ci" -- $file)
     commit=$(git log -1 --pretty="format:%h" -- $file)
     file=${file#"$prefix"}
     line=${line#"// "}
     line=${line#"Version"}
-    printf "| %-70s | $line | $changeDate | $commit |\n" $file >> $rootPath/BICEP_RESOURCE_VERSIONS.md
+    printf "| %-70s | $line | $changeDate | $commit |\n" $file #>> $rootPath/BICEP_RESOURCE_VERSIONS.md
 done
