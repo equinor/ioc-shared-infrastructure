@@ -59,7 +59,7 @@ param customMaintenanceWindowDayOfWeek int = 6
 param customMaintenanceWindowStartHour int = 0
 param customMaintenanceWindowStartMinute int = 30
 
-resource postgresServer 'Microsoft.DBforPostgreSQL/flexibleServers@2023-03-01-preview' = {
+resource postgresServer 'Microsoft.DBforPostgreSQL/flexibleServers@2024-08-01' = {
   name: postgresServerName
   location: location
   tags: tags
