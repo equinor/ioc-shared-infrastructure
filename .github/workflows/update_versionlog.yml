@@ -15,9 +15,15 @@ jobs:
       contents: write
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           ref: ${{ github.head_ref }}
+
+      - name: Take ownership of the checkout directory (Git CVE-2022-24765)
+        run: chown --recursive --reference=/ .
+
+      - name: Allow for file ownership conflicts with Docker and GitHub Actions
+        run: git config --global --add safe.directory '*'     
 
       - name: generate bicep version-log
         run:  scripts/bicep_versions.sh ${GITHUB_WORKSPACE}
