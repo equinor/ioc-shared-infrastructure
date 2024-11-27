@@ -3,23 +3,23 @@
 # Bicep Versions
 | Resource | Version | Changed | Commit |
 |----------|----------|----------|----------|
-| resourceApp/azuredeploy.bicep                                          |  1.1 | 2024-11-27 09:41:06 +0100 | 038377b |
-| resourceAppConfiguration/azuredeploy.bicep                             |  1.0 | 2024-11-27 09:41:06 +0100 | 038377b |
-| resourceAppInsights/azuredeploy.bicep                                  |  1.0 | 2024-11-27 09:41:06 +0100 | 038377b |
-| resourceAppServicePlan/azuredeploy.bicep                               |  1.0 | 2024-11-27 09:41:06 +0100 | 038377b |
-| resourceContainerRegistry/azuredeploy.bicep                            |  1.0 | 2024-11-27 09:41:06 +0100 | 038377b |
-| resourceContainerRegistryTask/azuredeploy.bicep                        |  1.0 | 2024-11-27 09:41:06 +0100 | 038377b |
-| resourceEventHub/azuredeploy.bicep                                     |  1.0 | 2024-11-27 09:41:06 +0100 | 038377b |
-| resourceKeyVault/azuredeploy.bicep                                     |  1.0 | 2024-11-27 09:41:06 +0100 | 038377b |
-| resourceKeyVaultAccess/azuredeploy.bicep                               |  1.0 | 2024-11-27 09:41:06 +0100 | 038377b |
-| resourceKeyVaultSecrets/azuredeploy.bicep                              |  1.0 | 2024-11-27 09:41:06 +0100 | 038377b |
-| resourceLogAnalyticsWorkspace/azuredeploy.bicep                        |  1.0 | 2024-11-27 09:41:06 +0100 | 038377b |
-| resourceNatGateway/azuredeploy.bicep                                   |  1.0 | 2024-11-27 09:41:06 +0100 | 038377b |
-| resourcePostgresql/azuredeploy.bicep                                   |  1.0 | 2024-11-27 09:41:06 +0100 | 038377b |
-| resourcePostgresqlDatabases/azuredeploy.bicep                          |  1.0 | 2024-11-27 09:41:06 +0100 | 038377b |
-| resourcePostgresqlFlexibleDatabases/azuredeploy.bicep                  |  1.0 | 2024-11-27 09:41:06 +0100 | 038377b |
-| resourcePostgresqlFlexibleServer/azuredeploy.bicep                     |  1.1 | 2024-11-27 09:41:06 +0100 | 038377b |
-| resourcePublicIp/azuredeploy.bicep                                     |  1.0 | 2024-11-27 09:41:06 +0100 | 038377b |
-| resourceRedis/azuredeploy.bicep                                        |  1.1 | 2024-11-27 09:41:06 +0100 | 038377b |
-| resourceStorageAccounts/azuredeploy.bicep                              |  1.0 | 2024-11-27 09:41:06 +0100 | 038377b |
-| resourceVnet/azuredeploy.bicep                                         |  1.0 | 2024-11-27 09:41:06 +0100 | 038377b |
+| resourceApp/azuredeploy.bicep                                          |  1.1 | 2024-11-27 10:22:12 +0100 | 1e52026 |
+| resourceAppConfiguration/azuredeploy.bicep                             |  1.0 | 2024-11-27 10:22:12 +0100 | 1e52026 |
+| resourceAppInsights/azuredeploy.bicep                                  |  1.0 | 2024-11-27 10:22:12 +0100 | 1e52026 |
+| resourceAppServicePlan/azuredeploy.bicep                               |  1.0 | 2024-11-27 10:22:12 +0100 | 1e52026 |
+| resourceContainerRegistry/azuredeploy.bicep                            |  1.0 | 2024-11-27 10:22:12 +0100 | 1e52026 |
+| resourceContainerRegistryTask/azuredeploy.bicep                        |  1.0 | 2024-11-27 10:22:12 +0100 | 1e52026 |
+| resourceEventHub/azuredeploy.bicep                                     |  1.0 | 2024-11-27 10:22:12 +0100 | 1e52026 |
+| resourceKeyVault/azuredeploy.bicep                                     |  1.0 | 2024-11-27 10:22:12 +0100 | 1e52026 |
+| resourceKeyVaultAccess/azuredeploy.bicep                               |  1.0 | 2024-11-27 10:22:12 +0100 | 1e52026 |
+| resourceKeyVaultSecrets/azuredeploy.bicep                              |  1.0 | 2024-11-27 10:22:12 +0100 | 1e52026 |
+| resourceLogAnalyticsWorkspace/azuredeploy.bicep                        |  1.0 | 2024-11-27 10:22:12 +0100 | 1e52026 |
+| resourceNatGateway/azuredeploy.bicep                                   |  1.0 | 2024-11-27 10:22:12 +0100 | 1e52026 |
+| resourcePostgresql/azuredeploy.bicep                                   |  1.0 | 2024-11-27 10:22:12 +0100 | 1e52026 |
+| resourcePostgresqlDatabases/azuredeploy.bicep                          |  1.0 | 2024-11-27 10:22:12 +0100 | 1e52026 |
+| resourcePostgresqlFlexibleDatabases/azuredeploy.bicep                  |  1.0 | 2024-11-27 10:22:12 +0100 | 1e52026 |
+| resourcePostgresqlFlexibleServer/azuredeploy.bicep                     |  1.1 | 2024-11-27 10:22:12 +0100 | 1e52026 |
+| resourcePublicIp/azuredeploy.bicep                                     |  1.0 | 2024-11-27 10:22:12 +0100 | 1e52026 |
+| resourceRedis/azuredeploy.bicep                                        |  1.1 | 2024-11-27 10:22:12 +0100 | 1e52026 |
+| resourceStorageAccounts/azuredeploy.bicep                              |  1.0 | 2024-11-27 10:22:12 +0100 | 1e52026 |
+| resourceVnet/azuredeploy.bicep                                         |  1.0 | 2024-11-27 10:22:12 +0100 | 1e52026 |
