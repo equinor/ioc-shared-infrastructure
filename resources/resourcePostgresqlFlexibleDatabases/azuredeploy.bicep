@@ -6,7 +6,7 @@ resource parentPgFlexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2024-
   name: server
 }
 
-resource server_databases 'Microsoft.DBforPostgreSQL/flexibleServers/databases@2023-06-01-preview' = [
+resource server_databases 'Microsoft.DBforPostgreSQL/flexibleServers/databases@2024-08-01' = [
   for item in databases: {
     name: item
     parent: parentPgFlexibleServer
