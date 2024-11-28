@@ -2,7 +2,7 @@
 param server string
 param databases array
 
-resource parentPgFlexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2023-03-01-preview' existing = {
+resource parentPgFlexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2024-08-01' existing = {
   name: server
 }
 
