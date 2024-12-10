@@ -7,5 +7,6 @@ function Get-AzureSqlAddRoleMemberStatement {
         [string]$RoleName
     )
 
-    return "EXEC sp_addrolemember '{0}' , '{1}';" -f $RoleName, $UserName
+    return "INSERT INTO #TempRequestedRoles VALUES ('{1}','{0}');
+            EXEC sp_addrolemember '{0}' , '{1}';" -f $RoleName, $UserName
 }
