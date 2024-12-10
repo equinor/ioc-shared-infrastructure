@@ -50,7 +50,7 @@
     Publish-DatabaseUsersAndPermissions 'dev' .\myYamlFolder\ myKeyVault myServer myDatabase -Verbose
 
 #>
-function Publish-DatabaseUsersAndPermissions {
+function TESTPublish-DatabaseUsersAndPermissions {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true)]
@@ -94,13 +94,13 @@ function Publish-DatabaseUsersAndPermissions {
     }
 
     # Declare SQL variables
-    $sqlStatement += $sqlStatementFormat -f (Get-AzureSqlInitializeVariables) 
+    $sqlStatement += $sqlStatementFormat -f (Get-AzureSqlInitializeVariables)
 
     # Create temp table for user permission configurations
     $sqlStatement += $sqlStatementFormat -f (Get-AzureSqlCreateTempTablePermissions)
 
     # Create temp table for user role configurations
-    $sqlStatement += $sqlStatementFormat -f (Get-AzureSqlCreateTempTableRoles)    
+    $sqlStatement += $sqlStatementFormat -f (Get-AzureSqlCreateTempTableRoles)
 
     # Parse yaml user configuration.
     Get-ChildItem -Path $ConfigurationPath |
@@ -150,44 +150,44 @@ function Publish-DatabaseUsersAndPermissions {
                 }
                 sql_login {
                     # Get the current secret from the KeyVault.
-                    $currentSecret = Get-AzKeyVaultSecret -VaultName "$KeyVaultName" -Name ('sql-login-password-{0}' -f $currentUserName)
+                    #$currentSecret = Get-AzKeyVaultSecret -VaultName "$KeyVaultName" -Name ('sql-login-password-{0}' -f $currentUserName)
 
                     # If password rotation is enabled and the secret
                     # is older than number of allowed rotation days,
                     # then we must discard current secret version.
-                    if ($currentSecret.Updated -lt (get-date).AddDays($RotationDays) -And $EnablePasswordRotation) {
-                        Write-Verbose ('Password roation is enabled. The secret for [{0}] is older than 90 days and therefore updated.' -f $currentUserName)
-                        $currentSecret = $null
-                    }
+                    # if ($currentSecret.Updated -lt (get-date).AddDays($RotationDays) -And $EnablePasswordRotation) {
+                    #     Write-Verbose ('Password roation is enabled. The secret for [{0}] is older than 90 days and therefore updated.' -f $currentUserName)
+                    #     $currentSecret = $null
+                    # }
 
                     # If the current secret is not retrieved from the KeyVault
                     # or that it has been nulled out by the password rotation
                     # logic, we need to create or update the secret.
-                    if (!$currentSecret) {
-                        Write-Verbose "Generating password for $currentUserName"
+                    # if (!$currentSecret) {
+                    #     Write-Verbose "Generating password for $currentUserName"
                         $password = ConvertTo-SecureString ( -join ((0x30..0x39) + ( 0x41..0x5A) + ( 0x61..0x7A) | Get-Random -Count 30  | % { [char]$_ }) ) -AsPlainText -Force
-                        $currentSecret = Set-AzKeyVaultSecret -VaultName "$KeyVaultName" -Name ('sql-login-password-{0}' -f $currentUserName) -SecretValue $password -ContentType "password"
-                    }
+                    #     $currentSecret = Set-AzKeyVaultSecret -VaultName "$KeyVaultName" -Name ('sql-login-password-{0}' -f $currentUserName) -SecretValue $password -ContentType "password"
+                    # }
 
-                    $sqlStatement += $sqlStatementFormat -f (Get-AzureSqlCreateUserStatement $currentUserName $false $currentSecret.SecretValue)
+                    $sqlStatement += $sqlStatementFormat -f (Get-AzureSqlCreateUserStatement $currentUserName $false $password)
 
                     # Try add the application using sql-login to the KeyVault access
                     # policies. This requires that the user name is the same as one
                     # registered in app registration.
-                    try {
-                        $servicePrincipal = (Get-AzADServicePrincipal -SearchString "$currentUserName").Id
+                    # try {
+                    #     $servicePrincipal = (Get-AzADServicePrincipal -SearchString "$currentUserName").Id
 
-                        if($servicePrincipal) {
-                            Write-Verbose ("Assiging access policy to {0} on KeyVault {1}" -f $currentUserName, $KeyVaultName)
-                            Set-AzKeyVaultAccessPolicy -VaultName "$KeyVaultName" -ObjectId $servicePrincipal -PermissionsToSecrets Get
-                        }
-                    }
-                    catch {
-                        Write-Error ('An issue occured assigning access polciy to {0}, {1}' -f $currentUserName, $_)
-                    }
+                    #     if($servicePrincipal) {
+                    #         Write-Verbose ("Assiging access policy to {0} on KeyVault {1}" -f $currentUserName, $KeyVaultName)
+                    #         Set-AzKeyVaultAccessPolicy -VaultName "$KeyVaultName" -ObjectId $servicePrincipal -PermissionsToSecrets Get
+                    #     }
+                    # }
+                    # catch {
+                    #     Write-Error ('An issue occured assigning access polciy to {0}, {1}' -f $currentUserName, $_)
+                    # }
                 }
                 Default { Write-Error ("User type [{0}] is not supported" -f $userConfig.type) }
-            }
+            }           
 
             # Grant the user ability to connect
             # to the database.
@@ -196,23 +196,35 @@ function Publish-DatabaseUsersAndPermissions {
             # Grant the users permission on schema, objects
             # or on a database level.
             $userConfig.permissions | ForEach-Object {
-                $grants = $_.grants -ne 'CONNECT'
+                $grants = $_.grants -ne 'CONNECT' -join ','
                 $type = $_.type
 
-                $grants | ForEach-Object {
-                    $grant = $_
-                    $_.target | ForEach-Object {
-                        if ($type -eq "database") {
-                            $sqlStatement += $sqlStatementFormat -f (Get-AzureSqlGrantPermissionsStatement $currentUserName $grant)
-                        }
-                        else {
-                            $sqlStatement += $sqlStatementFormat -f (Get-AzureSqlGrantPermissionsStatement $currentUserName $grant $_ $type)
-                        }
+                $_.targets | ForEach-Object {
+                    if ($type -eq "database") {
+                        $sqlStatement += $sqlStatementFormat -f (Get-AzureSqlGrantPermissionsStatement $currentUserName $grants)
+                    }
+                    else {
+                        $sqlStatement += $sqlStatementFormat -f (Get-AzureSqlGrantPermissionsStatement $currentUserName $grants $_ $type)
                     }
                 }
+                # $grants = $_.grants -ne 'CONNECT'
+                # $type = $_.type
+
+                # $grants | ForEach-Object {
+                #     $grant = $_
+                #     $_.target | ForEach-Object {
+                #         if ($type -eq "database") {
+                #             $sqlStatement += $sqlStatementFormat -f (Get-AzureSqlGrantPermissionsStatement $currentUserName $grant)
+                #         }
+                #         else {
+                #             $target = $_
+                #             $sqlStatement += $sqlStatementFormat -f (Get-AzureSqlGrantPermissionsStatement $currentUserName $grant $target $type)
+                #         }
+                #     }
+                # }
             }
             
-            $sqlStatement += $sqlStatementFormat -f (Get-AzureSqlRemoveOldPermissions $currentUserName)
+            $sqlStatement += $sqlStatementFormat -f (Get-AzureSqlRemoveOldPermissions $currentUserName)            
 
             $userConfig.roles | ForEach-Object {
                 if ($_){
@@ -220,7 +232,7 @@ function Publish-DatabaseUsersAndPermissions {
                 }
             }
             $sqlStatement += $sqlStatementFormat -f (Get-AzureSqlRemoveOldRoles $currentUserName)
-        }
+        }  
     }
 
     # Delete temp tables
@@ -232,15 +244,18 @@ function Publish-DatabaseUsersAndPermissions {
         $sqlStatement += $sqlStatementFormat -f (Get-AzureSqlRemoveOldUsers)
     }
 
+    Write-Host $sqlStatement
+
     # When the sql statements are generated. It must be run
     # towards the target sql server.
     Write-Verbose 'Executing query on target database'
-    $token = az account get-access-token --resource https://database.windows.net --output tsv --query accessToken
-    $accessToken = $token
+    #$token = az account get-access-token --resource https://database.windows.net --output tsv --query accessToken
+    #$accessToken = $token
 
     $sqlConnection = New-Object System.Data.SqlClient.SqlConnection
-    $sqlConnection.ConnectionString = ("Data Source=tcp:{0},1433;Initial Catalog={1};Persist Security Info=True;Connect Timeout=30;Encrypt=True;TrustServerCertificate=True" -f "$TargetServer.database.windows.net", $TargetDatabase)
-    $sqlConnection.AccessToken = $accessToken
+    $sqlConnection.ConnectionString = ("Server={0};Database={1};User ID=sa;Password=UAre7heone4M3#>" -f $TargetServer, $TargetDatabase)
+    #$sqlConnection.ConnectionString = ("Data Source=tcp:{0},1433;Initial Catalog={1};Persist Security Info=True;Connect Timeout=30;Encrypt=True;TrustServerCertificate=True" -f "$TargetServer.database.windows.net", $TargetDatabase)
+    #$sqlConnection.AccessToken = $accessToken
 
     $command = $sqlConnection.CreateCommand()
     $command.CommandText = $sqlStatement
@@ -250,4 +265,4 @@ function Publish-DatabaseUsersAndPermissions {
     $sqlConnection.Close()
 }
 
-Export-ModuleMember -Function 'Publish-DatabaseUsersAndPermissions'
+Export-ModuleMember -Function 'TESTPublish-DatabaseUsersAndPermissions'

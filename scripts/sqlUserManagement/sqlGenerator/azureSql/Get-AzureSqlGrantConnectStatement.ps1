@@ -5,5 +5,6 @@ function Get-AzureSqlGrantConnectStatement {
         [string]$UserName
     )
 
-    return "GRANT CONNECT TO [{0}];" -f $UserName
+    return "INSERT INTO #TempRequestedPermissions VALUES ('{0}','CONNECT',NULL,'DATABASE');
+            GRANT CONNECT TO [{0}];" -f $UserName
 }
