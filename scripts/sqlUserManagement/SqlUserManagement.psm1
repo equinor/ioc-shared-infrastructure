@@ -90,6 +90,7 @@ function Publish-DatabaseUsersAndPermissions {
 
     if ($DeleteUsersNotInConfiguration)
     {
+        Write-Verbose "Existing users that are not present in configuration files will be deleted."
         $sqlStatement = $sqlStatementFormat -f (Get-AzureSqlCreateTempTableUsers)
     }
 
@@ -246,7 +247,21 @@ function Publish-DatabaseUsersAndPermissions {
     $command.CommandText = $sqlStatement
     $command.CommandType.Text
     $command.Connection.Open()
-    $command.ExecuteReader()
+        
+    if ($PSBoundParameters['Verbose'] -or $VerbosePreference -eq 'Continue') {         
+        $reader = $command.ExecuteReader()
+        # Write output from sql query
+        While($reader.Read())
+        {
+            Write-Verbose ("Output from SQL script:`n{0}" -f $reader.GetValue(0))
+        }  
+        $reader.Close()        
+    }
+    else {
+        # Module parameters does not include -Verbose
+        $command.ExecuteReader()
+    }
+
     $sqlConnection.Close()
 }
 

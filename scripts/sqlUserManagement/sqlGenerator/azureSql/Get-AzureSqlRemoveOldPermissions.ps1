@@ -45,7 +45,8 @@ function Get-AzureSqlRemoveOldPermissions {
                 ELSE @ObjectName
             END 
             + ' FROM [' + @UserName + ']'
-            EXEC(@RevokeCommand)
+            SET @Feedback = CONCAT(@Feedback, N'Revoking permission for user {0} with command: ', @RevokeCommand, NCHAR(10) + NCHAR(13))
+            EXEC(@RevokeCommand)            
             FETCH NEXT FROM cur INTO @UserName, @Permission, @ObjectName, @ObjectType
             END
             CLOSE cur

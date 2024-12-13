@@ -27,7 +27,8 @@ function Get-AzureSqlRemoveOldRoles {
             WHILE @@FETCH_STATUS = 0
             BEGIN            
             SET @AlterCommand = 'ALTER ROLE ' + @RoleName + ' DROP MEMBER [' + @UserName + ']'
-            EXEC(@AlterCommand)
+            SET @Feedback = CONCAT(@Feedback, N'Altering roles for user {0} with command: ', @AlterCommand, NCHAR(10) + NCHAR(13))
+            EXEC(@AlterCommand)            
             FETCH NEXT FROM cur INTO @RoleName, @UserName
             END
             CLOSE cur
