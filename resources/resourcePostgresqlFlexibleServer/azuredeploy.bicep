@@ -1,4 +1,4 @@
-// Version 1.0
+// Version 1.1
 param administratorLogin string
 
 @secure()
@@ -27,8 +27,9 @@ param availabilityZone string = '1'
   '13'
   '14'
   '15'
+  '16'
 ])
-param postgresVersion string = '15'
+param postgresVersion string = '16'
 param virtualNetworkExternalId string = ''
 param subnetName string = ''
 param privateDnsZoneArmResourceId string = ''
@@ -58,7 +59,7 @@ param customMaintenanceWindowDayOfWeek int = 6
 param customMaintenanceWindowStartHour int = 0
 param customMaintenanceWindowStartMinute int = 30
 
-resource postgresServer 'Microsoft.DBforPostgreSQL/flexibleServers@2023-03-01-preview' = {
+resource postgresServer 'Microsoft.DBforPostgreSQL/flexibleServers@2024-08-01' = {
   name: postgresServerName
   location: location
   tags: tags
