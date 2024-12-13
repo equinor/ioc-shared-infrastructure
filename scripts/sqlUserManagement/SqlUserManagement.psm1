@@ -246,9 +246,7 @@ function Publish-DatabaseUsersAndPermissions {
     $command = $sqlConnection.CreateCommand()
     $command.CommandText = $sqlStatement
     $command.CommandType.Text
-    $command.Connection.Open()
-        
-    Write-Host $sqlStatement
+    $command.Connection.Open()    
     
     if ($PSBoundParameters['Verbose'] -or $VerbosePreference -eq 'Continue') {         
         $reader = $command.ExecuteReader()
