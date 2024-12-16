@@ -12,7 +12,7 @@ function Get-AzureSqlRemoveOldPermissions {
             SELECT [DatabaseUserName] = princ.[name],
             [PermissionType] = perm.[permission_name], 
             [ObjectName] = CASE perm.[class] 
-                        WHEN 1 THEN OBJECT_NAME(perm.major_id)  
+                        WHEN 1 THEN SCHEMA_NAME(obj.schema_id) + '.' + OBJECT_NAME(perm.major_id)  
                         WHEN 3 THEN schem.[name]                
                         WHEN 4 THEN imp.[name]                
                    END
@@ -42,7 +42,7 @@ function Get-AzureSqlRemoveOldPermissions {
             CASE
                 WHEN @ObjectName IS NULL AND @ObjectType = 'DATABASE' THEN ''
                 WHEN @ObjectType = 'SCHEMA' THEN ' ON SCHEMA::' + @ObjectName 
-                ELSE @ObjectName
+                ELSE ' ON ' + @ObjectName
             END 
             + ' FROM [' + @UserName + ']'
             SET @Feedback = CONCAT(@Feedback, N'Revoking permission for user {0} with command: ', @RevokeCommand, NCHAR(10) + NCHAR(13))

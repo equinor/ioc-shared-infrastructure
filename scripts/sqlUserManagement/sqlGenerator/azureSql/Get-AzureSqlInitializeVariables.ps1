@@ -9,5 +9,5 @@ function Get-AzureSqlInitializeVariables {
             DECLARE @RoleName NVARCHAR(128)
             DECLARE @RevokeCommand VARCHAR(500)
             DECLARE @AlterCommand VARCHAR(500)
-            DECLARE @Feedback NVARCHAR(6000)"
+            DECLARE @Feedback NVARCHAR(4000)"
 }

@@ -12,7 +12,7 @@ function Get-AzureSqlGrantPermissionsStatement {
 
     if($Type){
         return "GRANT {0} ON {1}::{2} TO [{3}];
-                SET @Feedback = CONCAT(@Feedback, N'Granted {0} on {1}::{2} to {3}', NCHAR(10) + NCHAR(13))
+                SET @Feedback = CONCAT(@Feedback, N'Granted {0} on {1}::{2} to [{3}]', NCHAR(10) + NCHAR(13))
                 IF (SELECT COUNT(*) FROM #TempPermissionlist) > 0 
                     DELETE FROM #TempPermissionlist;                
                 INSERT INTO #TempPermissionlist

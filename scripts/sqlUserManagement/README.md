@@ -48,7 +48,8 @@ Import-Module drive:\your-folderpath\sqlUserManagement\SqlUserManagement -Force
 
 ### User configuration file
 
-The module reads one or more YAML files. The syntax is the following.
+The module reads one or more YAML files. Beware that permissions defined for type object needs schema name included in targets.
+The syntax is the following.
 
 Definition:
 
@@ -88,7 +89,8 @@ permissions:
       - SELECT
   - type: object
     targets:
-      - myTableName
+      - dbo.myTableName
+      - myOtherSchema.myOtherTableName
     grants:
       - SELECT
       - INSERT
@@ -173,5 +175,4 @@ Publish-DatabaseUsersAndPermissions 'dev' .\my-folder-for-user-permission\ myKey
 
 ## Todo's
 
-- Add support for individual users.
-- Add support for revoking access, instead of drop and re-create. Dropping a user and re-creating causes issue with the Azure SQL vulnerability assessment.
+

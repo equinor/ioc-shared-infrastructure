@@ -207,7 +207,13 @@ function Publish-DatabaseUsersAndPermissions {
                             $sqlStatement += $sqlStatementFormat -f (Get-AzureSqlGrantPermissionsStatement $currentUserName $grant)
                         }
                         else {
-                            $sqlStatement += $sqlStatementFormat -f (Get-AzureSqlGrantPermissionsStatement $currentUserName $grant $_ $type)
+                            if($type -eq "object" -and $_ -notlike "*.*")
+                            {
+                                Write-Error ("Configuration contains object permission without schema notation for user {1} and target {0}. Please update configuration." -f $_, $currentUserName)
+                            }
+                            else {                            
+                                $sqlStatement += $sqlStatementFormat -f (Get-AzureSqlGrantPermissionsStatement $currentUserName $grants $_ $type)
+                            }                        
                         }
                     }
                 }
