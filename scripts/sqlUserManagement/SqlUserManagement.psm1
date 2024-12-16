@@ -200,21 +200,19 @@ function Publish-DatabaseUsersAndPermissions {
                 $grants = $_.grants -ne 'CONNECT'
                 $type = $_.type
 
-                $grants | ForEach-Object {
-                    $grant = $_
-                    $_.target | ForEach-Object {
-                        if ($type -eq "database") {
-                            $sqlStatement += $sqlStatementFormat -f (Get-AzureSqlGrantPermissionsStatement $currentUserName $grant)
+                $_.targets | ForEach-Object {
+                    if ($type -eq "database") {
+                        $sqlStatement += $sqlStatementFormat -f (Get-AzureSqlGrantPermissionsStatement $currentUserName $grants)
+                    }
+                    else {
+                        if($type -eq "object" -and $_ -notlike "*.*")
+                        {
+                            Write-Error ("Configuration contains object permission without schema notation for user {1} and target {0}. Please update configuration." -f $_, $currentUserName)
                         }
-                        else {
-                            if($type -eq "object" -and $_ -notlike "*.*")
-                            {
-                                Write-Error ("Configuration contains object permission without schema notation for user {1} and target {0}. Please update configuration." -f $_, $currentUserName)
-                            }
-                            else {                            
-                                $sqlStatement += $sqlStatementFormat -f (Get-AzureSqlGrantPermissionsStatement $currentUserName $grants $_ $type)
-                            }                        
+                        else {                            
+                            $sqlStatement += $sqlStatementFormat -f (Get-AzureSqlGrantPermissionsStatement $currentUserName $grants $_ $type)
                         }
+                        
                     }
                 }
             }
