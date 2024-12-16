@@ -17,7 +17,7 @@
 | resourceNatGateway/azuredeploy.bicep                                   |  1.0 | 2024-05-30 15:17:04 +0200 | e0f868b |
 | resourcePostgresql/azuredeploy.bicep                                   |  1.0 | 2024-06-12 15:23:29 +0200 | 91d7307 |
 | resourcePostgresqlDatabases/azuredeploy.bicep                          |  1.0 | 2024-06-12 15:29:18 +0200 | d59079f |
-| resourcePostgresqlFlexibleDatabases/azuredeploy.bicep                  |  1.0 | 2024-05-15 10:52:23 +0200 | 9e5211b |
+| resourcePostgresqlFlexibleDatabases/azuredeploy.bicep                  |  1.0 | 2024-11-28 10:29:22 +0100 | f53527c |
 | resourcePostgresqlFlexibleServer/azuredeploy.bicep                     |  1.1 | 2024-11-27 09:16:16 +0100 | b622786 |
 | resourcePublicIp/azuredeploy.bicep                                     |  1.0 | 2024-05-30 15:17:04 +0200 | e0f868b |
 | resourceRedis/azuredeploy.bicep                                        |  1.1 | 2024-11-18 08:51:04 +0100 | 38f5f7b |
