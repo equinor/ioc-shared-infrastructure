@@ -169,9 +169,7 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
     "identityName": "[concat(parameters('applicationName'), '-agw-', parameters('applicationEnvironment'), '-identity')]",
     "identityID": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('identityName'))]",
 
-    "denyAllPathsMatchValue": "[json(' [ \"/\" ] ')]",
-
-    "empty": []
+    "denyAllPathsMatchValue": "[json(' [ \"/\" ] ')]"
   },
   "resources": [
     {
@@ -645,7 +643,7 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
                 ],
                 "operator": "IPMatch",
                 "negationConditon": false,
-                "matchValues": "[if(empty(parameters('allowIpList')), variables('empty'), array(parameters('allowIpList')))]",
+                "matchValues": "[parameters('allowIpList')]",
                 "transforms": "[json(' [ ] ')]"
               }
             ]
