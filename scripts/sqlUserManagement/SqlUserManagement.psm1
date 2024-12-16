@@ -197,7 +197,7 @@ function Publish-DatabaseUsersAndPermissions {
             # Grant the users permission on schema, objects
             # or on a database level.
             $userConfig.permissions | ForEach-Object {
-                $grants = $_.grants -ne 'CONNECT'
+                $grants = $_.grants -ne 'CONNECT' -join ','
                 $type = $_.type
 
                 $_.targets | ForEach-Object {
