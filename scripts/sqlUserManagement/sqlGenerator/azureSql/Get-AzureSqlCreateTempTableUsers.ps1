@@ -4,5 +4,6 @@ function Get-AzureSqlCreateTempTableUsers {
 	            DROP TABLE #TempConfiguredUsers;
             CREATE TABLE #TempConfiguredUsers(
                 UserName nvarchar(128) NOT NULL)
-            DECLARE @DropUserCommand varchar(500)"
+            DECLARE @DropUserCommand varchar(500)
+            DECLARE @FeedbackDel NVARCHAR(1000)"
 }
