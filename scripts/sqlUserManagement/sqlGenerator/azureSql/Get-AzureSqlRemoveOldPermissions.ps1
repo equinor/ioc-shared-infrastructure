@@ -25,7 +25,7 @@ function Get-AzureSqlRemoveOldPermissions {
             LEFT JOIN sys.securable_classes sec on perm.class = sec.class
             WHERE 
             princ.[type] IN ('S','E','X') AND
-            princ.[name] NOT IN ('sys', 'INFORMATION_SCHEMA', 'guest') AND
+            princ.[name] NOT IN ('sys', 'INFORMATION_SCHEMA', 'guest', 'dbo') AND
 	        princ.[name] = '{0}'
             EXCEPT
             SELECT [DatabaseUserName] COLLATE database_default,

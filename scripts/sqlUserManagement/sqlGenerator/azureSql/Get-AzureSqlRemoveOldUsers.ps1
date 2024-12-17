@@ -18,12 +18,12 @@ function Get-AzureSqlRemoveOldUsers {
                 WHILE @@FETCH_STATUS = 0
                 BEGIN                
                 SET @DropUserCommand = 'DROP USER [' + @UserName + ']'
-                SET @Feedback = CONCAT(@Feedback, N'Deleting user {0} with command: ', @DropUserCommand, NCHAR(10) + NCHAR(13))
+                SET @Feedback = CONCAT(@Feedback, N'Deleting user', @UserName, N'with command: ', @DropUserCommand, NCHAR(10) + NCHAR(13))
                 EXEC(@DropUserCommand)                
                 FETCH NEXT FROM cur INTO @UserName
                 END
                 CLOSE cur
                 DEALLOCATE cur
             IF OBJECT_ID('tempDB..#TempConfiguredUsers', 'U') IS NOT NULL	
-	            DROP TABLE #TempConfiguredUsers;" -f $UserName
+	            DROP TABLE #TempConfiguredUsers;"
 }
