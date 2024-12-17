@@ -228,15 +228,15 @@ function Publish-DatabaseUsersAndPermissions {
         }
     }
 
-    # Delete temp tables
-    $sqlStatement += $sqlStatementFormat -f (Get-AzureSqlDropTempTables)
-        
     if ($DeleteUsersNotInConfiguration)
     {
         # Delete old users
         $sqlStatement += $sqlStatementFormat -f (Get-AzureSqlRemoveOldUsers)
     }
 
+    # Delete temp tables
+    $sqlStatement += $sqlStatementFormat -f (Get-AzureSqlDropTempTables)
+    
     # When the sql statements are generated. It must be run
     # towards the target sql server.
     Write-Verbose 'Executing query on target database'
