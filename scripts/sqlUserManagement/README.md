@@ -173,6 +173,4 @@ roles:
 Publish-DatabaseUsersAndPermissions 'dev' .\my-folder-for-user-permission\ myKeyVaultName myTargetSqlServer myTargetDatabase
 ```
 
-## Todo's
-
 
