@@ -239,7 +239,7 @@ function Publish-DatabaseUsersAndPermissions {
     
     # When the sql statements are generated. It must be run
     # towards the target sql server.
-    Write-Verbose 'Executing query on target database'
+    Write-Verbose 'Executing query on database: {0}' -f $TargetDatabase
     $token = az account get-access-token --resource https://database.windows.net --output tsv --query accessToken
     $accessToken = $token
 
