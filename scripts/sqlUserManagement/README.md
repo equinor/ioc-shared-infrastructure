@@ -165,6 +165,16 @@ roles:
     Default value                -90
     Accept pipeline input?       false
     Accept wildcard characters?  false
+
+-DeleteUsersNotInConfiguration [<SwitchParameter>]
+    Enable or Disable deletion of database users not included in 
+    yaml configuration. Default is do not delete.
+
+    Required?                    false
+    Position?                    named
+    Default value                False
+    Accept pipeline input?       false
+    Accept wildcard characters?  false
 ```
 
 ### Running the module
