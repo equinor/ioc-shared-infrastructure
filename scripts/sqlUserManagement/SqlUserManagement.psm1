@@ -42,6 +42,10 @@
     .PARAMETER RotationDays
     The number of days before rotating the password.
 
+    .PARAMETER DeleteUsersNotInConfiguration
+    Enable or Disable deletion of database users not included in 
+    yaml configuration. Default is do not delete.
+
     .EXAMPLE
     Publish-DatabaseUsersAndPermissions 'dev' .\myYamlFolder\ myKeyVault myServer myDatabase -Verbose
 
@@ -60,7 +64,8 @@ function Publish-DatabaseUsersAndPermissions {
         [Parameter(Mandatory = $true)]
         [string]$TargetDatabase,
         [switch]$EnablePasswordRotation,
-        [int]$RotationDays = -90
+        [int]$RotationDays = -90,
+        [switch]$DeleteUsersNotInConfiguration
     )
     # If any errors has occured. Execution must be stopped.
     $ErrorActionPreference = "Stop"
@@ -77,13 +82,26 @@ function Publish-DatabaseUsersAndPermissions {
     # Import sqlGenerator module
     Get-ChildItem -Path "$PSScriptRoot\sqlGenerator\azureSql" | ForEach-Object { . $($_.FullName) }
 
-
     # Define a string format that must be appended on each
     # sql statment added to the sqlStatement variable.
     # This is to enforce that a newline is added when appending
     # a new statement to the variable.
-    $sqlStatementFormat = "{0} `r`n"
-    $sqlStatement = $sqlStatementFormat -f (Get-AzureSqlDropAllUsersStatement)
+    $sqlStatementFormat = "{0} `r`n"    
+
+    if ($DeleteUsersNotInConfiguration)
+    {
+        Write-Verbose "Existing users that are not present in configuration files will be deleted."
+        $sqlStatement = $sqlStatementFormat -f (Get-AzureSqlCreateTempTableUsers)
+    }
+
+    # Declare SQL variables
+    $sqlStatement += $sqlStatementFormat -f (Get-AzureSqlInitializeVariables) 
+
+    # Create temp table for user permission configurations
+    $sqlStatement += $sqlStatementFormat -f (Get-AzureSqlCreateTempTablePermissions)
+
+    # Create temp table for user role configurations
+    $sqlStatement += $sqlStatementFormat -f (Get-AzureSqlCreateTempTableRoles)    
 
     # Parse yaml user configuration.
     Get-ChildItem -Path $ConfigurationPath |
@@ -117,6 +135,11 @@ function Publish-DatabaseUsersAndPermissions {
 
         $usersToCreate | ForEach-Object {
             $currentUserName = $userConfig.format -f $userConfig.name, $_.sourceEnvironment
+
+            if ($DeleteUsersNotInConfiguration)
+            {
+                $sqlStatement += $sqlStatementFormat -f (Get-AzureSqlInsertConfiguredUserInTemp $currentUserName)
+            }
 
             # Generate create user statement.
             switch ($userConfig.type) {
@@ -171,7 +194,7 @@ function Publish-DatabaseUsersAndPermissions {
             # to the database.
             $sqlStatement += $sqlStatementFormat -f (Get-AzureSqlGrantConnectStatement $currentUserName)
 
-            # Grant the users permission on schema, objects or
+            # Grant the users permission on schema, objects
             # or on a database level.
             $userConfig.permissions | ForEach-Object {
                 $grants = $_.grants -ne 'CONNECT' -join ','
@@ -179,25 +202,44 @@ function Publish-DatabaseUsersAndPermissions {
 
                 $_.targets | ForEach-Object {
                     if ($type -eq "database") {
-                        $sqlStatement += $sqlStatementFormat -f (Get-AzureSqlGrantPermissionsStatement $currentUserName $Grants)
+                        $sqlStatement += $sqlStatementFormat -f (Get-AzureSqlGrantPermissionsStatement $currentUserName $grants)
                     }
                     else {
-                        $sqlStatement += $sqlStatementFormat -f (Get-AzureSqlGrantPermissionsStatement $currentUserName $Grants $_ $type)
+                        if($type -eq "object" -and $_ -notlike "*.*")
+                        {
+                            Write-Error ("Configuration contains object permission without schema notation for user {1} and target {0}. Please update configuration." -f $_, $currentUserName)
+                        }
+                        else {                            
+                            $sqlStatement += $sqlStatementFormat -f (Get-AzureSqlGrantPermissionsStatement $currentUserName $grants $_ $type)
+                        }
+                        
                     }
                 }
             }
+            
+            $sqlStatement += $sqlStatementFormat -f (Get-AzureSqlRemoveOldPermissions $currentUserName)
 
             $userConfig.roles | ForEach-Object {
                 if ($_){
                     $sqlStatement += $sqlStatementFormat -f (Get-AzureSqlAddRoleMemberStatement $currentUserName $_)
                 }
             }
+            $sqlStatement += $sqlStatementFormat -f (Get-AzureSqlRemoveOldRoles $currentUserName)
         }
     }
 
+    if ($DeleteUsersNotInConfiguration)
+    {
+        # Delete old users
+        $sqlStatement += $sqlStatementFormat -f (Get-AzureSqlRemoveOldUsers)
+    }
+
+    # Delete temp tables
+    $sqlStatement += $sqlStatementFormat -f (Get-AzureSqlDropTempTables)
+    
     # When the sql statements are generated. It must be run
     # towards the target sql server.
-    Write-Verbose 'Executing query on target database'
+    Write-Verbose 'Executing query on database: {0}' -f $TargetDatabase
     $token = az account get-access-token --resource https://database.windows.net --output tsv --query accessToken
     $accessToken = $token
 
@@ -208,8 +250,22 @@ function Publish-DatabaseUsersAndPermissions {
     $command = $sqlConnection.CreateCommand()
     $command.CommandText = $sqlStatement
     $command.CommandType.Text
-    $command.Connection.Open()
-    $command.ExecuteReader()
+    $command.Connection.Open()    
+    
+    if ($PSBoundParameters['Verbose'] -or $VerbosePreference -eq 'Continue') {         
+        $reader = $command.ExecuteReader()
+        # Write output from sql query
+        While($reader.Read())
+        {
+            Write-Verbose ("Output from SQL script:`n{0}" -f $reader.GetValue(0))
+        }  
+        $reader.Close()        
+    }
+    else {
+        # Module parameters does not include -Verbose
+        $command.ExecuteReader()
+    }
+
     $sqlConnection.Close()
 }
 
