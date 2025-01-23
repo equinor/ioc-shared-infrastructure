@@ -5,6 +5,5 @@ function Get-AzureSqlDropTempTables {
             IF OBJECT_ID('tempDB..#TempPermissionlist', 'U') IS NOT NULL
                 DROP TABLE #TempPermissionlist;
             IF OBJECT_ID('tempDB..#TempRequestedRoles', 'U') IS NOT NULL	
-	            DROP TABLE #TempRequestedRoles;
-            SELECT @Feedback;"
+	            DROP TABLE #TempRequestedRoles;"
 }
