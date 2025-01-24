@@ -175,6 +175,16 @@ roles:
     Default value                False
     Accept pipeline input?       false
     Accept wildcard characters?  false
+
+-PrintSqlPermisionStatements [<SwitchParameter>]
+    Enable or Disable printing of permission statements to console
+    yaml configuration. Default is do not print.
+
+    Required?                    false
+    Position?                    named
+    Default value                False
+    Accept pipeline input?       false
+    Accept wildcard characters?  false
 ```
 
 ### Running the module

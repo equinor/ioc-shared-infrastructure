@@ -46,6 +46,10 @@
     Enable or Disable deletion of database users not included in 
     yaml configuration. Default is do not delete.
 
+    .PARAMETER PrintSqlPermisionStatements
+    Enable or Disable printing of sql Permission statements as output from 
+    script. Default is do not print.
+
     .EXAMPLE
     Publish-DatabaseUsersAndPermissions 'dev' .\myYamlFolder\ myKeyVault myServer myDatabase -Verbose
 
@@ -65,7 +69,8 @@ function Publish-DatabaseUsersAndPermissions {
         [string]$TargetDatabase,
         [switch]$EnablePasswordRotation,
         [int]$RotationDays = -90,
-        [switch]$DeleteUsersNotInConfiguration
+        [switch]$DeleteUsersNotInConfiguration,
+        [switch]$PrintSqlPermisionStatements
     )
     # If any errors has occured. Execution must be stopped.
     $ErrorActionPreference = "Stop"
@@ -95,6 +100,7 @@ function Publish-DatabaseUsersAndPermissions {
     }
 
     # Declare SQL variables
+    $sqlStatement += $sqlStatementFormat -f (Get-AzureSqlCreateGlobalTempTable)
     $sqlStatement += $sqlStatementFormat -f (Get-AzureSqlInitializeVariables) 
 
     # Create temp table for user permission configurations
@@ -242,31 +248,71 @@ function Publish-DatabaseUsersAndPermissions {
     Write-Verbose ("Executing query on database: {0}" -f $TargetDatabase)
     $token = az account get-access-token --resource https://database.windows.net --output tsv --query accessToken
     $accessToken = $token
+    try 
+    {  
+        $sqlConnection = New-Object System.Data.SqlClient.SqlConnection
+        $sqlConnection.ConnectionString = ("Data Source=tcp:{0},1433;Initial Catalog={1};Persist Security Info=True;Connect Timeout=30;Encrypt=True;TrustServerCertificate=True" -f "$TargetServer.database.windows.net", $TargetDatabase)
+        $sqlConnection.AccessToken = $accessToken
 
-    $sqlConnection = New-Object System.Data.SqlClient.SqlConnection
-    $sqlConnection.ConnectionString = ("Data Source=tcp:{0},1433;Initial Catalog={1};Persist Security Info=True;Connect Timeout=30;Encrypt=True;TrustServerCertificate=True" -f "$TargetServer.database.windows.net", $TargetDatabase)
-    $sqlConnection.AccessToken = $accessToken
-
-    $command = $sqlConnection.CreateCommand()
-    $command.CommandText = $sqlStatement
-    $command.CommandType.Text
-    $command.Connection.Open()    
-    
-    if ($PSBoundParameters['Verbose'] -or $VerbosePreference -eq 'Continue') {         
-        $reader = $command.ExecuteReader()
-        # Write output from sql query
-        While($reader.Read())
-        {
-            Write-Verbose ("Output from SQL script:`n{0}" -f $reader.GetValue(0))
-        }  
-        $reader.Close()        
+        #$command = New-Object System.Data.SqlClient.SqlCommand
+        $command = $sqlConnection.CreateCommand()
+        $command.CommandText = $sqlStatement
+        $command.CommandType.Text
+        $command.Connection.Open()    
+        
+        if ($PrintSqlPermisionStatements) {         
+            $sqlStatement = $sqlStatementFormat -f (Get-AzureSqlReturnPermissionStatements)              
+            $command.CommandText = $sqlStatement
+            $reader = $command.ExecuteReader()
+            # Write output from sql query
+            While($reader.Read())
+            {
+                Write-Verbose ("Output from SQL script:`n{0}" -f $reader.GetValue(0))
+            }  
+            $reader.Close()        
+        }
+        else {
+            # Module parameters does not include $PrintSqlpermissionStatement
+            $reader = $command.ExecuteReader()
+            $reader.Close()
+        }
+        # Print permission diff
+        # Created Permissions
+        $sqlStatement = $sqlStatementFormat -f (Get-AzureSqlProduceNewPermissionStatement)          
+        $dataAdapter = New-Object System.Data.SqlClient.SqlDataAdapter
+        $command = $sqlConnection.CreateCommand()
+        $command.CommandText = $sqlStatement
+        $command.CommandType.Text
+        $dataAdapter.SelectCommand = $command        
+        $newPermissions = New-Object System.Data.DataSet
+        [void]$dataAdapter.Fill($newPermissions) 
+        Write-Verbose "The provided user configuration produced the following NEW permissions:"
+        $newPermissions.Tables | Out-Host
+        # Removed permissions
+        $sqlStatement = $sqlStatementFormat -f (Get-AzureSqlProduceRemovedPermissionStatement)          
+        $dataAdapter = New-Object System.Data.SqlClient.SqlDataAdapter
+        $command = $sqlConnection.CreateCommand()
+        $command.CommandText = $sqlStatement
+        $command.CommandType.Text
+        $dataAdapter.SelectCommand = $command        
+        $oldPermissions = New-Object System.Data.DataSet
+        [void]$dataAdapter.Fill($oldPermissions)         
+        Write-Verbose "The provided user configuration resulted in REMOVAL of these permissions:"
+        $oldPermissions.Tables | Out-Host
+        # Deleting global temp table
+        Write-Verbose "Deleting global temp table"
+        $sqlStatement = $sqlStatementFormat -f (Get-AzureSqlDropTempInitialPermissions)
+        $command = $sqlConnection.CreateCommand()
+        $command.CommandText = $sqlStatement
+        $command.CommandType.Text
+        $command.ExecuteNonQuery()        
     }
-    else {
-        # Module parameters does not include -Verbose
-        $command.ExecuteReader()
-    }
-
-    $sqlConnection.Close()
+    catch {        
+        Write-Output $PSItem.ScriptStackTrace
+    }    
+    finally {
+        $sqlConnection.Close()
+    }   
 }
 
 Export-ModuleMember -Function 'Publish-DatabaseUsersAndPermissions'
