@@ -1,14 +1,15 @@
-# Container Registry
+# Container Application
 
-Typically, an app will be deployed as a container, either with webapp or containerapp resource as base
-ContainerApp offer more flexibility while WebApp is tailored for web-applications.
+Typically, an app will be deployed as a container, either with webapp or containerapp resource as base.
+
+ContainerApp offers more flexibility while WebApp is tailored for web-applications.
 
 Creates an Azure Container Application, Container Environment and UserAssignedIdentity.
-The AcrPull role must be manually configured for the user-assigned identity by resourceGroup-owner.
+
+<span style="color:orange;font-size:large">NB!</span> The AcrPull role must be manually configured for the user-assigned identity by resourceGroup-owner, else container will fail to load.
 
 Resources: BICEP
 
-Parameters:
 
 | Parameter                     | Type    | Required | Description                                                       |
 |-------------------------------|---------|----------|-------------------------------------------------------------------|
