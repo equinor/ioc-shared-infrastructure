@@ -4,6 +4,7 @@ MODULE_NAME :=
 VERSION :=
 FORCE := 0
 RUNID := $(shell date +%F.%H-%M-%S)
+MAJOR_VERSION := $(shell echo $(VERSION) | cut -d'.' -f1)
 
 .PHONY: help publish.prod publish.dev setversion
 
@@ -64,14 +65,24 @@ setversion:
 
 publish.prod: validate setversion
 	@echo "publishing Bicep to PROD bicep registry"
+	@echo "publish Version: $(VERSION)"
 	az bicep publish \
 	--file $(BICEP_FILE) \
 	--target br/CoreModulesPROD:$(MODULE_NAME):$(VERSION) \
 	$(if $(FORCE),--force,)
+	@echo "publish MajorVersion: $(MAJOR_VERSION)"
+	az bicep publish \
+	--file $(BICEP_FILE) \
+	--target br/CoreModulesPROD:$(MODULE_NAME):$(MAJOR_VERSION) --force
 
 publish.dev: validate setversion
 	@echo "publishing Bicep to DEV bicep registry"
+	@echo "publish Version: $(VERSION)"
 	az bicep publish \
 	--file $(BICEP_FILE) \
 	--target br/CoreModulesDEV:$(MODULE_NAME):$(VERSION) \
 	$(if $(FORCE),--force,)
+	@echo "publish MajorVersion: $(MAJOR_VERSION)"
+	az bicep publish \
+	--file $(BICEP_FILE) \
+	--target br/CoreModulesDEV:$(MODULE_NAME):$(MAJOR_VERSION) --force
