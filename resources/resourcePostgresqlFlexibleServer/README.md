@@ -11,6 +11,9 @@ Provisions a managed postgresql database. Parameters:
 | tenantId                   | string       | no       | Defaults to Equinor tenant                          |
 | pwdAuthConfig              | string       | no       | Disabled/Enabled. Defaults to Enabled               |
 | activeDirectoryAuthConfig  | string       | no       | Disabled/Enabled. Defaults to Enabled               |
+| aadAdminType               | string       | no       | User, Group or ServicePrincipal                     |
+| aadAdminObjectid           | string       | no       | Object-id of aadAdmin                               |
+| aadAdminName               | string       | no       | Name of aadAdmin
 | location                   | string       | no       | Location(use the default)                           |
 | postgresVersion            | string       | no       | The postgres version [11, 12, 13, 14]               |
 | sku                        | object       | no       | Postgresql [SKU][sku]                               |
