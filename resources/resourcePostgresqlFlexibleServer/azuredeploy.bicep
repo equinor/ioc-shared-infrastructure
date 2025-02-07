@@ -1,4 +1,4 @@
-// Version 1.1
+// Version 1.2
 param administratorLogin string
 
 @secure()
@@ -6,6 +6,17 @@ param administratorLoginPassword string
 param tenantId string = '3aa4a235-b6e2-48d5-9195-7fcf05b459b0'
 param authPasswdConfig string = 'Enabled'
 param activeDirectoryAuthConfig string = 'Enabled'
+@description('Azure AD admin Type')
+@allowed([
+  'User'
+  'Group'
+  'ServicePrincipal'
+])
+param aadAdminType string = 'Group'
+@description('Azure AD admin object id. Defaults to `AZAPPL IOC IT Database Administrator`')
+param aadAdminObjectid string = 'f855454f-40fa-4682-8b8e-76cd1889bbdb'
+@description('Azure AD admin name. Defaults to `AZAPPL IOC IT Database Administrator`')
+param aadAdminName string = 'AZAPPL IOC IT Database Administrator'
 
 @description('Location for the resources.')
 param location string = resourceGroup().location
@@ -101,7 +112,17 @@ resource postgresServer 'Microsoft.DBforPostgreSQL/flexibleServers@2024-08-01' =
   }
 }
 
-resource postgresServerName_AllowAllWindowsAzureIps 'Microsoft.DBforPostgreSQL/flexibleServers/firewallRules@2022-12-01' = {
+resource addMicrosoftEntraAdmin 'Microsoft.DBforPostgreSQL/flexibleServers/administrators@2024-08-01' = if (activeDirectoryAuthConfig == 'Enabled') {
+  name: aadAdminObjectid
+  parent: postgresServer
+  properties: {
+    tenantId: subscription().tenantId
+    principalType: aadAdminType
+    principalName: aadAdminName
+  }
+}
+
+resource postgresServerName_AllowAllWindowsAzureIps 'Microsoft.DBforPostgreSQL/flexibleServers/firewallRules@2024-08-01' = {
   parent: postgresServer
   name: 'AllowAllWindowsAzureIps'
   properties: {
@@ -110,7 +131,7 @@ resource postgresServerName_AllowAllWindowsAzureIps 'Microsoft.DBforPostgreSQL/f
   }
 }
 
-resource postgresServerName_Equinor_Bergen 'Microsoft.DBforPostgreSQL/flexibleServers/firewallRules@2022-12-01' = {
+resource postgresServerName_Equinor_Bergen 'Microsoft.DBforPostgreSQL/flexibleServers/firewallRules@2024-08-01' = {
   parent: postgresServer
   name: 'Equinor-Bergen'
   properties: {
@@ -119,7 +140,7 @@ resource postgresServerName_Equinor_Bergen 'Microsoft.DBforPostgreSQL/flexibleSe
   }
 }
 
-resource postgresServerName_Equinor_Statoil_Approved 'Microsoft.DBforPostgreSQL/flexibleServers/firewallRules@2022-12-01' = {
+resource postgresServerName_Equinor_Statoil_Approved 'Microsoft.DBforPostgreSQL/flexibleServers/firewallRules@2024-08-01' = {
   parent: postgresServer
   name: 'Equinor-Statoil-Approved'
   properties: {
