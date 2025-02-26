@@ -6,7 +6,7 @@
 | resourceApp/azuredeploy.bicep                                          |  1.1 | 2024-06-18 10:10:49 +0200 | 4999538 |
 | resourceAppConfiguration/azuredeploy.bicep                             |  1.0 | 2024-05-15 10:52:23 +0200 | 9e5211b |
 | resourceAppInsights/azuredeploy.bicep                                  |  1.0 | 2024-05-15 12:34:41 +0200 | cad6e60 |
-| resourceAppServicePlan/azuredeploy.bicep                               |  1.0 | 2024-05-15 14:46:13 +0200 | a8964e1 |
+| resourceAppServicePlan/azuredeploy.bicep                               |  1.1 | 2025-02-26 11:26:53 +0100 | 1360fe5 |
 | resourceContainerApp/azuredeploy.bicep                                 |  1.0 | 2025-01-24 11:52:48 +0100 | 045f97e |
 | resourceContainerRegistry/azuredeploy.bicep                            |  1.0 | 2025-01-24 11:52:48 +0100 | 045f97e |
 | resourceContainerRegistryTask/azuredeploy.bicep                        |  1.0 | 2024-08-04 14:15:47 +0200 | d5b0c44 |
