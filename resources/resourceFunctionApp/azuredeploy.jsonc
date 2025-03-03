@@ -11,6 +11,9 @@
     "appServicePlanSku": {
       "type": "string",
       "allowedValues": [
+        "B1", // Basic
+        "B2", // Basic
+        "B3", // Basic
         "S1", // Standard
         "S2", // Standard
         "S3", // Standard
