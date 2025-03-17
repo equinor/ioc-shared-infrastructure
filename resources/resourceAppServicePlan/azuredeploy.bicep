@@ -1,8 +1,11 @@
-// Version 1.0
+// Version 1.1
 param appServicePlanName string
 
 @allowed([
   'S1'
+  'B1'
+  'B2'
+  'B3'
   'P1V2'
   'P2V2'
   'P3V2'
@@ -19,7 +22,7 @@ param skuCapacity int = 1
 param location string = resourceGroup().location
 param tags object
 
-resource appServicePlan 'Microsoft.Web/serverfarms@2022-09-01' = {
+resource appServicePlan 'Microsoft.Web/serverfarms@2024-04-01' = {
   name: appServicePlanName
   location: location
   tags: tags
