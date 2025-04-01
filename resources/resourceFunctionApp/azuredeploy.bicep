@@ -3,7 +3,7 @@
 @description('The name of the hosting plan.')
 param appServicePlanName string
 
-@description('The names sku used for the appserivce plan.')
+@description('The names sku used for the appservice plan.')
 @allowed([
   'B1' // Basic
   'B2' // Basic
@@ -23,6 +23,9 @@ param appServicePlanSku string = 'Y1'
 
 @description('The name of the function app.')
 param functionAppName string
+
+@description('The name of the app insights.')
+param appInsightsName string = replace(functionAppName, '-func-', '-appi-')
 
 @description('The azure active directory client id')
 param aadClientId string = ''
@@ -66,9 +69,6 @@ param appSettings array = [
 @description('The id of the storage account used by the functions app.')
 var storageAccountId = storageAccount.id
 
-@description('The name of the app insights.')
-var appinsightsName = replace(functionAppName, '-func-', '-appi-')
-
 var appSettingKeys = [
   {
     name: 'AzureWebJobsStorage'
@@ -76,7 +76,7 @@ var appSettingKeys = [
   }
   {
     name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
-    value: appinsights.properties.InstrumentationKey
+    value: appInsights.properties.InstrumentationKey
   }
 ]
 
@@ -86,8 +86,8 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2024-04-01' existing= {
 }
 
 // Reference to existing app insights
-resource appinsights 'Microsoft.Insights/components@2020-02-02' existing= {
-  name: appinsightsName
+resource appInsights 'Microsoft.Insights/components@2020-02-02' existing= {
+  name: appInsightsName
 }
 
 // Reference to existing storage account
@@ -146,4 +146,4 @@ resource functionAppAuthConfig 'Microsoft.Web/sites/config@2024-04-01' = {
 
 output objectId string = functionApp.id
 output identityObjectId string = reference(functionApp.id, '2024-04-01', 'full').identity.principalId
-output appInsightsName string = appinsightsName
+output appInsightsName string = appInsightsName
