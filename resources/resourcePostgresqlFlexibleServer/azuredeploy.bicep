@@ -115,6 +115,11 @@ resource postgresServer 'Microsoft.DBforPostgreSQL/flexibleServers@2024-08-01' =
 resource addMicrosoftEntraAdmin 'Microsoft.DBforPostgreSQL/flexibleServers/administrators@2024-08-01' = if (activeDirectoryAuthConfig == 'Enabled') {
   name: aadAdminObjectid
   parent: postgresServer
+  dependsOn: [
+    postgresServerName_AllowAllWindowsAzureIps
+    postgresServerName_Equinor_Bergen
+    postgresServerName_Equinor_Statoil_Approved
+  ]
   properties: {
     tenantId: subscription().tenantId
     principalType: aadAdminType
