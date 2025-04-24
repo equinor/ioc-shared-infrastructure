@@ -1,4 +1,4 @@
-// Version 1.1
+// Version 1.2
 param webAppName string
 param location string = resourceGroup().location
 param tags object
@@ -49,7 +49,7 @@ var virtualNetworkProperties = (virtualNetworkSubnetId != '') ? {
 } : {}
 
 var vnetNameProperty = (vnetName != '') ? {
-  virtualNetworkSubnetId: vnetName
+  vnetName: vnetName
 } : {}
 
 resource webApp 'Microsoft.Web/sites@2023-12-01' = {
@@ -65,7 +65,7 @@ resource webApp 'Microsoft.Web/sites@2023-12-01' = {
     clientAffinityEnabled: false
     siteConfig: {
       linuxFxVersion: 'DOCKER|${containerRegistryName}.azurecr.io/${toLower(containerImageName)}:${containerImageTag}'
-      appSettings: union(globalAppSettings, environmentVariables, createSettingsObject('DOCKER_REGISTRY_SERVER_URL', reference(resourceId(acrResourceGroup, 'Microsoft.ContainerRegistry/registries/', containerRegistryName), '2022-12-01').loginServer), createSettingsObject('DOCKER_REGISTRY_SERVER_USERNAME', listCredentials(resourceId(acrResourceGroup, 'Microsoft.ContainerRegistry/registries/', containerRegistryName), '2022-12-01').username), createSettingsObject('DOCKER_REGISTRY_SERVER_PASSWORD', listCredentials(resourceId(acrResourceGroup, 'Microsoft.ContainerRegistry/registries/', containerRegistryName), '2022-12-01').passwords[0].value))
+      appSettings: union(globalAppSettings, environmentVariables, createSettingsObject('DOCKER_REGISTRY_SERVER_URL', reference(resourceId(acrResourceGroup, 'Microsoft.ContainerRegistry/registries/', containerRegistryName), '2023-07-01').loginServer), createSettingsObject('DOCKER_REGISTRY_SERVER_USERNAME', listCredentials(resourceId(acrResourceGroup, 'Microsoft.ContainerRegistry/registries/', containerRegistryName), '2023-07-01').username), createSettingsObject('DOCKER_REGISTRY_SERVER_PASSWORD', listCredentials(resourceId(acrResourceGroup, 'Microsoft.ContainerRegistry/registries/', containerRegistryName), '2023-07-01').passwords[0].value))
       appCommandLine: appCommandLine
     }
     httpsOnly: true
