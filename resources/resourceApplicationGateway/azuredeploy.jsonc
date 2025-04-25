@@ -236,6 +236,19 @@ https://github.com/equinor/ioc-shared-infrastructure/blob/master/LICENSE
               "priority": 400,
               "direction": "Inbound"
             }
+          },
+          {
+            "name": "AllowHTTPSOutbound",
+            "properties": {
+              "protocol": "TCP",
+              "sourcePortRange": "*",
+              "destinationPortRange": "443",
+              "sourceAddressPrefix": "*",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 400,
+              "direction": "Outbound"
+            }
           }
         ]
       }
