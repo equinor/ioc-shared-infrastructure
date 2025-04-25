@@ -1,4 +1,4 @@
-// Version 1.2
+// Version 1.3
 param webAppName string
 param location string = resourceGroup().location
 param tags object
@@ -7,6 +7,7 @@ param containerRegistryName string
 param containerImageName string = webAppName
 param containerImageTag string
 param environmentVariables array
+param publicNetworkAccess string = 'Disabled'
 param appGatewayIp string
 param appCommandLine string = ''
 param allowedCorsOrigins array = json(' [ ] ')
@@ -87,6 +88,7 @@ resource webAppName_web 'Microsoft.Web/sites/config@2023-12-01' = {
     minTlsVersion: '1.2'
     ftpsState: 'Disabled'
     healthCheckPath: healthCheckPath
+    publicNetworkAccess: publicNetworkAccess
     ipSecurityRestrictions: [
       {
         ipAddress: appGatewayIp
