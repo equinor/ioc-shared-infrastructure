@@ -24,8 +24,15 @@ do
     fi
     changeDate=$(git log -1 --pretty="format:%ci" -- $file)
     commit=$(git log -1 --pretty="format:%h" -- $file)
-    file=${file#"$prefix"}
-    line=${line#"// "}
-    line=${line#"Version"}
-    printf "| %-70s | $line | $changeDate | $commit |\n" $file >> $rootPath/BICEP_RESOURCE_VERSIONS.md
+    file=${file#$prefix}
+    line=${line#// }
+    line=${line#Version }
+    version=${line% Module*}
+    module=${line#*Module }
+    if [[ "${module}" == "${version}" ]]; then
+        module_version=$version
+    else
+        module_version="${module}:${version}"
+    fi
+    printf "| %-70s | $module_version | $changeDate | $commit |\n" $file >> $rootPath/BICEP_RESOURCE_VERSIONS.md
 done

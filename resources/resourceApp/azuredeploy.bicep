@@ -1,4 +1,4 @@
-// Version 1.3
+// Version 1.4 Module webapp
 param webAppName string
 param location string = resourceGroup().location
 param tags object
@@ -22,6 +22,16 @@ param vnetConnectionName string = 'vnet-connection'
 param vnetName string = ''
 param subnetName string = 'default'
 param virtualNetworkSubnetId string = ''
+
+@description('''Server with Private Endpoint. This module creates a private endpoint for the server if privateEndpointName is defined.
+NB! For existing servers a private endpoint might not be eligible for creation.''')
+param privateEndpointName string = ''
+@description('The name of the resource group where the virtual network is located.')
+param privatelinkVnetResourceGroupName string = ''
+@description('The name of the virtual network where the private endpoint will be created.')
+param privatelinkVnetName string = ''
+@description('The name of the subnet where the private endpoint will be created.')
+param privatelinkSubnetName string = ''
 
 func createSettingsObject (key string, value string) array => [
   {
@@ -108,6 +118,19 @@ resource vnetConnection 'Microsoft.Web/sites/virtualNetworkConnections@2023-12-0
   properties: {
     vnetResourceId: resourceId('Microsoft.Network/virtualNetworks/subnets', vnetName, subnetName)
     isSwift: true
+  }
+}
+
+module privateEndpointKeyvault 'br/CoreModulesDEV:privateendpoints:1.0' = if (empty(privateEndpointName) == false) {  
+  name: 'keyvault.pept'
+  params: {
+    privateEndpointName: privateEndpointName
+    serviceResourceId: webApp.id
+    groupIds: [
+      'sites'
+    ]
+    subnetId: resourceId(privatelinkVnetResourceGroupName,'Microsoft.Network/virtualNetworks/subnets', privatelinkVnetName, privatelinkSubnetName)
+    tags: tags
   }
 }
 

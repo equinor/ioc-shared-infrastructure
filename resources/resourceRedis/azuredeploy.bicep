@@ -1,4 +1,4 @@
-// Version 1.1
+// Version 1.2 Module redis
 param redisName string
 param location string = resourceGroup().location
 param tags object = {}
@@ -37,6 +37,15 @@ param redisCacheCapacity int = 1
 ])
 param redisCacheSKU string = 'Standard'
 
+@description('Key Vault with Private Endpoint. This module creates a private endpoint for the keyvault if privateEndpointName is defined.')
+param privateEndpointName string = ''
+@description('The name of the resource group where the virtual network is located.')
+param vnetResourceGroupName string = ''
+@description('The name of the virtual network where the private endpoint will be created.')
+param vnetName string = ''
+@description('The name of the subnet where the private endpoint will be created.')
+param subnetName string = ''
+
 var sku = {
   name: redisCacheSKU
   family: redisCacheFamily
@@ -53,5 +62,18 @@ resource redis 'Microsoft.Cache/Redis@2023-08-01' = {
     minimumTlsVersion: '1.2'
     redisConfiguration: redisConfiguration
     redisVersion: redisVersion
+  }
+}
+
+module privateEndpoint 'br/CoreModulesDEV:privateendpoints:1.0' = if (empty(privateEndpointName) == false) {
+  name: 'redis.pept'
+  params: {
+    privateEndpointName: privateEndpointName
+    serviceResourceId: redis.id
+    subnetId: resourceId(vnetResourceGroupName,'Microsoft.Network/virtualNetworks/subnets', vnetName, subnetName)
+    groupIds: [
+      'redisCache'
+    ]
+    tags: tags
   }
 }
