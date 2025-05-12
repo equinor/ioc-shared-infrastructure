@@ -71,7 +71,7 @@ module privateEndpointKeyvault 'br/CoreModulesDEV:privateendpoints:1.0' = if (em
     privateEndpointName: privateEndpointName
     serviceResourceId: redisCache.id
     groupIds: [
-      'vault'
+      'redisCache'
     ]
     subnetId: resourceId(vnetResourceGroupName,'Microsoft.Network/virtualNetworks/subnets', vnetName, subnetName)
     tags: tags
