@@ -121,8 +121,8 @@ resource vnetConnection 'Microsoft.Web/sites/virtualNetworkConnections@2023-12-0
   }
 }
 
-module privateEndpointKeyvault 'br/CoreModulesDEV:privateendpoints:1.0' = if (empty(privateEndpointName) == false) {  
-  name: 'keyvault.pept'
+module privateEndpoint 'br/CoreModulesDEV:privateendpoints:1.0' = if (empty(privateEndpointName) == false) {  
+  name: 'webapp.pept'
   params: {
     privateEndpointName: privateEndpointName
     serviceResourceId: webApp.id

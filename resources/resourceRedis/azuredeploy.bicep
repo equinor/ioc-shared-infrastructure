@@ -1,4 +1,4 @@
-// Version 1.2 Module redis
+// Version 1.3 Module redis
 param redisName string
 param location string = resourceGroup().location
 param tags object = {}
@@ -11,6 +11,8 @@ param redisConfiguration object = {
   'aad-enabled': aadEnabled
 }
 param redisVersion string = '6'
+@description('The number of shards in the Redis Cache. This property is only applicable to Premium caches.')
+param shardCount int = 1
 
 @description('Specify the family for the sku. C = Basic/Standard, P = Premium.')
 @allowed([
@@ -37,14 +39,8 @@ param redisCacheCapacity int = 1
 ])
 param redisCacheSKU string = 'Standard'
 
-@description('Key Vault with Private Endpoint. This module creates a private endpoint for the keyvault if privateEndpointName is defined.')
-param privateEndpointName string = ''
-@description('The name of the resource group where the virtual network is located.')
-param vnetResourceGroupName string = ''
-@description('The name of the virtual network where the private endpoint will be created.')
-param vnetName string = ''
 @description('The name of the subnet where the private endpoint will be created.')
-param subnetName string = ''
+param subnetId string = ''
 
 var sku = {
   name: redisCacheSKU
@@ -62,18 +58,7 @@ resource redis 'Microsoft.Cache/Redis@2023-08-01' = {
     minimumTlsVersion: '1.2'
     redisConfiguration: redisConfiguration
     redisVersion: redisVersion
-  }
-}
-
-module privateEndpoint 'br/CoreModulesDEV:privateendpoints:1.0' = if (empty(privateEndpointName) == false) {
-  name: 'redis.pept'
-  params: {
-    privateEndpointName: privateEndpointName
-    serviceResourceId: redis.id
-    subnetId: resourceId(vnetResourceGroupName,'Microsoft.Network/virtualNetworks/subnets', vnetName, subnetName)
-    groupIds: [
-      'redisCache'
-    ]
-    tags: tags
+    shardCount: shardCount
+    subnetId: empty(subnetId) ? null : subnetId
   }
 }

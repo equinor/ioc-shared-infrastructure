@@ -23,17 +23,44 @@ subnets: [
         name: subnetName
         properties: {
           addressPrefix: '10.1.0.0/24'
+          addressPrefixes: [
+            'string'
+          ]
+          defaultOutboundAccess: bool
           delegations: [
             {
-              name: 'delegation'
+              name: 'string'
               properties: {
                 serviceName: 'Microsoft.Web/serverFarms'
               }
             }
           ]
+          ipAllocations: [
+            {
+              id: 'string'
+            }
+          ]
           natGateway: empty(natGatewayName) ? null : {
             id: natGateway.id
           }
+          networkSecurityGroup: {
+            id: 'security-group-id'
+          }
+          routeTable: {
+            id: 'string'
+          }
+          serviceEndpoints: [
+            {
+              locations: [
+                'string'
+              ]
+              networkIdentifier: {
+                id: 'string
+              }
+              service: 'string'
+            }
+          ]
+          privateEndpointNetworkPolicies: 'string'
         }
       }
     ]
