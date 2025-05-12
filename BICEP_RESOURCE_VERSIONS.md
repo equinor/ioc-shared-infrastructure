@@ -3,7 +3,7 @@
 # Bicep Versions
 | Resource | Version | Changed | Commit |
 |----------|----------|----------|----------|
-| resourceApp/azuredeploy.bicep                                          | webapp:1.4 | 2025-05-05 13:18:52 +0200 | aa1c6c7 |
+| resourceApp/azuredeploy.bicep                                          | webapp:1.4 | 2025-05-12 13:14:54 +0200 | 3f378ad |
 | resourceAppConfiguration/azuredeploy.bicep                             | 1.0 | 2024-05-15 10:52:23 +0200 | 9e5211b |
 | resourceAppInsights/azuredeploy.bicep                                  | 1.0 | 2024-05-15 12:34:41 +0200 | cad6e60 |
 | resourceAppServicePlan/azuredeploy.bicep                               | 1.1 | 2025-04-01 13:33:20 +0200 | 5630ea6 |
@@ -23,6 +23,6 @@
 | resourcePostgresqlFlexibleServer/azuredeploy.bicep                     | postgresflexibleserver:1.3 | 2025-05-05 13:18:52 +0200 | aa1c6c7 |
 | resourcePrivateEndpoints/azuredeploy.bicep                             | 1.0 | 2025-04-24 16:44:56 +0200 | f0639d3 |
 | resourcePublicIp/azuredeploy.bicep                                     | 1.0 | 2024-05-30 15:17:04 +0200 | e0f868b |
-| resourceRedis/azuredeploy.bicep                                        | redis:1.2 | 2025-05-05 13:18:52 +0200 | aa1c6c7 |
+| resourceRedis/azuredeploy.bicep                                        | redis:1.3 | 2025-05-12 13:14:54 +0200 | 3f378ad |
 | resourceStorageAccounts/azuredeploy.bicep                              | 1.0 | 2024-08-09 11:38:19 +0200 | 7cd77c0 |
 | resourceVnet/azuredeploy.bicep                                         | vnet:2.0 | 2025-05-07 14:11:26 +0200 | a941b84 |
