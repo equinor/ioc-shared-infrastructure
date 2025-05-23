@@ -287,6 +287,7 @@ resource applicationGatewayResource 'Microsoft.Network/applicationGateways@2023-
         name: 'ioc-applications-routing-rule'
         properties: {
           ruleType: 'PathBasedRouting'
+          priority: 10010
           httpListener: {
             id: resourceId('Microsoft.Network/applicationGateways/httpListeners', applicationGatewayName, 'https-listener')
           }
@@ -299,6 +300,7 @@ resource applicationGatewayResource 'Microsoft.Network/applicationGateways@2023-
         name: 'http-to-https-routing-rule'
         properties: {
           ruleType: 'Basic'
+          priority: 10020
           httpListener: {
             id: resourceId('Microsoft.Network/applicationGateways/httpListeners', applicationGatewayName, 'http-listener')
           }
