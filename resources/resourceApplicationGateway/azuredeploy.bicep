@@ -188,7 +188,7 @@ module vnetResource 'br/CoreModulesDEV:vnet:2.0' = {
 }
 
 resource diagServiceResource 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
-  name: '${applicationGatewayName}-diagsettings'
+  name: 'DiagService'
   scope: applicationGatewayResource
   properties: {
     workspaceId:  logAnalyticsWorkspaceResource.outputs.logAnalyticsWorkspaceId
