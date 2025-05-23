@@ -402,16 +402,6 @@ resource applicationGatewayResource 'Microsoft.Network/applicationGateways@2023-
       minProtocolVersion: sslMinProtocolVersion
       cipherSuites: sslCipherSuites
     }
-    webApplicationFirewallConfiguration: {
-      enabled: true
-      firewallMode: 'Prevention'
-      ruleSetType: 'OWASP'
-      ruleSetVersion: owaspRuleSetVersion
-      disabledRuleGroups: []
-      requestBodyCheck: requestBodyCheck
-      maxRequestBodySize: 128
-      fileUploadLimitInMb: 128      
-    }
     firewallPolicy: {
       id: resourceId('Microsoft.Network/applicationGatewayWebApplicationFirewallPolicies', applicationGatewayFirewallPolicyName)
     }
