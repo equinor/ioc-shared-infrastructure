@@ -416,6 +416,9 @@ resource applicationGatewayResource 'Microsoft.Network/applicationGateways@2023-
           defaultBackendHttpSettings: {
             id: resourceId('Microsoft.Network/applicationGateways/backendHttpSettingsCollection', applicationGatewayName, '${defaultApplication}-http-settings')
           }
+          defaultRewriteRuleSet: {
+            id: resourceId('Microsoft.Network/applicationGateways/rewriteRuleSets', applicationGatewayName, 'forward-host-header')
+          }
           pathRules: [
             for app in applications: {
               name: '${app.name}-routing-rule'
@@ -466,10 +469,11 @@ resource applicationGatewayResource 'Microsoft.Network/applicationGateways@2023-
         name: '${app.name}-http-settings'
         properties: {
           port: 443
+          path: app.rootpath
           protocol: 'Https'
           cookieBasedAffinity: 'Disabled'
-          requestTimeout: app.requesttimeout
           pickHostNameFromBackendAddress: true
+          requestTimeout: app.requesttimeout
           probe: {
             id: resourceId('Microsoft.Network/applicationGateways/probes', applicationGatewayName, '${app.name}-probe')
           }
