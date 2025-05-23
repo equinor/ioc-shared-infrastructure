@@ -245,7 +245,6 @@ resource applicationGatewayResource 'Microsoft.Network/applicationGateways@2023-
     sku: {
       name: applicationGatewaySku
       tier: applicationGatewaySku
-      capacity: autoscaleConfiguration.maxCapacity
     }
     enableHttp2: true
     autoscaleConfiguration: autoscaleConfiguration
