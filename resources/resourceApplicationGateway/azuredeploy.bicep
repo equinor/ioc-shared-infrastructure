@@ -28,20 +28,20 @@ param allowIpList array = []
 param allowUrlList array = []
 @description('List of path segments that are exempted from firewall policies.')
 param firewallExclusionList array = []
-  @description('''
-  List of applications to configure in the application gateway. Array of objects.
-  Format: { name: testapp01, fqdn: testapp01.azurewebsites.net, rootpath: /, paths: [/testapp01], requesttimeout: 300, subnets: [] }
-  ''')
-  param applications array = []
-  @description('Default application (name of app)')
-  param defaultApplication string
-  @description('Configure to run security scan on request body. Default is true')
-  param requestBodyCheck bool = true
-  @description('Auto scale configuration. Defaults to 0 - 10.')
-  param autoscaleConfiguration object = {
-    minCapacity: 0
-    maxCapacity: 10
-  }
+@description('''
+List of applications to configure in the application gateway. Array of objects.
+Format: { name: testapp01, fqdn: testapp01.azurewebsites.net, rootpath: /, paths: [/testapp01], requesttimeout: 300, subnets: [] }
+''')
+param applications array = []
+@description('Default application (name of app)')
+param defaultApplication string
+@description('Configure to run security scan on request body. Default is true')
+param requestBodyCheck bool = true
+@description('Auto scale configuration. Defaults to 0 - 10.')
+param autoscaleConfiguration object = {
+  minCapacity: 0
+  maxCapacity: 10
+}
 @description('The location (Azure region) of the application gateway.')
 param location string = resourceGroup().location
 param tags object = {}
@@ -63,6 +63,9 @@ param sslCipherSuites array = [
 param owaspRuleSetVersion string = '3.2'
 @description('The Microsoft_BotManagerRuleSet version to apply.')
 param botManagerRuleSet string = '1.0'
+
+@description('Public IP availability zones.')
+param availabilityZones string[] = ['1', '2', '3']
 
 var applicationGatewayName = '${applicationName}-agw-${applicationEnvironment}'
 var applicationGatewayFirewallPolicyName = '${applicationName}-policy-${applicationEnvironment}'
@@ -167,6 +170,7 @@ module publicIpAddressResource 'br/CoreModulesDEV:publicip:1.1' = {
     location: location
     publicIpName: publicIpv4AddressName
     publicIpDnsLabel: publicIpv4DnsLabel
+    zones: availabilityZones
     skuName: publicIpSku
     tags: tags
   }
