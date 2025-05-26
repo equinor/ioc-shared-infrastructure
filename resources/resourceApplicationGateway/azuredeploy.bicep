@@ -81,6 +81,8 @@ var logAnalyticsWorkspaceSku = 'PerGB2018'
 var vnetName = '${applicationName}-vnet-${applicationEnvironment}'
 var vnetSubnetName = '${applicationName}-snet-${applicationEnvironment}'
 var networkSecurityGroupName = '${applicationName}-nsg-${applicationEnvironment}'
+var virtualNetworkLinkName = '${vnetName}-link'
+var privateDnsZoneName = '${applicationName}-dnszone-${applicationEnvironment}.net'
 
 var identityName = '${applicationName}-agw-${applicationEnvironment}-identity'
 
@@ -183,6 +185,9 @@ module vnetResource 'br/CoreModulesDEV:vnet:2.0' = {
     vnetName: vnetName
     addressSpacePrefix: vnetAddressPrefix
     subnets: subnets
+    privateDnsZoneName: privateDnsZoneName
+    virtualNetworkLinkName: virtualNetworkLinkName
+    linkAutoRegistration: true
     tags: tags
   }
 }

@@ -9,6 +9,11 @@ param groupIds array = [
 ]
 param location string = resourceGroup().location
 
+@description('Id of private DNS zone to which this private endpoint shall belong. Optional.')
+param privateDnsZoneId string = ''
+param dnsZoneGroupName string = 'default'
+param privateDnsZoneGroupConfigName string = 'config1'
+
 var networkInterfaceName = '${privateEndpointName}-nic'
 
 param privateLinkServiceConnections array = [
@@ -66,5 +71,20 @@ resource privateEndpointsResource 'Microsoft.Network/privateEndpoints@2024-05-01
     }
     privateLinkServiceConnections: privateLinkServiceConnections
     customNetworkInterfaceName: networkInterfaceName
+  }
+}
+
+resource dnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2024-05-01' = if (!empty(privateDnsZoneId)) {
+  parent: privateEndpointsResource
+  name: dnsZoneGroupName
+  properties: {
+    privateDnsZoneConfigs: [
+      {
+        name: privateDnsZoneGroupConfigName
+        properties: {
+          privateDnsZoneId: privateDnsZoneId
+        }
+      }
+    ]
   }
 }
