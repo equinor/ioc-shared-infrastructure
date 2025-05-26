@@ -1,4 +1,4 @@
-// Version 1.4 Module webapp
+// Version 1.5 Module webapp
 param webAppName string
 param location string = resourceGroup().location
 param tags object
@@ -22,6 +22,9 @@ param vnetConnectionName string = 'vnet-connection'
 param vnetName string = ''
 param subnetName string = 'default'
 param virtualNetworkSubnetId string = ''
+param privateDnsZoneId string = ''
+param dnsZoneGroupName string = 'default'
+param privateDnsZoneGroupConfigName string = 'config1'
 
 @description('''Server with Private Endpoint. This module creates a private endpoint for the server if privateEndpointName is defined.
 NB! For existing servers a private endpoint might not be eligible for creation.''')
@@ -126,6 +129,9 @@ module privateEndpoint 'br/CoreModulesDEV:privateendpoints:1.0' = if (empty(priv
   params: {
     privateEndpointName: privateEndpointName
     serviceResourceId: webApp.id
+    privateDnsZoneId: privateDnsZoneId
+    dnsZoneGroupName: dnsZoneGroupName
+    privateDnsZoneGroupConfigName: privateDnsZoneGroupConfigName
     groupIds: [
       'sites'
     ]
