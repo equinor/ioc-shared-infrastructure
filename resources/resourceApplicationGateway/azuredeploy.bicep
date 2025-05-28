@@ -185,11 +185,129 @@ module vnetResource 'br/CoreModulesDEV:vnet:2.0' = {
     vnetName: vnetName
     addressSpacePrefix: vnetAddressPrefix
     subnets: subnets
-    privateDnsZoneName: privateDnsZoneName
-    virtualNetworkLinkName: virtualNetworkLinkName
-    linkAutoRegistration: true
     tags: tags
   }
+}
+
+resource privateDnsZoneWebsites 'Microsoft.Network/privateDnsZones@2024-06-01' = {
+  location: 'global'
+  name: 'privatelink.${environment().name}.azurewebsites.net'
+  properties: {}
+  tags: tags
+}
+
+resource virtualNetworkLinkWebsites 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2024-06-01' = if (!empty(virtualNetworkLinkName)) {
+  parent: privateDnsZoneWebsites
+  location: 'global'
+  name: 'azurewebsites-vnet-link'
+  properties: {
+    registrationEnabled: false
+    virtualNetwork: {
+      id: vnetResource.outputs.vnetId
+    }
+  }
+  tags: tags
+}
+
+resource privateDnsZoneVaults 'Microsoft.Network/privateDnsZones@2024-06-01' = {
+  location: 'global'
+  name: 'privatelink.${environment().name}.vaultcore.azure.net'
+  properties: {}
+  tags: tags
+}
+
+resource virtualNetworkLinkVaults 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2024-06-01' = if (!empty(virtualNetworkLinkName)) {
+  parent: privateDnsZoneVaults
+  location: 'global'
+  name: 'vaults-vnet-link'
+  properties: {
+    registrationEnabled: false
+    virtualNetwork: {
+      id: vnetResource.outputs.vnetId
+    }
+  }
+  tags: tags
+}
+
+resource privateDnsZoneStorage 'Microsoft.Network/privateDnsZones@2024-06-01' = {
+  location: 'global'
+  name: 'privatelink.${environment().name}.blob.core.windows.net'
+  properties: {}
+  tags: tags
+}
+
+resource virtualNetworkLinkStorage 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2024-06-01' = if (!empty(virtualNetworkLinkName)) {
+  parent: privateDnsZoneStorage
+  location: 'global'
+  name: 'storage-vnet-link'
+  properties: {
+    registrationEnabled: false
+    resolutionPolicy: 'Default'
+    virtualNetwork: {
+      id: vnetResource.outputs.vnetId
+    }
+  }
+  tags: tags
+}
+
+resource privateDnsZoneMssql 'Microsoft.Network/privateDnsZones@2024-06-01' = {
+  location: 'global'
+  name: 'privatelink.${environment().name}.database.windows.net'
+  properties: {}
+  tags: tags
+}
+
+resource virtualNetworkLinkMssql 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2024-06-01' = if (!empty(virtualNetworkLinkName)) {
+  parent: privateDnsZoneMssql
+  location: 'global'
+  name: 'mssqldb-vnet-link'
+  properties: {
+    registrationEnabled: false
+    virtualNetwork: {
+      id: vnetResource.outputs.vnetId
+    }
+  }
+  tags: tags
+}
+
+resource privateDnsZonePostgresql 'Microsoft.Network/privateDnsZones@2024-06-01' = {
+  location: 'global'
+  name: 'privatelink.${environment().name}.postgres.database.azure.com'
+  properties: {}
+  tags: tags
+}
+
+resource virtualNetworkLinkPostgresql 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2024-06-01' = if (!empty(virtualNetworkLinkName)) {
+  parent: privateDnsZonePostgresql
+  location: 'global'
+  name: 'postgresqldb-vnet-link'
+  properties: {
+    registrationEnabled: false
+    virtualNetwork: {
+      id: vnetResource.outputs.vnetId
+    }
+  }
+  tags: tags
+}
+
+resource privateDnsZoneCache 'Microsoft.Network/privateDnsZones@2024-06-01' = {
+  location: 'global'
+  name: 'privatelink.${environment().name}.redis.cache.windows.net'
+  properties: {}
+  tags: tags
+}
+
+resource virtualNetworkLinkCache 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2024-06-01' = if (!empty(virtualNetworkLinkName)) {
+  parent: privateDnsZoneCache
+  location: 'global'
+  name: 'cache-vnet-link'
+  properties: {
+    registrationEnabled: false
+    virtualNetwork: {
+      id: vnetResource.outputs.vnetId
+    }
+  }
+  tags: tags
 }
 
 resource diagServiceResource 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {

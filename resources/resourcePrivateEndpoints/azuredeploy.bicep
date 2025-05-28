@@ -13,6 +13,8 @@ param location string = resourceGroup().location
 param privateDnsZoneId string = ''
 param dnsZoneGroupName string = 'default'
 param privateDnsZoneGroupConfigName string = 'config1'
+@description('Name of the private DNS zone to which this private endpoint shall belong. Should be like "privatelink.azurewebsites.net" for App Service, or "privatelink.postgres.database.azure.com" for Azure Database for PostgreSQL.')
+param privateDnsZoneName string = ''
 
 var networkInterfaceName = '${privateEndpointName}-nic'
 
@@ -72,6 +74,17 @@ resource privateEndpointsResource 'Microsoft.Network/privateEndpoints@2024-05-01
     privateLinkServiceConnections: privateLinkServiceConnections
     customNetworkInterfaceName: networkInterfaceName
   }
+}
+
+module privateDnsZone 'br/CoreModulesDEV:privatednszone:1.0' = if (!empty(privateDnsZoneName)) {
+  name: 'dnsZone-${privateEndpointName}'
+  params: {
+    privateEndpointName: privateEndpointName
+    privateDnsZoneName: privateDnsZoneName
+    privateIpAddress: customNetworkInterface.properties.ipConfigurations[0].properties.privateIPAddress
+    existing: true
+  }
+  scope: resourceGroup('')
 }
 
 resource dnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2024-05-01' = if (!empty(privateDnsZoneId)) {

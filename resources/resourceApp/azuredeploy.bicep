@@ -6,25 +6,27 @@ param appserviceResourceId string
 param containerRegistryName string
 param containerImageName string = webAppName
 param containerImageTag string
-param environmentVariables array
-param publicNetworkAccess string = 'Disabled'
 param appGatewayIp string
 param appCommandLine string = ''
 param allowedCorsOrigins array = json(' [ ] ')
-param supportCredentials bool = false
 param acrResourceGroup string = resourceGroup().name
+
+param environmentVariables array
+@description('''Public network access for the web app. Possible values are 'Enabled' and 'Disabled'. Default is 'Disabled'.''')
+param publicNetworkAccess string = 'Disabled'
+@description('''Gets or sets whether CORS requests with credentials are allowed. Default is false.''')
+param supportCredentials bool = false
+@description('''Azure Storage Accounts. Default is an empty object.''')
 param azureStorageAccounts object = {}
+
 param healthCheckPath string = ''
 param http20Enabled bool = true
 param numberOfWorkers int = 1
 param webSitesPort int = 8080
-param vnetConnectionName string = 'vnet-connection'
-param vnetName string = ''
-param subnetName string = 'default'
-param virtualNetworkSubnetId string = ''
-param privateDnsZoneId string = ''
-param dnsZoneGroupName string = 'default'
-param privateDnsZoneGroupConfigName string = 'config1'
+param ouboundVnetName string = ''
+param outboundSubnetName string = 'default'
+param outboundVnetConnectionName string = 'vnet-connection'
+param outboundVnetSubnetId string = ''
 
 @description('''Server with Private Endpoint. This module creates a private endpoint for the server if privateEndpointName is defined.
 NB! For existing servers a private endpoint might not be eligible for creation.''')
@@ -35,6 +37,10 @@ param privatelinkVnetResourceGroupName string = ''
 param privatelinkVnetName string = ''
 @description('The name of the subnet where the private endpoint will be created.')
 param privatelinkSubnetName string = ''
+@description('The id of the private DNS zone for the web app.')
+param privateDnsZoneId string = ''
+param dnsZoneGroupName string = 'default'
+param privateDnsZoneGroupConfigName string = 'config1'
 
 func createSettingsObject (key string, value string) array => [
   {
@@ -57,13 +63,13 @@ var globalAppSettings = [
     value: webSitesPort
   }
 ]
-var virtualNetworkProperties = (virtualNetworkSubnetId != '') ? {
-  virtualNetworkSubnetId: virtualNetworkSubnetId
+var virtualNetworkProperties = (outboundVnetSubnetId != '') ? {
+  virtualNetworkSubnetId: outboundVnetSubnetId
   vnetRouteAllEnabled: true
 } : {}
 
-var vnetNameProperty = (vnetName != '') ? {
-  vnetName: vnetName
+var vnetNameProperty = (ouboundVnetName != '') ? {
+  vnetName: ouboundVnetName
 } : {}
 
 resource webApp 'Microsoft.Web/sites@2023-12-01' = {
@@ -115,11 +121,11 @@ resource webAppName_web 'Microsoft.Web/sites/config@2023-12-01' = {
   }
 }
 
-resource vnetConnection 'Microsoft.Web/sites/virtualNetworkConnections@2023-12-01' = if (!empty(vnetName)) {
+resource vnetConnection 'Microsoft.Web/sites/virtualNetworkConnections@2023-12-01' = if (!empty(ouboundVnetName)) {
   parent: webApp
-  name: vnetConnectionName
+  name: outboundVnetConnectionName
   properties: {
-    vnetResourceId: resourceId('Microsoft.Network/virtualNetworks/subnets', vnetName, subnetName)
+    vnetResourceId: resourceId('Microsoft.Network/virtualNetworks/subnets', ouboundVnetName, outboundSubnetName)
     isSwift: true
   }
 }

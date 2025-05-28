@@ -1,4 +1,4 @@
-// Version 1.1 Module publicip
+// Version 1.2 Module publicip
 
 @description('Specifies the name of the public IP')
 param publicIpName string
@@ -11,6 +11,12 @@ param location string = resourceGroup().location
 param tags object
 param skuName string = 'Standard'
 
+@description('Enable delete lock')
+param enableDeleteLock bool = false
+
+var publicIpLockName = '${publicIp.name}-lck'
+
+
 resource publicIp 'Microsoft.Network/publicIpAddresses@2023-11-01' = {
   name: publicIpName
   location: location
@@ -22,10 +28,19 @@ resource publicIp 'Microsoft.Network/publicIpAddresses@2023-11-01' = {
   properties: {
     publicIPAddressVersion: 'IPv4'
     publicIPAllocationMethod: 'Static'
+    deleteOption: 'Detach'
     dnsSettings: {
       domainNameLabel: publicIpDnsLabel
     }
     idleTimeoutInMinutes: idleTimeoutInMinutes
+  }
+}
+
+resource publicIpAddressLock 'Microsoft.Authorization/locks@2020-05-01' = if (enableDeleteLock) {
+  scope: publicIp
+  name: publicIpLockName
+  properties: {
+    level: 'CanNotDelete'
   }
 }
 

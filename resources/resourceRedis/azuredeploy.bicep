@@ -1,4 +1,4 @@
-// Version 1.3 Module redis
+// Version 1.4 Module redis
 param redisName string
 param location string = resourceGroup().location
 param tags object = {}
@@ -45,6 +45,10 @@ param vnetResourceGroupName string = ''
 param vnetName string = ''
 @description('The name of the subnet where the private endpoint will be created.')
 param subnetName string = ''
+@description('The id of the private DNS zone for the web app.')
+param privateDnsZoneId string = ''
+param dnsZoneGroupName string = 'default'
+param privateDnsZoneGroupConfigName string = 'config1'
 
 var sku = {
   name: redisCacheSKU
@@ -70,6 +74,9 @@ module privateEndpointKeyvault 'br/CoreModulesDEV:privateendpoints:1.0' = if (em
   params: {
     privateEndpointName: privateEndpointName
     serviceResourceId: redisCache.id
+    privateDnsZoneId: privateDnsZoneId
+    dnsZoneGroupName: dnsZoneGroupName
+    privateDnsZoneGroupConfigName: privateDnsZoneGroupConfigName
     groupIds: [
       'redisCache'
     ]

@@ -7,6 +7,7 @@ param networkAcls object = {
   defaultAction: 'Allow'
   bypass: 'AzureServices'
 }
+@allowed(['Enabled', 'Disabled'])
 param publicNetworkAccess string = 'Enabled'
 param sku object
 param softDeleteRetentionInDays int = 90
@@ -19,6 +20,11 @@ param vnetResourceGroupName string = ''
 param vnetName string = ''
 @description('The name of the subnet where the private endpoint will be created.')
 param subnetName string = ''
+
+@description('The id of the private DNS zone for the web app.')
+param privateDnsZoneId string = ''
+param dnsZoneGroupName string = 'default'
+param privateDnsZoneGroupConfigName string = 'config1'
 
 var rgScope = resourceGroup()
 
@@ -49,6 +55,9 @@ module privateEndpointKeyvault 'br/CoreModulesDEV:privateendpoints:1.0' = if (em
   params: {
     privateEndpointName: privateEndpointName
     serviceResourceId: keyvaultResource.id
+    privateDnsZoneId: privateDnsZoneId
+    dnsZoneGroupName: dnsZoneGroupName
+    privateDnsZoneGroupConfigName: privateDnsZoneGroupConfigName
     groupIds: [
       'vault'
     ]
