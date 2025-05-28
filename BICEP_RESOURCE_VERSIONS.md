@@ -3,7 +3,7 @@
 # Bicep Versions
 | Resource | Version | Changed | Commit |
 |----------|----------|----------|----------|
-| resourceApp/azuredeploy.bicep                                          | webapp:1.4 | 2025-05-12 13:14:54 +0200 | 3f378ad |
+| resourceApp/azuredeploy.bicep                                          | webapp:1.5 | 2025-05-26 08:29:58 +0200 | 82219be |
 | resourceAppConfiguration/azuredeploy.bicep                             | 1.0 | 2024-05-15 10:52:23 +0200 | 9e5211b |
 | resourceAppInsights/azuredeploy.bicep                                  | 1.0 | 2024-05-15 12:34:41 +0200 | cad6e60 |
 | resourceAppServicePlan/azuredeploy.bicep                               | 1.1 | 2025-04-01 13:33:20 +0200 | 5630ea6 |
