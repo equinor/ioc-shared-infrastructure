@@ -19,7 +19,7 @@ resource privateDnsZone 'Microsoft.Network/privateDnsZones@2024-06-01' existing 
 
 resource vnetLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2024-06-01' = {
   parent: privateDnsZone
-  name: '${privateDnsZoneName}-vnet-link'
+  name: 'vnet-to-${privateDnsZoneName}'
   location: 'global'
   properties: {
     registrationEnabled: false
