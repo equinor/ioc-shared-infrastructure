@@ -45,10 +45,6 @@ param vnetResourceGroupName string = ''
 param vnetName string = ''
 @description('The name of the subnet where the private endpoint will be created.')
 param subnetName string = ''
-@description('The id of the private DNS zone for the web app.')
-param privateDnsZoneId string = ''
-param dnsZoneGroupName string = 'default'
-param privateDnsZoneGroupConfigName string = 'config1'
 
 var sku = {
   name: redisCacheSKU
@@ -69,14 +65,11 @@ resource redisCache 'Microsoft.Cache/Redis@2023-08-01' = {
   }
 }
 
-module privateEndpointKeyvault 'br/CoreModulesDEV:privateendpoints:1.0' = if (empty(privateEndpointName) == false) {  
+module privateEndpointRedis 'br/CoreModulesDEV:privateendpoints:1.0' = if (empty(privateEndpointName) == false) {  
   name: 'redis.pept'
   params: {
     privateEndpointName: privateEndpointName
     serviceResourceId: redisCache.id
-    privateDnsZoneId: privateDnsZoneId
-    dnsZoneGroupName: dnsZoneGroupName
-    privateDnsZoneGroupConfigName: privateDnsZoneGroupConfigName
     groupIds: [
       'redisCache'
     ]
@@ -84,3 +77,5 @@ module privateEndpointKeyvault 'br/CoreModulesDEV:privateendpoints:1.0' = if (em
     tags: tags
   }
 }
+
+output privateIpAddress string = empty(privateEndpointName) ? '' : privateEndpointRedis.outputs.privateIpAddress

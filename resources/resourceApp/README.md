@@ -31,7 +31,7 @@ Creates a web application. Parameters:
 | privatelinkVnetName               | String | No       | The vnet to connect to the private endpoint                    |
 | privatelinkVnetResourceGroupName  | String | No       | The resource-group hosting the privatelink vnet                |
 | privatelinkSubnetName             | String | No       | The vnet subnet name for the privte endpoint                   |
-| privateDnsZoneId                  | String | No       | The private dns-zone id for name resolution                    |
+| privateDnsZoneName                | String | No       | The private dns-zone name for name-resolution                    |
 | dnsZoneGroupName                  | String | No       | A dns-zone groupname                                           |
 | privateDnsZoneGroupConfigName     | String | No       | A dns-zone group configuration name                            |
 

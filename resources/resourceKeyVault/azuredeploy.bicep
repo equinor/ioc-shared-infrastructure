@@ -21,11 +21,6 @@ param vnetName string = ''
 @description('The name of the subnet where the private endpoint will be created.')
 param subnetName string = ''
 
-@description('The id of the private DNS zone for the web app.')
-param privateDnsZoneId string = ''
-param dnsZoneGroupName string = 'default'
-param privateDnsZoneGroupConfigName string = 'config1'
-
 var rgScope = resourceGroup()
 
 resource keyvaultResource 'Microsoft.KeyVault/vaults@2023-07-01' = {
@@ -55,9 +50,6 @@ module privateEndpointKeyvault 'br/CoreModulesDEV:privateendpoints:1.0' = if (em
   params: {
     privateEndpointName: privateEndpointName
     serviceResourceId: keyvaultResource.id
-    privateDnsZoneId: privateDnsZoneId
-    dnsZoneGroupName: dnsZoneGroupName
-    privateDnsZoneGroupConfigName: privateDnsZoneGroupConfigName
     groupIds: [
       'vault'
     ]
@@ -65,3 +57,5 @@ module privateEndpointKeyvault 'br/CoreModulesDEV:privateendpoints:1.0' = if (em
     tags: tags
   }
 }
+
+output privateIpAddress string = empty(privateEndpointName) ? '' : privateEndpointKeyvault.outputs.privateIpAddress

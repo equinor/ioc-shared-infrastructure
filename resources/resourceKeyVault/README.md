@@ -19,7 +19,7 @@ secrets.
 | vnetResourceGroupName         | string | No       | The name of the resource group where the virtual network is located                           |
 | vnetName                      | string | No       | The vnet name for the private endpoint                                                        |
 | subnetName                    | string | No       | The subnet name for the private endpoint                                                      |
-| privateDnsZoneId              | string | No       | The private dns-zone to register the private endpoint                                         |
+| privateDnsZoneName            | string | No       | The private dns-zone to register the private endpoint                                         |
 | dnsZoneGroupName              | string | No       | The name of a dns-zone group                                                                  |
 | privateDnsZoneGroupConfigName | object | No       | The name of a dns-zone group config                                                           |
 

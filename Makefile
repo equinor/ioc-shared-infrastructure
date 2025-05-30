@@ -36,6 +36,10 @@ endif
 # $(error MODULE_NAME is not set)
 # endif
 
+refresh:
+	@echo "restore/refresh bicep file just in case (updates cached dependencies.)"
+	az bicep restore --file ${BICEP_FILE} --force
+
 validate:
 	@echo "Validating Bicep file"
 	@if [ -f ${BICEP_FILE} ]; then\
@@ -75,7 +79,7 @@ publish.prod: validate setversion
 	--file $(BICEP_FILE) \
 	--target br/CoreModulesPROD:$(MODULE_NAME):$(MAJOR_VERSION) --force
 
-publish.dev: validate setversion
+publish.dev: refresh validate setversion
 	@echo "publishing Bicep to DEV bicep registry"
 	@echo "publish $(MODULE_NAME):$(VERSION)"
 	az bicep publish \

@@ -1,12 +1,12 @@
 // Version 1.0 Module privatednszone
-param existing bool = false
 param privateEndpointName string
 param privateIpAddress string
+param vnetId string
 param privateDnsZoneName string = ''
 param ttl int = 36000
 param tags object = {}
 
-resource privateDnsZoneResource 'Microsoft.Network/privateDnsZones@2024-06-01' = if (!existing) {
+resource privateDnsZoneResource 'Microsoft.Network/privateDnsZones@2024-06-01' = {
   location: 'global'
   name: privateDnsZoneName
   properties: {}
@@ -17,7 +17,19 @@ resource privateDnsZone 'Microsoft.Network/privateDnsZones@2024-06-01' existing 
   name: privateDnsZoneName
 }
 
-resource dnsZoneA 'Microsoft.Network/privateDnsZones/A@2024-06-01' = if (privateEndpointName != '') {
+resource vnetLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2024-06-01' = {
+  parent: privateDnsZone
+  name: '${privateDnsZoneName}-vnet-link'
+  location: 'global'
+  properties: {
+    registrationEnabled: false
+    virtualNetwork: {
+      id: vnetId
+    }
+  }
+}
+
+resource dnsZoneA 'Microsoft.Network/privateDnsZones/A@2024-06-01' = {
   parent: privateDnsZone
   name: privateEndpointName
   properties: {
@@ -29,3 +41,5 @@ resource dnsZoneA 'Microsoft.Network/privateDnsZones/A@2024-06-01' = if (private
     ]
   }
 }
+
+output zoneId string = privateDnsZone.id

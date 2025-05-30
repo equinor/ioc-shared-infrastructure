@@ -37,10 +37,6 @@ param privatelinkVnetResourceGroupName string = ''
 param privatelinkVnetName string = ''
 @description('The name of the subnet where the private endpoint will be created.')
 param privatelinkSubnetName string = ''
-@description('The id of the private DNS zone for the web app.')
-param privateDnsZoneId string = ''
-param dnsZoneGroupName string = 'default'
-param privateDnsZoneGroupConfigName string = 'config1'
 
 func createSettingsObject (key string, value string) array => [
   {
@@ -135,9 +131,6 @@ module privateEndpoint 'br/CoreModulesDEV:privateendpoints:1.0' = if (empty(priv
   params: {
     privateEndpointName: privateEndpointName
     serviceResourceId: webApp.id
-    privateDnsZoneId: privateDnsZoneId
-    dnsZoneGroupName: dnsZoneGroupName
-    privateDnsZoneGroupConfigName: privateDnsZoneGroupConfigName
     groupIds: [
       'sites'
     ]
@@ -148,3 +141,4 @@ module privateEndpoint 'br/CoreModulesDEV:privateendpoints:1.0' = if (empty(priv
 
 output objectId string = webApp.id
 output identityObjectId string = webApp.identity.principalId
+output privateIpAddress string = empty(privateEndpointName) ? '' : privateEndpoint.outputs.privateIpAddress
