@@ -37,6 +37,10 @@ param privatelinkVnetResourceGroupName string = ''
 param privatelinkVnetName string = ''
 @description('The name of the subnet where the private endpoint will be created.')
 param privatelinkSubnetName string = ''
+@description('The private DNS zone ID')
+param privateDnsZoneId string
+
+var webapp_dns_name = '.azurewebsites.net'
 
 func createSettingsObject (key string, value string) array => [
   {
@@ -104,16 +108,26 @@ resource webAppName_web 'Microsoft.Web/sites/config@2023-12-01' = {
     ftpsState: 'Disabled'
     healthCheckPath: healthCheckPath
     publicNetworkAccess: publicNetworkAccess
+    ipSecurityRestrictionsDefaultAction: 'Deny'
     ipSecurityRestrictions: [
-      {
+      !empty(appGatewayIp) ? {
         ipAddress: appGatewayIp
         action: 'Allow'
         priority: 100
         name: 'Allow IOC Application Gateway'
-      }
+      } : {}
     ]
     azureStorageAccounts: azureStorageAccounts
     ...vnetNameProperty
+  }
+}
+
+resource webAppBinding 'Microsoft.Web/sites/hostNameBindings@2024-04-01' = {
+  parent: webApp
+  name: '${webApp.name}${webapp_dns_name}'
+  properties: {
+    siteName: webApp.name
+    hostNameType: 'Verified'
   }
 }
 
@@ -131,6 +145,7 @@ module privateEndpoint 'br/CoreModulesDEV:privateendpoints:1.0' = if (empty(priv
   params: {
     privateEndpointName: privateEndpointName
     serviceResourceId: webApp.id
+    privateDnsZoneId: privateDnsZoneId
     groupIds: [
       'sites'
     ]

@@ -45,6 +45,8 @@ param vnetResourceGroupName string = ''
 param vnetName string = ''
 @description('The name of the subnet where the private endpoint will be created.')
 param subnetName string = ''
+@description('The private DNS zone ID for the Key Vault private endpoint. This is optional and can be used to link the private endpoint to a private DNS zone.')
+param privateDnsZoneId string = ''
 
 var sku = {
   name: redisCacheSKU
@@ -70,6 +72,7 @@ module privateEndpointRedis 'br/CoreModulesDEV:privateendpoints:1.0' = if (empty
   params: {
     privateEndpointName: privateEndpointName
     serviceResourceId: redisCache.id
+    privateDnsZoneId: privateDnsZoneId
     groupIds: [
       'redisCache'
     ]

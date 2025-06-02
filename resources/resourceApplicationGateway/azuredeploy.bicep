@@ -191,7 +191,7 @@ module vnetResource 'br/CoreModulesDEV:vnet:2.0' = {
 
 resource privateDnsZoneWebsites 'Microsoft.Network/privateDnsZones@2024-06-01' = {
   location: 'global'
-  name: 'privatelink.${environment().name}.azurewebsites.net'
+  name: 'privatelink.azurewebsites.net'
   properties: {}
   tags: tags
 }
@@ -211,7 +211,7 @@ resource virtualNetworkLinkWebsites 'Microsoft.Network/privateDnsZones/virtualNe
 
 resource privateDnsZoneVaults 'Microsoft.Network/privateDnsZones@2024-06-01' = {
   location: 'global'
-  name: 'privatelink.${environment().name}.vaultcore.azure.net'
+  name: 'privatelink.vaultcore.azure.net'
   properties: {}
   tags: tags
 }
@@ -231,7 +231,7 @@ resource virtualNetworkLinkVaults 'Microsoft.Network/privateDnsZones/virtualNetw
 
 resource privateDnsZoneStorage 'Microsoft.Network/privateDnsZones@2024-06-01' = {
   location: 'global'
-  name: 'privatelink.${environment().name}.blob.core.windows.net'
+  name: 'privatelink.blob.core.windows.net'
   properties: {}
   tags: tags
 }
@@ -252,7 +252,7 @@ resource virtualNetworkLinkStorage 'Microsoft.Network/privateDnsZones/virtualNet
 
 resource privateDnsZoneMssql 'Microsoft.Network/privateDnsZones@2024-06-01' = {
   location: 'global'
-  name: 'privatelink.${environment().name}.database.windows.net'
+  name: 'privatelink.database.windows.net'
   properties: {}
   tags: tags
 }
@@ -272,7 +272,7 @@ resource virtualNetworkLinkMssql 'Microsoft.Network/privateDnsZones/virtualNetwo
 
 resource privateDnsZonePostgresql 'Microsoft.Network/privateDnsZones@2024-06-01' = {
   location: 'global'
-  name: 'privatelink.${environment().name}.postgres.database.azure.com'
+  name: 'privatelink.postgres.database.azure.com'
   properties: {}
   tags: tags
 }
@@ -292,7 +292,7 @@ resource virtualNetworkLinkPostgresql 'Microsoft.Network/privateDnsZones/virtual
 
 resource privateDnsZoneCache 'Microsoft.Network/privateDnsZones@2024-06-01' = {
   location: 'global'
-  name: 'privatelink.${environment().name}.redis.cache.windows.net'
+  name: 'privatelink.redis.cache.windows.net'
   properties: {}
   tags: tags
 }
