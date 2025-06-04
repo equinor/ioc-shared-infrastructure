@@ -1,3 +1,7 @@
+# DO NOT USE
+The current api version will be retired October 2025. If you want to use this resource, please update api version first, and preferrably make a bicep version. 
+https://learn.microsoft.com/en-us/rest/api/sql/retirement
+
 # Azure SQL
 
 This template can be used to create a single Azure SQL resources with a storage account that stores audit log and vulnerability assessments.
