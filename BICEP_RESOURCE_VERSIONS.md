@@ -27,5 +27,5 @@
 | resourcePrivateEndpoints/azuredeploy.bicep                             | privateendpoints:1.0 | 2025-06-02 09:01:28 +0200 | 0c8caa6 |
 | resourcePublicIp/azuredeploy.bicep                                     | publicip:1.2 | 2025-05-28 11:18:52 +0200 | 86b3072 |
 | resourceRedis/azuredeploy.bicep                                        | redis:1.4 | 2025-06-02 09:01:28 +0200 | 0c8caa6 |
-| resourceStorageAccounts/azuredeploy.bicep                              | 1.0 | 2025-06-12 13:47:33 +0200 | 566bd42 |
+| resourceStorageAccounts/azuredeploy.bicep                              | storageaccount:1.1 | 2025-06-12 16:13:54 +0200 | 7919f8f |
 | resourceVnet/azuredeploy.bicep                                         | vnet:2.0 | 2025-05-28 11:18:52 +0200 | 86b3072 |
