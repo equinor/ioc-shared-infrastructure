@@ -36,6 +36,10 @@ endif
 # $(error MODULE_NAME is not set)
 # endif
 
+refresh:
+	@echo "restore/refresh bicep file just in case (updates cached dependencies.)"
+	az bicep restore --file ${BICEP_FILE} --force
+
 validate:
 	@echo "Validating Bicep file"
 	@if [ -f ${BICEP_FILE} ]; then\
@@ -58,7 +62,7 @@ validate:
 setversion:
 	@echo "Setting version to $(VERSION)"
 	@sed -i '/^\/\/ Ver.*/d' $(BICEP_FILE)
-	@sed -i '1 i\// Version $(VERSION)' $(BICEP_FILE)
+	@sed -i '1 i\// Version $(VERSION) Module $(MODULE_NAME)' $(BICEP_FILE)
 	# This won't work with mac sed. use GNU sed instead:
 	# brew install gnu-sed
 	# PATH="/usr/local/opt/gnu-sed/libexec/gnubin:$PATH"     (put this line in your .zshrc or whatever to always have gnu sed as your sed) 
@@ -75,9 +79,9 @@ publish.prod: validate setversion
 	--file $(BICEP_FILE) \
 	--target br/CoreModulesPROD:$(MODULE_NAME):$(MAJOR_VERSION) --force
 
-publish.dev: validate setversion
+publish.dev: refresh validate setversion
 	@echo "publishing Bicep to DEV bicep registry"
-	@echo "publish Version: $(VERSION)"
+	@echo "publish $(MODULE_NAME):$(VERSION)"
 	az bicep publish \
 	--file $(BICEP_FILE) \
 	--target br/CoreModulesDEV:$(MODULE_NAME):$(VERSION) \

@@ -1,15 +1,9 @@
-// Version 1.0
+// Version 2.0 Module vnet
 param vnetName string
-param subnetName string = 'default'
-param natGatewayName string
-param addressPrefix string = '10.1.0.0/24'
-param addressSpacePrefix string = '10.1.0.0/16'
+param addressSpacePrefix array = ['10.1.0.0/16']
+param subnets array = []
 param tags object = {}
 param location string = resourceGroup().location
-
-resource natGateway 'Microsoft.Network/natGateways@2023-11-01' existing = {
-  name: natGatewayName
-}
 
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-11-01' = {
   name: vnetName
@@ -17,28 +11,10 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-11-01' = {
   tags: tags
   properties: {
     addressSpace: {
-      addressPrefixes: [
-        addressSpacePrefix
-      ]
+      addressPrefixes: addressSpacePrefix
     }
-    subnets: [
-      {
-        name: subnetName
-        properties: {
-          addressPrefix: addressPrefix
-          delegations: [
-            {
-              name: 'delegation'
-              properties: {
-                serviceName: 'Microsoft.Web/serverFarms'
-              }
-            }
-          ]
-          natGateway: {
-            id: natGateway.id
-          }
-        }
-      }
-    ]
+    subnets: subnets
   }
 }
+
+output vnetId string = virtualNetwork.id

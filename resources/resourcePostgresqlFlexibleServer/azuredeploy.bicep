@@ -1,4 +1,4 @@
-// Version 1.2
+// Version 1.3 Module postgresflexibleserver
 param administratorLogin string
 
 @secure()
@@ -69,6 +69,16 @@ param customMaintenanceWindow string = 'Disabled'
 param customMaintenanceWindowDayOfWeek int = 6
 param customMaintenanceWindowStartHour int = 0
 param customMaintenanceWindowStartMinute int = 30
+
+@description('''Server with Private Endpoint. This module creates a private endpoint for the server if privateEndpointName is defined.
+NB! For existing servers a private endpoint might not be eligible for creation.''')
+param privateEndpointName string = ''
+@description('The name of the resource group where the virtual network is located.')
+param vnetResourceGroupName string = ''
+@description('The name of the virtual network where the private endpoint will be created.')
+param vnetName string = ''
+@description('The name of the subnet where the private endpoint will be created.')
+param privatelinkSubnetName string = ''
 
 resource postgresServer 'Microsoft.DBforPostgreSQL/flexibleServers@2024-08-01' = {
   name: postgresServerName
@@ -151,6 +161,19 @@ resource postgresServerName_Equinor_Statoil_Approved 'Microsoft.DBforPostgreSQL/
   properties: {
     startIpAddress: '143.97.2.129'
     endIpAddress: '143.97.2.129'
+  }
+}
+
+module privateEndpoint 'br/CoreModulesDEV:privateendpoints:1.0' = if (empty(privateEndpointName) == false) {
+  name: 'postgres.pept'
+  params: {
+    privateEndpointName: privateEndpointName
+    serviceResourceId: postgresServer.id
+    subnetId: resourceId(vnetResourceGroupName,'Microsoft.Network/virtualNetworks/subnets', vnetName, privatelinkSubnetName)
+    groupIds: [
+      'postgresqlServer'
+    ]
+    tags: tags
   }
 }
 

@@ -21,7 +21,19 @@ param blobServiceName string = ''
 param blobContainerNames array = []
 param tags object = {}
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
+@description('StorageAccount with Private Endpoint. This module creates a private endpoint for the storageAccount if privateEndpointName is defined.')
+param privateEndpointName string = ''
+@description('The name of the resource group where the virtual network is located.')
+param privatelinkVnetResourceGroupName string = ''
+@description('The name of the virtual network where the private endpoint will be created.')
+param privatelinkVnetName string = ''
+@description('The name of the subnet where the private endpoint will be created.')
+param privatelinkSubnetName string = ''
+@description('The private DNS zone ID')
+param privateDnsZoneId string
+
+
+resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' = {
   name: accountName
   location: location
   tags: tags
@@ -53,7 +65,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
   }
 }
 
-resource blobService 'Microsoft.Storage/storageAccounts/blobServices@2023-01-01' = if (deployBlobService) {
+resource blobService 'Microsoft.Storage/storageAccounts/blobServices@2024-01-01' = if (deployBlobService) {
   name: blobServiceName
   parent: storageAccount
   properties: {
@@ -79,7 +91,7 @@ resource blobService 'Microsoft.Storage/storageAccounts/blobServices@2023-01-01'
   }
 }
 
-resource blobContainer 'Microsoft.Storage/storageAccounts/blobServices/containers@2023-01-01' = [for i in range(0, length(blobContainerNames)): {
+resource blobContainer 'Microsoft.Storage/storageAccounts/blobServices/containers@2024-01-01' = [for i in range(0, length(blobContainerNames)): {
   name: blobContainerNames[i]
   parent: blobService
   properties: {
@@ -89,3 +101,20 @@ resource blobContainer 'Microsoft.Storage/storageAccounts/blobServices/container
     publicAccess: 'Blob'
   }
 }]
+
+module privateEndpoint 'br/CoreModulesDEV:privateendpoints:1.0' = if (empty(privateEndpointName) == false) {  
+  name: 'storage.pept'
+  params: {
+    privateEndpointName: privateEndpointName
+    serviceResourceId: storageAccount.id
+    privateDnsZoneId: privateDnsZoneId
+    groupIds: [
+      'blob'
+      'file'
+      'queue'
+      'table'
+    ]
+    subnetId: resourceId(privatelinkVnetResourceGroupName,'Microsoft.Network/virtualNetworks/subnets', privatelinkVnetName, privatelinkSubnetName)
+    tags: tags
+  }
+}
