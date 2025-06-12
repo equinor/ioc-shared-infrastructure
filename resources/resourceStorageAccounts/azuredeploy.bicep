@@ -1,4 +1,4 @@
-// Version 1.0
+// Version 1.1 Module storageaccount
 param accountName string
 param location string = resourceGroup().location
 param sku object = {
@@ -113,6 +113,7 @@ module privateEndpoint 'br/CoreModulesDEV:privateendpoints:1.0' = if (empty(priv
       'file'
       'queue'
       'table'
+      'dfs'
     ]
     subnetId: resourceId(privatelinkVnetResourceGroupName,'Microsoft.Network/virtualNetworks/subnets', privatelinkVnetName, privatelinkSubnetName)
     tags: tags
