@@ -10,6 +10,7 @@ param idleTimeoutInMinutes int = 4
 param location string = resourceGroup().location
 param tags object
 param skuName string = 'Standard'
+param skuTier string = 'Regional'
 
 @description('Enable delete lock')
 param enableDeleteLock bool = false
@@ -24,6 +25,7 @@ resource publicIp 'Microsoft.Network/publicIpAddresses@2023-11-01' = {
   zones: zones
   sku: {
     name: skuName
+    tier: skuTier
   }
   properties: {
     publicIPAddressVersion: 'IPv4'

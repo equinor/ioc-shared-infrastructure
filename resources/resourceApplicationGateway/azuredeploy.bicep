@@ -82,7 +82,6 @@ var vnetName = '${applicationName}-vnet-${applicationEnvironment}'
 var vnetSubnetName = '${applicationName}-snet-${applicationEnvironment}'
 var networkSecurityGroupName = '${applicationName}-nsg-${applicationEnvironment}'
 var virtualNetworkLinkName = '${vnetName}-link'
-var privateDnsZoneName = '${applicationName}-dnszone-${applicationEnvironment}.net'
 
 var identityName = '${applicationName}-agw-${applicationEnvironment}-identity'
 
