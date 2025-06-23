@@ -7,7 +7,7 @@
 | resourceAppConfiguration/azuredeploy.bicep                             | 1.0 | 2024-05-15 10:52:23 +0200 | 9e5211b |
 | resourceAppInsights/azuredeploy.bicep                                  | 1.0 | 2024-05-15 12:34:41 +0200 | cad6e60 |
 | resourceAppServicePlan/azuredeploy.bicep                               | 1.1 | 2025-04-01 13:33:20 +0200 | 5630ea6 |
-| resourceApplicationGateway/azuredeploy.bicep                           | appgateway:1.0 | 2025-06-02 09:01:28 +0200 | 0c8caa6 |
+| resourceApplicationGateway/azuredeploy.bicep                           | appgateway:1.0 | 2025-06-23 14:05:09 +0200 | dd40af5 |
 | resourceContainerApp/azuredeploy.bicep                                 | 1.0 | 2025-01-24 11:52:48 +0100 | 045f97e |
 | resourceContainerRegistry/azuredeploy.bicep                            | 1.0 | 2025-01-24 11:52:48 +0100 | 045f97e |
 | resourceContainerRegistryTask/azuredeploy.bicep                        | 1.0 | 2024-08-04 14:15:47 +0200 | d5b0c44 |
@@ -25,7 +25,7 @@
 | resourcePrivateDnsZone/azuredeploy.bicep                               | privatednszone:1.0 | 2025-05-30 16:13:02 +0200 | 345b7e6 |
 | resourcePrivateDnsZoneRecord/azuredeploy.bicep                         | dnszonerecord:1.0 | 2025-06-02 09:01:28 +0200 | 0c8caa6 |
 | resourcePrivateEndpoints/azuredeploy.bicep                             | privateendpoints:1.0 | 2025-06-02 09:01:28 +0200 | 0c8caa6 |
-| resourcePublicIp/azuredeploy.bicep                                     | publicip:1.2 | 2025-05-28 11:18:52 +0200 | 86b3072 |
+| resourcePublicIp/azuredeploy.bicep                                     | publicip:1.2 | 2025-06-23 14:05:09 +0200 | dd40af5 |
 | resourceRedis/azuredeploy.bicep                                        | redis:1.4 | 2025-06-02 09:01:28 +0200 | 0c8caa6 |
 | resourceStorageAccounts/azuredeploy.bicep                              | storageaccount:1.1 | 2025-06-12 16:13:54 +0200 | 7919f8f |
 | resourceVnet/azuredeploy.bicep                                         | vnet:2.0 | 2025-05-28 11:18:52 +0200 | 86b3072 |
