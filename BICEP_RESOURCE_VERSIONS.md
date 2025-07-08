@@ -7,7 +7,7 @@
 | resourceAppConfiguration/azuredeploy.bicep                             | 1.0 | 2024-05-15 10:52:23 +0200 | 9e5211b |
 | resourceAppInsights/azuredeploy.bicep                                  | 1.0 | 2024-05-15 12:34:41 +0200 | cad6e60 |
 | resourceAppServicePlan/azuredeploy.bicep                               | 1.1 | 2025-04-01 13:33:20 +0200 | 5630ea6 |
-| resourceApplicationGateway/azuredeploy.bicep                           | appgateway:1.0 | 2025-06-23 14:05:09 +0200 | dd40af5 |
+| resourceApplicationGateway/azuredeploy.bicep                           | appgateway:1.1 | 2025-07-08 12:12:52 +0200 | 917822a |
 | resourceContainerApp/azuredeploy.bicep                                 | 1.0 | 2025-01-24 11:52:48 +0100 | 045f97e |
 | resourceContainerRegistry/azuredeploy.bicep                            | 1.0 | 2025-01-24 11:52:48 +0100 | 045f97e |
 | resourceContainerRegistryTask/azuredeploy.bicep                        | 1.0 | 2024-08-04 14:15:47 +0200 | d5b0c44 |
