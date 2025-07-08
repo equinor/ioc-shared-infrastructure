@@ -1,4 +1,4 @@
-// Version 1.0 Module appgateway
+// Version 1.1 Module appgateway
 
 @description('Name of the application/solution. Will be used for generating resource names.')
 param applicationName string
@@ -82,7 +82,6 @@ var vnetName = '${applicationName}-vnet-${applicationEnvironment}'
 var vnetSubnetName = '${applicationName}-snet-${applicationEnvironment}'
 var networkSecurityGroupName = '${applicationName}-nsg-${applicationEnvironment}'
 var virtualNetworkLinkName = '${vnetName}-link'
-var privateDnsZoneName = '${applicationName}-dnszone-${applicationEnvironment}.net'
 
 var identityName = '${applicationName}-agw-${applicationEnvironment}-identity'
 
@@ -231,7 +230,7 @@ resource virtualNetworkLinkVaults 'Microsoft.Network/privateDnsZones/virtualNetw
 
 resource privateDnsZoneStorage 'Microsoft.Network/privateDnsZones@2024-06-01' = {
   location: 'global'
-  name: 'privatelink.blob.core.windows.net'
+  name: 'privatelink.blob.${environment().suffixes.storage}'
   properties: {}
   tags: tags
 }
@@ -252,7 +251,7 @@ resource virtualNetworkLinkStorage 'Microsoft.Network/privateDnsZones/virtualNet
 
 resource privateDnsZoneMssql 'Microsoft.Network/privateDnsZones@2024-06-01' = {
   location: 'global'
-  name: 'privatelink.database.windows.net'
+  name: 'privatelink${environment().suffixes.sqlServerHostname}'
   properties: {}
   tags: tags
 }
@@ -716,3 +715,4 @@ resource applicationGatewayFirewallPolicyResource 'Microsoft.Network/application
 
 output publicIpAddress string = publicIpAddressResource.outputs.publicIpAddress
 output logAnalyticsWorkspaceId string = logAnalyticsWorkspaceResource.outputs.logAnalyticsWorkspaceId
+output vnetId string = vnetResource.outputs.vnetId
