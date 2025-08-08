@@ -1,6 +1,8 @@
-// Version 1.0
+// Version 1.1 Module eventhub
 param namespaceName string
 param eventhubName string
+param autoInflateEnabled bool = false
+param maximumThroughputUnits int = 1
 param partitionCount int = 1
 param messageRetentionInDays int = 1
 param eventLogRetentionTimeInHours int = 24
@@ -39,9 +41,9 @@ resource eventHubNamespaceResource 'Microsoft.EventHub/namespaces@2024-01-01' = 
   }
   properties: {
     disableLocalAuth: false
-    isAutoInflateEnabled: false
     kafkaEnabled: true
-    maximumThroughputUnits: 0
+    isAutoInflateEnabled: autoInflateEnabled
+    maximumThroughputUnits: maximumThroughputUnits
     minimumTlsVersion: '1.2'
     publicNetworkAccess: 'Enabled'
     zoneRedundant: true
