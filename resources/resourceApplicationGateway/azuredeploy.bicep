@@ -1,4 +1,4 @@
-// Version 1.1 Module appgateway
+// Version 1.2 Module appgateway
 
 @description('Name of the application/solution. Will be used for generating resource names.')
 param applicationName string
@@ -66,6 +66,7 @@ param botManagerRuleSet string = '1.0'
 
 @description('Public IP availability zones.')
 param availabilityZones string[] = ['1', '2', '3']
+param dnsServerIps array = []
 
 var applicationGatewayName = '${applicationName}-agw-${applicationEnvironment}'
 var applicationGatewayFirewallPolicyName = '${applicationName}-policy-${applicationEnvironment}'
@@ -177,7 +178,7 @@ module publicIpAddressResource 'br/CoreModulesDEV:publicip:1.1' = {
   }
 }
 
-module vnetResource 'br/CoreModulesDEV:vnet:2.0' = {
+module vnetResource 'br/CoreModulesDEV:vnet:2.1' = {
   name: 'vnet.deploy'
   params: {
     location: location
@@ -185,6 +186,7 @@ module vnetResource 'br/CoreModulesDEV:vnet:2.0' = {
     addressSpacePrefix: vnetAddressPrefix
     subnets: subnets
     tags: tags
+    dnsServerIps: dnsServerIps
   }
 }
 
