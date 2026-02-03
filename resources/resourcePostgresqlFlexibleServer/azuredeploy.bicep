@@ -1,4 +1,4 @@
-// Version 1.3 Module postgresflexibleserver
+// Version 1.4 Module postgresflexibleserver
 param administratorLogin string
 
 @secure()
@@ -148,19 +148,19 @@ resource postgresServerName_AllowAllWindowsAzureIps 'Microsoft.DBforPostgreSQL/f
 
 resource postgresServerName_Equinor_Bergen 'Microsoft.DBforPostgreSQL/flexibleServers/firewallRules@2024-08-01' = {
   parent: postgresServer
-  name: 'Equinor-Bergen'
+  name: 'Equinor-internal-networks'
   properties: {
-    startIpAddress: '143.97.2.35'
-    endIpAddress: '143.97.2.35'
+    startIpAddress: '136.164.1.0'
+    endIpAddress: '136.164.1.255'
   }
 }
 
 resource postgresServerName_Equinor_Statoil_Approved 'Microsoft.DBforPostgreSQL/flexibleServers/firewallRules@2024-08-01' = {
   parent: postgresServer
-  name: 'Equinor-Statoil-Approved'
+  name: 'Equinor-approved-networks'
   properties: {
-    startIpAddress: '143.97.2.129'
-    endIpAddress: '143.97.2.129'
+    startIpAddress: '143.97.110.0'
+    endIpAddress: '143.97.110.255'
   }
 }
 
