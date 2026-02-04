@@ -131,25 +131,25 @@
     {
         "type": "Microsoft.DBforPostgreSQL/flexibleServers/firewallRules",
         "apiVersion": "2022-12-01",
-        "name": "[concat(parameters('postgresServerName'), '/Equinor-Bergen')]",
+        "name": "[concat(parameters('postgresServerName'), '/Equinor-internal-networks')]",
         "dependsOn": [
             "[parameters('postgresServerName')]"
         ],
         "properties": {
-            "startIpAddress": "143.97.2.35",
-            "endIpAddress": "143.97.2.35"
+            "startIpAddress": "136.164.1.0",
+            "endIpAddress": "136.164.1.255"
         }
     },
     {
         "type": "Microsoft.DBforPostgreSQL/flexibleServers/firewallRules",
         "apiVersion": "2022-12-01",
-        "name": "[concat(parameters('postgresServerName'), '/Equinor-Statoil-Approved')]",
+        "name": "[concat(parameters('postgresServerName'), '/Equinor-approved-networks')]",
         "dependsOn": [
             "[parameters('postgresServerName')]"
         ],
         "properties": {
-            "startIpAddress": "143.97.2.129",
-            "endIpAddress": "143.97.2.129"
+            "startIpAddress": "143.97.110.0",
+            "endIpAddress": "143.97.110.255"
         }
     }
     ],
