@@ -1,4 +1,4 @@
-// Version 1.1 Module keyvault
+// Version 1.2 Module keyvault
 param tenantId string
 param keyvaultName string
 param accessPolicies array = []
