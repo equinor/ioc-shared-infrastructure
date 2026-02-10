@@ -1,4 +1,4 @@
-// Version 1.1 Module keyvault
+// Version 1.2 Module keyvault
 param tenantId string
 param keyvaultName string
 param accessPolicies array = []
@@ -22,10 +22,11 @@ param vnetName string = ''
 param subnetName string = ''
 @description('The private DNS zone ID for the Key Vault private endpoint. This is optional and can be used to link the private endpoint to a private DNS zone.')
 param privateDnsZoneId string = ''
+param enableRbacAuthorization bool = false
 
 var rgScope = resourceGroup()
 
-resource keyvaultResource 'Microsoft.KeyVault/vaults@2023-07-01' = {
+resource keyvaultResource 'Microsoft.KeyVault/vaults@2025-05-01' = {
   name: keyvaultName
   location: rgScope.location
   tags: tags
@@ -36,7 +37,7 @@ resource keyvaultResource 'Microsoft.KeyVault/vaults@2023-07-01' = {
     enabledForDiskEncryption: true
     enabledForTemplateDeployment: true
     enablePurgeProtection: true
-    enableRbacAuthorization: false
+    enableRbacAuthorization: enableRbacAuthorization
     enableSoftDelete: true
     networkAcls: networkAcls
     provisioningState: 'Succeeded'
