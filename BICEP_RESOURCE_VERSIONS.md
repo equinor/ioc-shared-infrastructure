@@ -13,7 +13,7 @@
 | resourceContainerRegistryTask/azuredeploy.bicep                        | 1.0 | 2024-08-04 14:15:47 +0200 | d5b0c44 |
 | resourceEventHub/azuredeploy.bicep                                     | eventhub:1.1 | 2025-08-08 15:51:13 +0200 | 5fc184c |
 | resourceFunctionApp/azuredeploy.bicep                                  | 1.0 | 2025-04-04 08:48:55 +0200 | 3a25754 |
-| resourceKeyVault/azuredeploy.bicep                                     | keyvault:1.2 | 2026-02-10 08:03:15 +0100 | bab924b |
+| resourceKeyVault/azuredeploy.bicep                                     | keyvault:1.2 | 2026-02-09 13:47:09 +0100 | bf41def |
 | resourceKeyVaultAccess/azuredeploy.bicep                               | 1.0 | 2024-05-15 10:52:23 +0200 | 9e5211b |
 | resourceKeyVaultSecrets/azuredeploy.bicep                              | 1.0 | 2024-05-15 10:52:23 +0200 | 9e5211b |
 | resourceLogAnalyticsWorkspace/azuredeploy.bicep                        | 1.0 | 2024-05-22 10:36:13 +0200 | f06dca9 |
