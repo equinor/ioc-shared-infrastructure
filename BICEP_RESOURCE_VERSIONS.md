@@ -3,7 +3,7 @@
 # Bicep Versions
 | Resource | Version | Changed | Commit |
 |----------|----------|----------|----------|
-| resourceApp/azuredeploy.bicep                                          | webapp:1.5 | 2025-06-02 09:01:28 +0200 | 0c8caa6 |
+| resourceApp/azuredeploy.bicep                                          | webapp:1.6 | 2026-03-04 18:23:24 +0100 | a507694 |
 | resourceAppConfiguration/azuredeploy.bicep                             | 1.0 | 2024-05-15 10:52:23 +0200 | 9e5211b |
 | resourceAppInsights/azuredeploy.bicep                                  | 1.0 | 2024-05-15 12:34:41 +0200 | cad6e60 |
 | resourceAppServicePlan/azuredeploy.bicep                               | 1.1 | 2025-04-01 13:33:20 +0200 | 5630ea6 |
@@ -13,7 +13,7 @@
 | resourceContainerRegistryTask/azuredeploy.bicep                        | 1.0 | 2024-08-04 14:15:47 +0200 | d5b0c44 |
 | resourceEventHub/azuredeploy.bicep                                     | eventhub:1.1 | 2025-08-08 15:51:13 +0200 | 5fc184c |
 | resourceFunctionApp/azuredeploy.bicep                                  | 1.0 | 2025-04-04 08:48:55 +0200 | 3a25754 |
-| resourceKeyVault/azuredeploy.bicep                                     | keyvault:1.2 | 2026-02-09 13:47:09 +0100 | bf41def |
+| resourceKeyVault/azuredeploy.bicep                                     | keyvault:1.2 | 2026-02-10 08:03:15 +0100 | bab924b |
 | resourceKeyVaultAccess/azuredeploy.bicep                               | 1.0 | 2024-05-15 10:52:23 +0200 | 9e5211b |
 | resourceKeyVaultSecrets/azuredeploy.bicep                              | 1.0 | 2024-05-15 10:52:23 +0200 | 9e5211b |
 | resourceLogAnalyticsWorkspace/azuredeploy.bicep                        | 1.0 | 2024-05-22 10:36:13 +0200 | f06dca9 |
@@ -21,7 +21,7 @@
 | resourcePostgresql/azuredeploy.bicep                                   | 1.0 | 2024-06-12 15:23:29 +0200 | 91d7307 |
 | resourcePostgresqlDatabases/azuredeploy.bicep                          | 1.0 | 2024-06-12 15:29:18 +0200 | d59079f |
 | resourcePostgresqlFlexibleDatabases/azuredeploy.bicep                  | 1.0 | 2024-11-28 10:29:22 +0100 | f53527c |
-| resourcePostgresqlFlexibleServer/azuredeploy.bicep                     | postgresflexibleserver:1.4 | 2026-02-04 09:15:46 +0100 | 171ec33 |
+| resourcePostgresqlFlexibleServer/azuredeploy.bicep                     | postgresflexibleserver:1.5 | 2026-03-04 18:23:24 +0100 | a507694 |
 | resourcePrivateDnsZone/azuredeploy.bicep                               | privatednszone:1.0 | 2025-05-30 16:13:02 +0200 | 345b7e6 |
 | resourcePrivateDnsZoneRecord/azuredeploy.bicep                         | dnszonerecord:1.0 | 2025-06-02 09:01:28 +0200 | 0c8caa6 |
 | resourcePrivateEndpoints/azuredeploy.bicep                             | privateendpoints:1.0 | 2025-06-02 09:01:28 +0200 | 0c8caa6 |
