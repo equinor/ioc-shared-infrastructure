@@ -99,7 +99,7 @@ resource postgresServer 'Microsoft.DBforPostgreSQL/flexibleServers@2024-08-01' =
     administratorLoginPassword: !empty(administratorLoginPassword) ? administratorLoginPassword : null
     authConfig: {
       activeDirectoryAuth: activeDirectoryAuthConfig
-      passwordAuth: authPasswdConfig
+      passwordAuth: (!empty(administratorLogin) && !empty(administratorLoginPassword)) ? authPasswdConfig : 'Disabled'
       tenantId: tenantId
     }
     network: {
