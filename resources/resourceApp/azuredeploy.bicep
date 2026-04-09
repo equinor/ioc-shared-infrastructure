@@ -1,4 +1,4 @@
-// Version 1.5 Module webapp
+// Version 1.6 Module webapp
 param webAppName string
 param location string = resourceGroup().location
 param tags object
@@ -39,6 +39,8 @@ param privatelinkVnetName string = ''
 param privatelinkSubnetName string = ''
 @description('The private DNS zone ID')
 param privateDnsZoneId string
+@description('Use managed identity to access Azure Container Registry images.')
+param acrUseManagedIdentityCreds bool = false
 
 var webapp_dns_name = '.azurewebsites.net'
 
@@ -46,6 +48,21 @@ func createSettingsObject (key string, value string) array => [
   {
     name: key
     value: value
+  }
+]
+
+var adminCredentials = acrUseManagedIdentityCreds ? [] : [
+  {
+    name: 'DOCKER_REGISTRY_SERVER_URL'
+    value: reference(resourceId(acrResourceGroup, 'Microsoft.ContainerRegistry/registries/', containerRegistryName), '2025-11-01').loginServer
+  }
+  {
+    name: 'DOCKER_REGISTRY_SERVER_USERNAME'
+    value: listCredentials(resourceId(acrResourceGroup, 'Microsoft.ContainerRegistry/registries/', containerRegistryName), '2025-11-01').username
+  }
+  {
+    name: 'DOCKER_REGISTRY_SERVER_PASSWORD'
+    value: listCredentials(resourceId(acrResourceGroup, 'Microsoft.ContainerRegistry/registries/', containerRegistryName), '2025-11-01').passwords[0].value
   }
 ]
 
@@ -72,7 +89,7 @@ var vnetNameProperty = (ouboundVnetName != '') ? {
   vnetName: ouboundVnetName
 } : {}
 
-resource webApp 'Microsoft.Web/sites@2023-12-01' = {
+resource webApp 'Microsoft.Web/sites@2024-04-01' = {
   name: webAppName
   location: location
   tags: tags
@@ -85,15 +102,16 @@ resource webApp 'Microsoft.Web/sites@2023-12-01' = {
     clientAffinityEnabled: false
     siteConfig: {
       linuxFxVersion: 'DOCKER|${containerRegistryName}.azurecr.io/${toLower(containerImageName)}:${containerImageTag}'
-      appSettings: union(globalAppSettings, environmentVariables, createSettingsObject('DOCKER_REGISTRY_SERVER_URL', reference(resourceId(acrResourceGroup, 'Microsoft.ContainerRegistry/registries/', containerRegistryName), '2023-07-01').loginServer), createSettingsObject('DOCKER_REGISTRY_SERVER_USERNAME', listCredentials(resourceId(acrResourceGroup, 'Microsoft.ContainerRegistry/registries/', containerRegistryName), '2023-07-01').username), createSettingsObject('DOCKER_REGISTRY_SERVER_PASSWORD', listCredentials(resourceId(acrResourceGroup, 'Microsoft.ContainerRegistry/registries/', containerRegistryName), '2023-07-01').passwords[0].value))
+      appSettings: union(globalAppSettings, environmentVariables, adminCredentials)
       appCommandLine: appCommandLine
+      acrUseManagedIdentityCreds: acrUseManagedIdentityCreds
     }
     httpsOnly: true
     ...virtualNetworkProperties
   }
 }
 
-resource webAppName_web 'Microsoft.Web/sites/config@2023-12-01' = {
+resource webAppName_web 'Microsoft.Web/sites/config@2025-03-01' = {
   parent: webApp
   name: 'web'
   properties: {
@@ -131,7 +149,7 @@ resource webAppBinding 'Microsoft.Web/sites/hostNameBindings@2024-04-01' = {
   }
 }
 
-resource vnetConnection 'Microsoft.Web/sites/virtualNetworkConnections@2023-12-01' = if (!empty(ouboundVnetName)) {
+resource vnetConnection 'Microsoft.Web/sites/virtualNetworkConnections@2025-03-01' = if (!empty(ouboundVnetName)) {
   parent: webApp
   name: outboundVnetConnectionName
   properties: {

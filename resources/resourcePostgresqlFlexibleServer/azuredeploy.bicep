@@ -1,8 +1,8 @@
-// Version 1.4 Module postgresflexibleserver
-param administratorLogin string
+// Version 1.5 Module postgresflexibleserver
+param administratorLogin string = ''
 
 @secure()
-param administratorLoginPassword string
+param administratorLoginPassword string = ''
 param tenantId string = '3aa4a235-b6e2-48d5-9195-7fcf05b459b0'
 param authPasswdConfig string = 'Enabled'
 param activeDirectoryAuthConfig string = 'Enabled'
@@ -70,6 +70,14 @@ param customMaintenanceWindowDayOfWeek int = 6
 param customMaintenanceWindowStartHour int = 0
 param customMaintenanceWindowStartMinute int = 30
 
+@description('Enable or disable Azure AD group sync for the PostgreSQL server.')
+@allowed([
+  ''
+  'on'
+  'off'
+])
+param enableGroupSync string = ''
+
 @description('''Server with Private Endpoint. This module creates a private endpoint for the server if privateEndpointName is defined.
 NB! For existing servers a private endpoint might not be eligible for creation.''')
 param privateEndpointName string = ''
@@ -87,11 +95,11 @@ resource postgresServer 'Microsoft.DBforPostgreSQL/flexibleServers@2024-08-01' =
   sku: sku
   properties: {
     version: postgresVersion
-    administratorLogin: administratorLogin
-    administratorLoginPassword: administratorLoginPassword
+    administratorLogin: !empty(administratorLogin) ? administratorLogin : null
+    administratorLoginPassword: !empty(administratorLoginPassword) ? administratorLoginPassword : null
     authConfig: {
       activeDirectoryAuth: activeDirectoryAuthConfig
-      passwordAuth: authPasswdConfig
+      passwordAuth: (!empty(administratorLogin) && !empty(administratorLoginPassword)) ? authPasswdConfig : 'Disabled'
       tenantId: tenantId
     }
     network: {
@@ -161,6 +169,15 @@ resource postgresServerName_Equinor_Statoil_Approved 'Microsoft.DBforPostgreSQL/
   properties: {
     startIpAddress: '143.97.110.0'
     endIpAddress: '143.97.110.255'
+  }
+}
+
+resource pgAadAuthEnableGroupSync 'Microsoft.DBforPostgreSQL/flexibleServers/configurations@2024-08-01' = if(!empty(enableGroupSync)) {
+  parent: postgresServer
+  name: 'pgaadauth.enable_group_sync'
+  properties: {
+    value: enableGroupSync
+    source: 'user-override'
   }
 }
 
